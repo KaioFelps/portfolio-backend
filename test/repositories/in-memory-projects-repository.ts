@@ -7,4 +7,16 @@ export class InMemoryProjectsRepository implements IProjectsRepository {
   async create(project: Project): Promise<void> {
     this.items.push(project);
   }
+
+  async findById(id: string): Promise<Project> {
+    return this.items.find((item) => item.id.toValue() === id);
+  }
+
+  async save(project: Project): Promise<void> {
+    const itemIndex = this.items.findIndex((item) =>
+      item.id.equals(project.id),
+    );
+
+    this.items[itemIndex] = project;
+  }
 }
