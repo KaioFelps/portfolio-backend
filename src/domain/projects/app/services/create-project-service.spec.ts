@@ -11,14 +11,17 @@ describe('Create Project Service', () => {
     sut = new CreateProjectService(projectsRepository);
   });
 
-  it('should create a project', () => {
+  it('should create a project', async () => {
     const project = Project.create({
       title: 'testing project',
       links: [],
       tags: ['back-end'],
       topstory: '',
     });
-    sut.exec(project);
+
+    const result = await sut.exec(project);
+
+    expect(result.isOk()).toBe(true);
 
     expect(projectsRepository.items[0]).toEqual(
       expect.objectContaining({

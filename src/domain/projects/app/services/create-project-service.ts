@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { IProjectsRepository } from '../repositories/projects-repository';
 import { Project } from '../entities/project';
+import { Either, ok } from '@/core/types/either';
 
 interface CreateProjectServiceRequest {
   title: string;
@@ -9,7 +10,7 @@ interface CreateProjectServiceRequest {
   links: string[];
 }
 
-interface CreateProjectServiceResponse {}
+type CreateProjectServiceResponse = Either<null, Project>;
 
 @Injectable()
 export class CreateProjectService {
@@ -30,6 +31,6 @@ export class CreateProjectService {
 
     await this.projectsRepository.create(project);
 
-    return {};
+    return ok(project);
   }
 }
