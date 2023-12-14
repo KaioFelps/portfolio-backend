@@ -1,5 +1,5 @@
 import { Optional } from '@/core/types/optional';
-import { Project, ProjectProps } from '@/domain/projects/app/entities/project';
+import { Project, ProjectProps } from '@/domain/projects/entities/project';
 import { faker } from '@faker-js/faker';
 
 export class ProjectFactory {
