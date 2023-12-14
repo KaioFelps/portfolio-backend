@@ -2,7 +2,7 @@ import { Entity } from '@/core/entities/entity';
 import { EntityUniqueId } from '@/core/entities/entity-unique-id';
 import { Optional } from '@/core/types/optional';
 
-interface ProjectProps {
+export interface ProjectProps {
   title: string;
   topstory: string;
   tags: string[];

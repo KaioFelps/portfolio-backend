@@ -1,3 +1,4 @@
+import { PaginationParams } from '@/core/types/pagination-params';
 import { Project } from '@/domain/projects/app/entities/project';
 import { IProjectsRepository } from '@/domain/projects/app/repositories/projects-repository';
 
@@ -10,6 +11,34 @@ export class InMemoryProjectsRepository implements IProjectsRepository {
 
   async findById(id: string): Promise<Project> {
     return this.items.find((item) => item.id.toValue() === id);
+  }
+
+  async findMany({
+    amount: itemsPerPage,
+    page,
+    query,
+  }: PaginationParams): Promise<Project[]> {
+    let projects: Project[] = [];
+
+    if (query) {
+      projects = this.items.filter((item) => {
+        if (item.title.includes(query.trim())) {
+          return item;
+        }
+
+        if (item.tags.includes(query)) {
+          return item;
+        }
+
+        return null;
+      });
+    } else {
+      projects = this.items;
+    }
+
+    projects = projects.slice((page - 1) * itemsPerPage, itemsPerPage * page);
+
+    return projects;
   }
 
   async save(project: Project): Promise<void> {
