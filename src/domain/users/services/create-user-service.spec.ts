@@ -2,14 +2,18 @@ import { CreateUserService } from './create-user-service';
 import { UserRole } from '../entities/user';
 import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository';
 import { UserFactory } from 'test/factories/user-factory';
+import { IHashGenerator } from '@/core/crypt/hash-generator';
+import { FakeHasher } from 'test/crypt/fake-hasher';
 
 describe('Create User Service', () => {
   let sut: CreateUserService;
   let usersRepository: InMemoryUsersRepository;
+  let hasher: IHashGenerator;
 
   beforeEach(async () => {
     usersRepository = new InMemoryUsersRepository();
-    sut = new CreateUserService(usersRepository);
+    hasher = new FakeHasher();
+    sut = new CreateUserService(usersRepository, hasher);
   });
 
   it('should create a user', async () => {

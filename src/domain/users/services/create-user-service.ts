@@ -3,6 +3,7 @@ import { IUsersRepository } from '../repositories/users-repository';
 import { User, UserRole } from '../entities/user';
 import { Either, fail, ok } from '@/core/types/either';
 import { UnauthorizedError } from '@/core/errors/unauthorized-error';
+import { IHashGenerator } from '@/core/crypt/hash-generator';
 
 interface CreateUserServiceRequest {
   adminId: string;
@@ -16,7 +17,10 @@ type CreateUserServiceResponse = Either<UnauthorizedError, User>;
 
 @Injectable()
 export class CreateUserService {
-  constructor(private usersRepository: IUsersRepository) {}
+  constructor(
+    private usersRepository: IUsersRepository,
+    private hashGenerator: IHashGenerator,
+  ) {}
 
   async exec({
     adminId,
@@ -31,10 +35,12 @@ export class CreateUserService {
       return fail(new UnauthorizedError());
     }
 
+    const hashedPassword = await this.hashGenerator.generate(password);
+
     const user = User.create({
       email,
       name,
-      password,
+      password: hashedPassword,
       role,
     });
 
