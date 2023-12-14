@@ -1,6 +1,6 @@
 import { PaginationParams } from '@/core/types/pagination-params';
-import { Project } from '@/domain/projects/app/entities/project';
-import { IProjectsRepository } from '@/domain/projects/app/repositories/projects-repository';
+import { Project } from '@/domain/projects/entities/project';
+import { IProjectsRepository } from '@/domain/projects/repositories/projects-repository';
 
 export class InMemoryProjectsRepository implements IProjectsRepository {
   public items: Project[] = [];

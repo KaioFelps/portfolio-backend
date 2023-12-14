@@ -1,5 +1,4 @@
 import { CreateProjectService } from './create-project-service';
-import { Project } from '../entities/project';
 import { InMemoryProjectsRepository } from 'test/repositories/in-memory-projects-repository';
 
 describe('Create Project Service', () => {
@@ -12,14 +11,12 @@ describe('Create Project Service', () => {
   });
 
   it('should create a project', async () => {
-    const project = Project.create({
+    const result = await sut.exec({
       title: 'testing project',
       links: [],
       tags: ['back-end'],
       topstory: '',
     });
-
-    const result = await sut.exec(project);
 
     expect(result.isOk()).toBe(true);
 
