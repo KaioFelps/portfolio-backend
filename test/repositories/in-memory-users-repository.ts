@@ -1,3 +1,4 @@
+import { PaginationParams } from '@/core/types/pagination-params';
 import { User } from '@/domain/users/entities/user';
 import { IUsersRepository } from '@/domain/users/repositories/users-repository';
 
@@ -16,5 +17,33 @@ export class InMemoryUsersRepository implements IUsersRepository {
     const userIndex = this.items.findIndex((item) => item.id.equals(user.id));
 
     this.items[userIndex] = user;
+  }
+
+  async findMany({
+    amount: itemsPerPage,
+    page,
+    query,
+  }: PaginationParams): Promise<User[]> {
+    let users: User[] = [];
+
+    if (query) {
+      users = this.items.filter((item) => {
+        if (item.name.includes(query.trimStart().trimEnd())) {
+          return item;
+        }
+
+        if (item.email.includes(query.trim())) {
+          return item;
+        }
+
+        return null;
+      });
+    } else {
+      users = this.items;
+    }
+
+    users = users.slice((page - 1) * itemsPerPage, itemsPerPage * page);
+
+    return users;
   }
 }
