@@ -6,4 +6,5 @@ export abstract class IUsersRepository {
   abstract findById(id: string): Promise<User>;
   abstract findMany(params: PaginationParams): Promise<User[]>;
   abstract save(user: User): Promise<void>;
+  abstract delete(user: User): Promise<void>;
 }
