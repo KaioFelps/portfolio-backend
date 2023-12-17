@@ -17,7 +17,7 @@ interface EditUserServiceRequest {
 
 type EditUserServiceResponse = Either<
   BadRequestError | UnauthorizedError,
-  User
+  { user: User }
 >;
 
 @Injectable()
@@ -59,6 +59,6 @@ export class EditUserService {
 
     await this.usersRepository.save(user);
 
-    return ok(user);
+    return ok({ user });
   }
 }

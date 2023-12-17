@@ -12,7 +12,10 @@ interface EditProjectServiceRequest {
   links?: string[];
 }
 
-type EditProjectServiceResponse = Either<ResourceNotFoundError, Project>;
+type EditProjectServiceResponse = Either<
+  ResourceNotFoundError,
+  { project: Project }
+>;
 
 @Injectable()
 export class EditProjectService {
@@ -38,6 +41,6 @@ export class EditProjectService {
 
     await this.projectsRepository.save(project);
 
-    return ok(project);
+    return ok({ project });
   }
 }
