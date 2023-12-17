@@ -12,7 +12,7 @@ interface CreateLogServiceRequest {
   action: LogAction;
 }
 
-type CreateLogServiceResponse = Either<BadRequestError, Log>;
+type CreateLogServiceResponse = Either<BadRequestError, { log: Log }>;
 
 @Injectable()
 export class CreateLogService {
@@ -42,6 +42,6 @@ export class CreateLogService {
 
     await this.logsRepository.create(log);
 
-    return ok(log);
+    return ok({ log });
   }
 }

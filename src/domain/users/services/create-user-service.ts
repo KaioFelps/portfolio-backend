@@ -13,7 +13,7 @@ interface CreateUserServiceRequest {
   role: UserRole;
 }
 
-type CreateUserServiceResponse = Either<UnauthorizedError, User>;
+type CreateUserServiceResponse = Either<UnauthorizedError, { user: User }>;
 
 @Injectable()
 export class CreateUserService {
@@ -46,6 +46,6 @@ export class CreateUserService {
 
     await this.usersRepository.create(user);
 
-    return ok(user);
+    return ok({ user });
   }
 }
