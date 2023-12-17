@@ -4,7 +4,7 @@ import { Optional } from '@/core/types/optional';
 import { Slug } from './value-objects/slug';
 
 export interface PostProps {
-  authorId: string;
+  authorId: EntityUniqueId;
   title: string;
   slug: Slug;
   content: string;

@@ -7,4 +7,14 @@ export class InMemoryPostsRepository implements IPostsRepository {
   async create(post: Post): Promise<void> {
     this.items.push(post);
   }
+
+  async findById(id: string): Promise<Post> {
+    return this.items.find((item) => item.id.toValue() === id);
+  }
+
+  async save(post: Post): Promise<void> {
+    const itemIndex = this.items.findIndex((item) => item.id.equals(post.id));
+
+    this.items[itemIndex] = post;
+  }
 }
