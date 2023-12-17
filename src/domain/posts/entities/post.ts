@@ -49,6 +49,10 @@ export class Post extends Entity<PostProps> {
     this.touch();
   }
 
+  get slug() {
+    return this.props.slug.value;
+  }
+
   get content() {
     return this.props.content;
   }

@@ -13,6 +13,10 @@ export class InMemoryPostsRepository implements IPostsRepository {
     return this.items.find((item) => item.id.toValue() === id);
   }
 
+  async findBySlug(slug: string): Promise<Post> {
+    return this.items.find((item) => item.slug === slug);
+  }
+
   async findMany({
     amount: itemsPerPage,
     page,
