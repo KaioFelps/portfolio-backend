@@ -1,3 +1,4 @@
+import { PaginationParams } from '@/core/types/pagination-params';
 import { Post } from '@/domain/posts/entities/post';
 import { IPostsRepository } from '@/domain/posts/repositories/posts-repository';
 
@@ -10,6 +11,34 @@ export class InMemoryPostsRepository implements IPostsRepository {
 
   async findById(id: string): Promise<Post> {
     return this.items.find((item) => item.id.toValue() === id);
+  }
+
+  async findMany({
+    amount: itemsPerPage,
+    page,
+    query,
+  }: PaginationParams): Promise<Post[]> {
+    let posts: Post[] = [];
+
+    if (query) {
+      posts = this.items.filter((item) => {
+        if (item.title.includes(query.trim())) {
+          return item;
+        }
+
+        if (item.tags.includes(query)) {
+          return item;
+        }
+
+        return null;
+      });
+    } else {
+      posts = this.items;
+    }
+
+    posts = posts.slice((page - 1) * itemsPerPage, itemsPerPage * page);
+
+    return posts;
   }
 
   async save(post: Post): Promise<void> {
