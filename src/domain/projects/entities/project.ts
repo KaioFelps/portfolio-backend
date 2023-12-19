@@ -1,6 +1,7 @@
-import { Entity } from '@/core/entities/entity';
+import { Aggregate } from '@/core/entities/aggregate';
 import { EntityUniqueId } from '@/core/entities/entity-unique-id';
 import { Optional } from '@/core/types/optional';
+import { ProjectCreatedEvent } from '../events/project-created-event';
 
 export interface ProjectProps {
   title: string;
@@ -10,7 +11,7 @@ export interface ProjectProps {
   createdAt: Date;
 }
 
-export class Project extends Entity<ProjectProps> {
+export class Project extends Aggregate<ProjectProps> {
   constructor(props: ProjectProps, id?: EntityUniqueId) {
     super(props, id);
   }
@@ -26,6 +27,12 @@ export class Project extends Entity<ProjectProps> {
       },
       id,
     );
+
+    const projectIsNew = !!id;
+
+    if (!projectIsNew) {
+      project.addDomainEvent(new ProjectCreatedEvent(project));
+    }
 
     return project;
   }

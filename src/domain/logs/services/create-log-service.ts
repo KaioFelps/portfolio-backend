@@ -1,18 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import { ILogsRepository } from '../repositories/logs-repository';
-import { Log, LogAction, LogTarget } from '../entities/log';
+import { Log, LogAction } from '../entities/log';
 import { Either, fail, ok } from '@/core/types/either';
 import { BadRequestError } from '@/core/errors/bad-request-error';
 import { IUsersRepository } from '@/domain/users/repositories/users-repository';
 import { EntityUniqueId } from '@/core/entities/entity-unique-id';
+import { User } from '@/domain/users/entities/user';
 
-interface CreateLogServiceRequest {
-  dispatcherId: EntityUniqueId;
-  target: LogTarget;
+export interface CreateLogServiceRequest {
+  dispatcherId?: EntityUniqueId;
+  target: string;
   action: LogAction;
 }
 
-type CreateLogServiceResponse = Either<BadRequestError, { log: Log }>;
+export type CreateLogServiceResponse = Either<BadRequestError, { log: Log }>;
 
 @Injectable()
 export class CreateLogService {
@@ -26,12 +27,16 @@ export class CreateLogService {
     dispatcherId,
     target,
   }: CreateLogServiceRequest): Promise<CreateLogServiceResponse> {
-    const dispatcher = await this.usersRepository.findById(
-      dispatcherId.toValue(),
-    );
+    let dispatcher: User | null;
 
-    if (!dispatcher) {
-      return fail(new BadRequestError());
+    if (dispatcherId) {
+      dispatcher = await this.usersRepository.findById(dispatcherId.toValue());
+
+      if (!dispatcher) {
+        return fail(new BadRequestError());
+      }
+    } else {
+      dispatcher = null;
     }
 
     const log = Log.create({

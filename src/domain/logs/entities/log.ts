@@ -2,12 +2,6 @@ import { Entity } from '@/core/entities/entity';
 import { EntityUniqueId } from '@/core/entities/entity-unique-id';
 import { Optional } from '@/core/types/optional';
 
-export enum LogTarget {
-  project = 'project',
-  post = 'post',
-  user = 'user',
-}
-
 export enum LogAction {
   created = 'created',
   updated = 'updated',
@@ -15,8 +9,8 @@ export enum LogAction {
 }
 
 export interface LogProps {
-  dispatcherId: EntityUniqueId;
-  target: LogTarget;
+  dispatcherId?: EntityUniqueId | null;
+  target: string;
   action: LogAction;
   createdAt: Date;
 }
@@ -26,16 +20,20 @@ export class Log extends Entity<LogProps> {
     super(props, id);
   }
 
-  static create(props: Optional<LogProps, 'createdAt'>, id?: EntityUniqueId) {
-    const project = new Log(
+  static create(
+    props: Optional<LogProps, 'createdAt' | 'dispatcherId'>,
+    id?: EntityUniqueId,
+  ) {
+    const log = new Log(
       {
         ...props,
+        dispatcherId: props.dispatcherId ?? null,
         createdAt: props.createdAt ?? new Date(),
       },
       id,
     );
 
-    return project;
+    return log;
   }
 
   get dispatcherId() {
@@ -43,7 +41,7 @@ export class Log extends Entity<LogProps> {
   }
 
   get target() {
-    return this.props.target.toString();
+    return this.props.target;
   }
 
   get action() {

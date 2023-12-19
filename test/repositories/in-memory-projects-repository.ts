@@ -1,3 +1,4 @@
+import { DomainEvents } from '@/core/events/domain-events';
 import { PaginationParams } from '@/core/types/pagination-params';
 import { Project } from '@/domain/projects/entities/project';
 import { IProjectsRepository } from '@/domain/projects/repositories/projects-repository';
@@ -7,6 +8,8 @@ export class InMemoryProjectsRepository implements IProjectsRepository {
 
   async create(project: Project): Promise<void> {
     this.items.push(project);
+
+    DomainEvents.dispatchEventsForAggregate(project.id);
   }
 
   async findById(id: string): Promise<Project> {
