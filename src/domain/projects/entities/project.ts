@@ -28,9 +28,9 @@ export class Project extends Aggregate<ProjectProps> {
       id,
     );
 
-    const projectIsNew = !!id;
+    const projectIsNew = !id;
 
-    if (!projectIsNew) {
+    if (projectIsNew) {
       project.addDomainEvent(new ProjectCreatedEvent(project));
     }
 
