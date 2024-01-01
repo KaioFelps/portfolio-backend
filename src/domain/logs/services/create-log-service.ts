@@ -11,6 +11,7 @@ export interface CreateLogServiceRequest {
   dispatcherId?: EntityUniqueId;
   target: string;
   action: LogAction;
+  occurredAt?: Date;
 }
 
 export type CreateLogServiceResponse = Either<BadRequestError, { log: Log }>;
@@ -26,6 +27,7 @@ export class CreateLogService {
     action,
     dispatcherId,
     target,
+    occurredAt,
   }: CreateLogServiceRequest): Promise<CreateLogServiceResponse> {
     let dispatcher: User | null;
 
@@ -43,6 +45,7 @@ export class CreateLogService {
       action,
       dispatcherId,
       target,
+      createdAt: occurredAt,
     });
 
     await this.logsRepository.create(log);

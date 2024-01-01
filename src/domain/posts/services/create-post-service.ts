@@ -4,11 +4,12 @@ import { Post } from '../entities/post';
 import { Either, fail, ok } from '@/core/types/either';
 import { UnauthorizedError } from '@/core/errors/unauthorized-error';
 import { IUsersRepository } from '@/domain/users/repositories/users-repository';
+import { EntityUniqueId } from '@/core/entities/entity-unique-id';
 
 interface CreateLogServiceRequest {
   title: string;
   content: string;
-  authorId: string;
+  authorId: EntityUniqueId;
   topstory: string;
   tags: string[];
 }
@@ -29,7 +30,7 @@ export class CreatePostService {
     title,
     topstory,
   }: CreateLogServiceRequest): Promise<CreateLogServiceResponse> {
-    const user = await this.usersRepository.findById(authorId);
+    const user = await this.usersRepository.findById(authorId.toValue());
 
     if (!user) {
       return fail(new UnauthorizedError());

@@ -1,3 +1,4 @@
+import { DomainEvents } from '@/core/events/domain-events';
 import { PaginationParams } from '@/core/types/pagination-params';
 import { Post } from '@/domain/posts/entities/post';
 import { IPostsRepository } from '@/domain/posts/repositories/posts-repository';
@@ -7,6 +8,8 @@ export class InMemoryPostsRepository implements IPostsRepository {
 
   async create(post: Post): Promise<void> {
     this.items.push(post);
+
+    DomainEvents.dispatchEventsForAggregate(post.id);
   }
 
   async findById(id: string): Promise<Post> {

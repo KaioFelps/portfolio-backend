@@ -3,6 +3,7 @@ import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repos
 import { InMemoryPostsRepository } from 'test/repositories/in-memory-posts-repository';
 import { CreatePostService } from './create-post-service';
 import { UnauthorizedError } from '@/core/errors/unauthorized-error';
+import { EntityUniqueId } from '@/core/entities/entity-unique-id';
 
 describe('Create Post Service', () => {
   let sut: CreatePostService;
@@ -20,7 +21,7 @@ describe('Create Post Service', () => {
     usersRepository.items.push(user);
 
     const result = await sut.exec({
-      authorId: user.id.toValue(),
+      authorId: user.id,
       title: 'Primeiro post!',
       content: 'Conteúdo falso para o meu primeiro post!',
       topstory: '',
@@ -36,7 +37,7 @@ describe('Create Post Service', () => {
 
   it("shouldn't create a post without a valid admin or editor id", async () => {
     const result = await sut.exec({
-      authorId: 'id-falso',
+      authorId: new EntityUniqueId('id-falso'),
       title: 'Primeiro post!',
       content: 'Conteúdo falso para o meu primeiro post!',
       topstory: '',

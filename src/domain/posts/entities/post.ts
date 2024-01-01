@@ -1,7 +1,8 @@
-import { Entity } from '@/core/entities/entity';
 import { EntityUniqueId } from '@/core/entities/entity-unique-id';
 import { Optional } from '@/core/types/optional';
 import { Slug } from './value-objects/slug';
+import { Aggregate } from '@/core/entities/aggregate';
+import { PostCreatedEvent } from '../events/post-created-event';
 
 export interface PostProps {
   authorId: EntityUniqueId;
@@ -14,7 +15,7 @@ export interface PostProps {
   updatedAt?: Date | null;
 }
 
-export class Post extends Entity<PostProps> {
+export class Post extends Aggregate<PostProps> {
   private constructor(props: PostProps, id?: EntityUniqueId) {
     super(props, id);
   }
@@ -31,6 +32,12 @@ export class Post extends Entity<PostProps> {
       },
       id,
     );
+
+    const postIsNew = !id;
+
+    if (postIsNew) {
+      post.addDomainEvent(new PostCreatedEvent(post));
+    }
 
     return post;
   }
