@@ -52,6 +52,8 @@ export class InMemoryPostsRepository implements IPostsRepository {
     const itemIndex = this.items.findIndex((item) => item.id.equals(post.id));
 
     this.items[itemIndex] = post;
+
+    DomainEvents.dispatchEventsForAggregate(post.id);
   }
 
   async delete(post: Post): Promise<void> {

@@ -3,6 +3,7 @@ import { Optional } from '@/core/types/optional';
 import { Slug } from './value-objects/slug';
 import { Aggregate } from '@/core/entities/aggregate';
 import { PostCreatedEvent } from '../events/post-created-event';
+import { PostEditedEvent } from '../events/post-edited-event';
 
 export interface PostProps {
   authorId: EntityUniqueId;
@@ -97,5 +98,7 @@ export class Post extends Aggregate<PostProps> {
 
   private touch() {
     this.props.updatedAt = new Date();
+
+    this.addDomainEvent(new PostEditedEvent(this));
   }
 }
