@@ -1,6 +1,6 @@
 import { EntityUniqueId } from '../entities/entity-unique-id';
 
 export abstract class DomainEvent {
-  abstract ocurredAt: Date;
+  abstract occurredAt: Date;
   public abstract getAggregateId(): EntityUniqueId;
 }

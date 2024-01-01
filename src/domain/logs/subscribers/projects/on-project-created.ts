@@ -17,7 +17,6 @@ export class OnProjectCreated implements EventHandler {
   }
 
   private async createLog({ project }: ProjectCreatedEvent) {
-    console.log('chegou aqui');
     await this.createLogService.exec({
       action: LogAction.created,
       target: project.title,
