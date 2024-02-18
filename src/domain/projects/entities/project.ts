@@ -2,12 +2,14 @@ import { Aggregate } from '@/core/entities/aggregate';
 import { EntityUniqueId } from '@/core/entities/entity-unique-id';
 import { Optional } from '@/core/types/optional';
 import { ProjectCreatedEvent } from '../events/project-created-event';
+import { ProjectLinkList } from './project-link-list';
+import { ProjectTagList } from './project-tag-link';
 
 export interface ProjectProps {
   title: string;
   topstory: string;
-  tags: string[];
-  links: string[];
+  tags: ProjectTagList;
+  links: ProjectLinkList;
   createdAt: Date;
 }
 
@@ -17,13 +19,15 @@ export class Project extends Aggregate<ProjectProps> {
   }
 
   static create(
-    props: Optional<ProjectProps, 'createdAt'>,
+    props: Optional<ProjectProps, 'createdAt' | 'links' | 'tags'>,
     id?: EntityUniqueId,
   ) {
     const project = new Project(
       {
         ...props,
         createdAt: props.createdAt ?? new Date(),
+        links: props.links ?? new ProjectLinkList(),
+        tags: props.tags ?? new ProjectTagList(),
       },
       id,
     );
@@ -57,7 +61,7 @@ export class Project extends Aggregate<ProjectProps> {
     return this.props.tags;
   }
 
-  set tags(value: string[]) {
+  set tags(value: ProjectTagList) {
     this.props.tags = value;
   }
 
@@ -65,7 +69,7 @@ export class Project extends Aggregate<ProjectProps> {
     return this.props.links;
   }
 
-  set links(value: string[]) {
+  set links(value: ProjectLinkList) {
     this.props.links = value;
   }
 
