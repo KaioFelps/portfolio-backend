@@ -1,0 +1,97 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider          = "mysql"
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+}
+
+enum LogAction {
+  CREATED
+  UPDATED
+  DELETED
+}
+
+enum UserRole {
+  ADMIN
+  EDITOR
+}
+
+model Post {
+  id       String @id @default(uuid())
+  title    String @db.VarChar(255)
+  slug     String @db.VarChar(255)
+  content  String
+  topstory String
+  tags     Tag[]
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime? @updatedAt @map("updated_at")
+
+  authorId String @map("author_id")
+
+  author User @relation(fields: [authorId], references: [id])
+
+  @@map("posts")
+}
+
+model Tag {
+  id    String @id @default(uuid())
+  value String
+
+  postId    String? @map("post_id")
+  projectId String? @map("project_id")
+
+  Post    Post?    @relation(fields: [postId], references: [id])
+  Project Project? @relation(fields: [projectId], references: [id])
+
+  @@map("tags")
+}
+
+model Link {
+  id    String @id @default(uuid())
+  value String
+
+  projectId String? @map("project_id")
+
+  Project Project? @relation(fields: [projectId], references: [id])
+
+  @@map("links")
+}
+
+model Project {
+  id        String   @id @default(uuid())
+  title     String
+  topstory  String
+  tags      Tag[]
+  links     Link[]
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("projects")
+}
+
+model Log {
+  dispatcherId String    @unique @map("dispatcher_id")
+  target       String
+  action       LogAction
+  createdAt    DateTime  @default(now()) @map("created_at")
+
+  dispatcher User @relation(fields: [dispatcherId], references: [id])
+
+  @@map("logs")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  name      String?
+  role      UserRole
+  posts     Post[]
+  Log       Log?
+  createdAt DateTime @default(now()) @map("created_at")
+}
