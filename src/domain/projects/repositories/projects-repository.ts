@@ -6,5 +6,5 @@ export abstract class IProjectsRepository {
   abstract findById(id: string): Promise<Project>;
   abstract findMany(params: PaginationParams): Promise<Project[]>;
   abstract save(project: Project): Promise<void>;
-  abstract delete(id: string): Promise<void>;
+  abstract delete(project: Project): Promise<void>;
 }
