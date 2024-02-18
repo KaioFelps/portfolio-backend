@@ -1,4 +1,4 @@
-import { CreateProjectService } from '@/domain/projects/app/services/create-project-service';
+import { CreateProjectService } from '@/domain/projects/services/create-project-service';
 import { ZodValidatorPipe } from '@/infra/lib/zod-validator-pipe';
 import { Body, Controller, Post } from '@nestjs/common';
 import { z } from 'zod';
@@ -18,14 +18,14 @@ export class ProjectsController {
   constructor(private createProjectService: CreateProjectService) {}
 
   @Post('new')
-  async createProject(@Body(createProjectBodyPipe) body: CreateProjectBody) {
-    const { links, tags, title, topstory } = body;
-
-    await this.createProjectService.exec({
-      links,
-      tags,
-      title,
-      topstory,
-    });
+  async createProject(@Body(createProjectBodyPipe) _body: CreateProjectBody) {
+    // const { links, tags, title, topstory } = body;
+    // await this.createProjectService.exec({
+    //   links,
+    //   tags,
+    //   title,
+    //   topstory,
+    //   userId,
+    // });
   }
 }
