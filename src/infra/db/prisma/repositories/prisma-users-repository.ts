@@ -25,6 +25,10 @@ export class PrismaUsersRepository implements IUsersRepository {
       },
     });
 
+    if (!user) {
+      return null;
+    }
+
     return PrismaUserMapper.toDomain(user);
   }
 
