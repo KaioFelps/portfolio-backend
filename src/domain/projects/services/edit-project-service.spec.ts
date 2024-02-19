@@ -49,13 +49,10 @@ describe.only('Edit Project Service', () => {
     const user = UserFactory.exec('admin');
     userRepository.items.push(user);
 
-    const project = ProjectFactory.exec(
-      {
-        title: 'initial title',
-        topstory: 'initial_topstory_url.com',
-      },
-      new EntityUniqueId('project-1'),
-    );
+    const project = ProjectFactory.exec({
+      title: 'initial title',
+      topstory: 'initial_topstory_url.com',
+    });
 
     projectsRepository.items.push(project);
 
