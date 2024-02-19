@@ -4,7 +4,7 @@ import { PrismaService } from '../prisma-service';
 import { PrismaProjectTagMapper } from '../mappers/prisma-project-tag-mapper';
 
 @Injectable()
-export class IProjectTagsRepository {
+export class PrismaProjectTagsRepository {
   constructor(private prisma: PrismaService) {}
 
   async createMany(tags: ProjectTag[]): Promise<void> {
