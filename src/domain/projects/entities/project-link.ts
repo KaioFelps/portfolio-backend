@@ -20,8 +20,8 @@ export class ProjectLink extends Entity<ProjectLinkProps> {
     return this.props.value;
   }
 
-  get projectId() {
-    return this.projectId;
+  get projectId(): EntityUniqueId {
+    return this.props.projectId;
   }
 
   set value(value: string) {
