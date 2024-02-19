@@ -26,7 +26,7 @@ export class DeleteProjectService {
       return fail(new ResourceNotFoundError());
     }
 
-    await this.projectsRepository.delete(projectId);
+    await this.projectsRepository.delete(project);
 
     return ok({});
   }
