@@ -8,9 +8,9 @@ export class PrismaProjectTagsRepository {
   constructor(private prisma: PrismaService) {}
 
   async createMany(tags: ProjectTag[]): Promise<void> {
-    await this.prisma.tag.createMany({
-      data: tags.map(PrismaProjectTagMapper.toPrisma),
-    });
+    await this.prisma.tag.createMany(
+      PrismaProjectTagMapper.toPrismaCreateMany(tags),
+    );
   }
 
   async deleteMany(tags: ProjectTag[]): Promise<void> {
