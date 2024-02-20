@@ -4,7 +4,6 @@ import { InMemoryProjectsRepository } from 'test/repositories/in-memory-projects
 import { UserFactory } from 'test/factories/user-factory';
 import { InMemoryProjectTagsRepository } from 'test/repositories/in-memory-project-tags-repository';
 import { InMemoryProjectLinksRepository } from 'test/repositories/in-memory-project-links-repository';
-import { InMemoryTagsRepository } from 'test/repositories/in-memory-tags-repository';
 
 describe('Create Project Service', () => {
   let sut: CreateProjectService;
@@ -12,19 +11,15 @@ describe('Create Project Service', () => {
   let usersRepository: InMemoryUsersRepository;
   let projectTagsRepository: InMemoryProjectTagsRepository;
   let projectLinksRepository: InMemoryProjectLinksRepository;
-  let tagsRepository: InMemoryTagsRepository;
 
   beforeEach(async () => {
-    tagsRepository = new InMemoryTagsRepository();
-
     projectLinksRepository = new InMemoryProjectLinksRepository();
 
-    projectTagsRepository = new InMemoryProjectTagsRepository(tagsRepository);
+    projectTagsRepository = new InMemoryProjectTagsRepository();
 
     projectsRepository = new InMemoryProjectsRepository(
       projectTagsRepository,
       projectLinksRepository,
-      tagsRepository,
     );
     usersRepository = new InMemoryUsersRepository();
     sut = new CreateProjectService(projectsRepository, usersRepository);
