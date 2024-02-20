@@ -14,7 +14,7 @@ class CustomAggregate extends Aggregate<unknown> {
 }
 
 class CustomAggregateCreatedEvent implements DomainEvent {
-  public ocurredAt: Date = new Date();
+  public occurredAt: Date = new Date();
   private aggregate: CustomAggregate;
 
   constructor(aggregate: CustomAggregate) {
