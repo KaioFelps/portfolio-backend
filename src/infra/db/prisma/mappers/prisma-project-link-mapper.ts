@@ -17,7 +17,7 @@ export class PrismaProjectLinkMapper {
     return {
       value: link.value,
       id: link.id.toValue(),
-      projectId: link.projectId,
+      projectId: link.projectId.toValue(),
     };
   }
 }
