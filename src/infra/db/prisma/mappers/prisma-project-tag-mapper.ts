@@ -13,11 +13,26 @@ export class PrismaProjectTagMapper {
     );
   }
 
-  static toPrisma(tag: ProjectTag): Prisma.TagCreateManyInput {
+  static toPrisma(tag: ProjectTag): PrismaTag {
     return {
-      value: tag.value,
       id: tag.id.toValue(),
-      projectId: tag.projectId,
+      projectId: tag.projectId.toValue(),
+      value: tag.value,
+      postId: null,
+    };
+  }
+
+  static toPrismaCreateMany(tags: ProjectTag[]): Prisma.TagCreateManyArgs {
+    const mappedTags: Prisma.TagCreateManyInput[] = tags.map((tag) => {
+      return {
+        id: tag.id.toValue(),
+        projectId: tag.projectId.toValue(),
+        value: tag.value,
+      };
+    });
+
+    return {
+      data: mappedTags,
     };
   }
 }
