@@ -1,6 +1,7 @@
 import { EntityUniqueId } from '@/core/entities/entity-unique-id';
 import { Optional } from '@/core/types/optional';
 import { Post, PostProps } from '@/domain/posts/entities/post';
+import { PostTagList } from '@/domain/posts/entities/post-tag-list';
 import { faker } from '@faker-js/faker';
 
 export class PostFactory {
@@ -18,7 +19,7 @@ export class PostFactory {
     >,
   ) {
     return Post.create({
-      tags: faker.word.words(3).split(' '),
+      tags: new PostTagList([]),
       title: faker.lorem.lines(1),
       topstory: faker.image.url(),
       authorId: new EntityUniqueId(faker.string.uuid()),

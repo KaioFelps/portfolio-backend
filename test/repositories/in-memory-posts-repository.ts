@@ -33,7 +33,15 @@ export class InMemoryPostsRepository implements IPostsRepository {
           return item;
         }
 
-        if (item.tags.includes(query)) {
+        let loopPost = null;
+
+        item.tags.getItems().forEach((tag) => {
+          if (tag.value === query) {
+            loopPost = item;
+          }
+        });
+
+        if (loopPost) {
           return item;
         }
 
