@@ -4,6 +4,7 @@ import { Slug } from './value-objects/slug';
 import { Aggregate } from '@/core/entities/aggregate';
 import { PostCreatedEvent } from '../events/post-created-event';
 import { PostEditedEvent } from '../events/post-edited-event';
+import { PostTagList } from './post-tag-list';
 
 export interface PostProps {
   authorId: EntityUniqueId;
@@ -11,7 +12,7 @@ export interface PostProps {
   slug: Slug;
   content: string;
   topstory: string;
-  tags: string[];
+  tags: PostTagList;
   createdAt: Date;
   updatedAt?: Date | null;
 }
@@ -83,7 +84,7 @@ export class Post extends Aggregate<PostProps> {
     return this.props.tags;
   }
 
-  set tags(value: string[]) {
+  set tags(value: PostTagList) {
     this.props.tags = value;
     this.touch();
   }
