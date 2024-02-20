@@ -18,7 +18,7 @@ interface EditProjectServiceRequest {
   projectId: string;
   title?: string;
   topstory?: string;
-  tagsIds?: string[];
+  tags?: { value: string; id?: EntityUniqueId }[];
   links?: string[];
 }
 
@@ -41,7 +41,7 @@ export class EditProjectService {
     title,
     topstory,
     projectId,
-    tagsIds = [],
+    tags = [],
     links = [],
   }: EditProjectServiceRequest): Promise<EditProjectServiceResponse> {
     const entityProjectId = new EntityUniqueId(projectId);
@@ -75,11 +75,14 @@ export class EditProjectService {
 
     const currentTagsList = new ProjectTagList(currentTags);
 
-    const newTags = tagsIds.map((tagId) =>
-      ProjectTag.create({
-        projectId: entityProjectId,
-        tagId: new EntityUniqueId(tagId),
-      }),
+    const newTags = tags.map((tag) =>
+      ProjectTag.create(
+        {
+          projectId: entityProjectId,
+          value: tag.value,
+        },
+        tag.id,
+      ),
     );
 
     currentTagsList.update(newTags);

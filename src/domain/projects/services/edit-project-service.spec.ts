@@ -9,9 +9,8 @@ import { ProjectTagList } from '../entities/project-tag-link';
 import { ProjectTag } from '../entities/project-tag';
 import { UserFactory } from 'test/factories/user-factory';
 import { EntityUniqueId } from '@/core/entities/entity-unique-id';
-import { ProjectTagFactory } from 'test/factories/question-tag-factory';
-import { ProjectLinkFactory } from 'test/factories/question-link-factory';
-import { InMemoryTagsRepository } from 'test/repositories/in-memory-tags-repository';
+import { ProjectTagFactory } from 'test/factories/project-tag-factory';
+import { ProjectLinkFactory } from 'test/factories/project-link-factory';
 import { ProjectFactory } from 'test/factories/project-factory';
 
 describe.only('Edit Project Service', () => {
@@ -20,19 +19,15 @@ describe.only('Edit Project Service', () => {
   let projectLinksRepository: InMemoryProjectLinksRepository;
   let projectTagsRepository: InMemoryProjectTagsRepository;
   let userRepository: InMemoryUsersRepository;
-  let tagsRepository: InMemoryTagsRepository;
 
   beforeEach(async () => {
-    tagsRepository = new InMemoryTagsRepository();
-
     projectLinksRepository = new InMemoryProjectLinksRepository();
 
-    projectTagsRepository = new InMemoryProjectTagsRepository(tagsRepository);
+    projectTagsRepository = new InMemoryProjectTagsRepository();
 
     projectsRepository = new InMemoryProjectsRepository(
       projectTagsRepository,
       projectLinksRepository,
-      tagsRepository,
     );
 
     userRepository = new InMemoryUsersRepository();
@@ -57,14 +52,18 @@ describe.only('Edit Project Service', () => {
     projectsRepository.items.push(project);
 
     projectTagsRepository.items.push(
-      ProjectTagFactory.exec({
-        projectId: project.id,
-        tagId: new EntityUniqueId('1'),
-      }),
-      ProjectTagFactory.exec({
-        projectId: project.id,
-        tagId: new EntityUniqueId('2'),
-      }),
+      ProjectTagFactory.exec(
+        {
+          projectId: project.id,
+        },
+        new EntityUniqueId('1'),
+      ),
+      ProjectTagFactory.exec(
+        {
+          projectId: project.id,
+        },
+        new EntityUniqueId('2'),
+      ),
     );
 
     projectLinksRepository.items.push(
@@ -82,13 +81,16 @@ describe.only('Edit Project Service', () => {
       projectId: project.id.toValue(),
       userId: user.id.toValue(),
       links: ['kaiofelps.dev'],
-      tagsIds: ['1', '3'],
+      tags: [
+        { value: 'value-1', id: new EntityUniqueId('1') },
+        { value: 'value-3', id: new EntityUniqueId('3') },
+      ],
     });
 
     expect(projectsRepository.items[0].tags.getItems()).toEqual(
       expect.arrayContaining([
-        expect.objectContaining({ tagId: new EntityUniqueId('1') }),
-        expect.objectContaining({ tagId: new EntityUniqueId('3') }),
+        expect.objectContaining({ id: new EntityUniqueId('1') }),
+        expect.objectContaining({ id: new EntityUniqueId('3') }),
       ]),
     );
 
@@ -107,10 +109,13 @@ describe.only('Edit Project Service', () => {
     });
 
     project.tags = new ProjectTagList([
-      ProjectTag.create({
-        projectId: project.id,
-        tagId: new EntityUniqueId('1'),
-      }),
+      ProjectTag.create(
+        {
+          projectId: project.id,
+          value: 'value-1',
+        },
+        new EntityUniqueId('1'),
+      ),
     ]);
 
     projectsRepository.items.push(project);
