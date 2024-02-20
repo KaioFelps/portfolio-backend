@@ -12,7 +12,7 @@ describe('Get Post By Slug Service', () => {
   });
 
   it('should get a post by slug', async () => {
-    const post = PostFactory.exec({ tags: [], title: 'design de fs' });
+    const post = PostFactory.exec({ title: 'design de fs' });
 
     postsRepository.items.push(post);
 
