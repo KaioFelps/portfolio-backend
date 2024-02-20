@@ -4,16 +4,24 @@ import { InMemoryPostsRepository } from 'test/repositories/in-memory-posts-repos
 import { UnauthorizedError } from '@/core/errors/unauthorized-error';
 import { PostFactory } from 'test/factories/post-factory';
 import { EditPostService } from './edit-post-service';
+import { InMemoryPostTagsRepository } from 'test/repositories/in-memory-post-tags-repository';
 
 describe('Edit Post Service', () => {
   let sut: EditPostService;
   let postsRepository: InMemoryPostsRepository;
   let usersRepository: InMemoryUsersRepository;
+  let postTagsRepository: InMemoryPostTagsRepository;
 
   beforeEach(async () => {
     postsRepository = new InMemoryPostsRepository();
     usersRepository = new InMemoryUsersRepository();
-    sut = new EditPostService(postsRepository, usersRepository);
+    postTagsRepository = new InMemoryPostTagsRepository();
+
+    sut = new EditPostService(
+      postsRepository,
+      usersRepository,
+      postTagsRepository,
+    );
   });
 
   it('should edit a post', async () => {
@@ -28,18 +36,21 @@ describe('Edit Post Service', () => {
       postId: post.id.toValue(),
       title: 'Edited title',
       content: 'Edited content of my previous created post.',
-      tags: ['nodejs'],
+      tags: [{ value: 'nodejs' }],
     });
 
     expect(result.isOk()).toBe(true);
 
-    if (result.isOk()) {
-      expect(postsRepository.items[0]).toMatchObject({
-        title: 'Edited title',
-        content: 'Edited content of my previous created post.',
-        tags: ['nodejs'],
-      });
-    }
+    expect(postsRepository.items[0]).toMatchObject({
+      title: 'Edited title',
+      content: 'Edited content of my previous created post.',
+    });
+
+    expect(postsRepository.items[0].tags.getItems()).toEqual([
+      expect.objectContaining({
+        value: 'nodejs',
+      }),
+    ]);
   });
 
   it("shouldn't let an user edit a post of other user", async () => {
