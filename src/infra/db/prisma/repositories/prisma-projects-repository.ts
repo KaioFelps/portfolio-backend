@@ -5,8 +5,8 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma-service';
 import { PrismaProjectMapper } from '../mappers/prisma-project-mapper';
 import { DomainEvents } from '@/core/events/domain-events';
-import { IProjectTagsRepository } from './prisma-project-tag-repository';
 import { IProjectLinksRepository } from '@/domain/projects/repositories/project-links-repository';
+import { IProjectTagsRepository } from '@/domain/projects/repositories/project-tags-repository';
 
 @Injectable()
 export class PrismaProjectsRepository implements IProjectsRepository {
