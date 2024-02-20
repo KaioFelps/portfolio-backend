@@ -4,7 +4,6 @@ import { Project } from '@/domain/projects/entities/project';
 import { IProjectsRepository } from '@/domain/projects/repositories/projects-repository';
 import { InMemoryProjectLinksRepository } from './in-memory-project-links-repository';
 import { InMemoryProjectTagsRepository } from './in-memory-project-tags-repository';
-import { InMemoryTagsRepository } from './in-memory-tags-repository';
 
 export class InMemoryProjectsRepository implements IProjectsRepository {
   public items: Project[] = [];
@@ -12,7 +11,6 @@ export class InMemoryProjectsRepository implements IProjectsRepository {
   constructor(
     private projectTagsRepository: InMemoryProjectTagsRepository,
     private projectLinksRepository: InMemoryProjectLinksRepository,
-    private tagsRepository: InMemoryTagsRepository,
   ) {}
 
   async create(project: Project): Promise<void> {
@@ -44,9 +42,7 @@ export class InMemoryProjectsRepository implements IProjectsRepository {
         let itemFromLoop = null;
 
         item.tags.getItems().forEach(async (tag) => {
-          const foundTag = await this.tagsRepository.findById(tag.id);
-
-          if (foundTag && foundTag.value === query) {
+          if (tag.value === query) {
             itemFromLoop = tag;
           }
         });
