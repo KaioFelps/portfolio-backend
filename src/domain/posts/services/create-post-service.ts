@@ -5,6 +5,8 @@ import { Either, fail, ok } from '@/core/types/either';
 import { UnauthorizedError } from '@/core/errors/unauthorized-error';
 import { IUsersRepository } from '@/domain/users/repositories/users-repository';
 import { EntityUniqueId } from '@/core/entities/entity-unique-id';
+import { PostTag } from '../entities/post-tag';
+import { PostTagList } from '../entities/post-tag-list';
 
 interface CreateLogServiceRequest {
   title: string;
@@ -36,7 +38,24 @@ export class CreatePostService {
       return fail(new UnauthorizedError());
     }
 
-    const post = Post.create({ authorId, content, tags, title, topstory });
+    const post = Post.create({
+      authorId,
+      content,
+      title,
+      topstory,
+      tags: new PostTagList(),
+    });
+
+    const postTags = tags.map((tag) =>
+      PostTag.create({
+        postId: post.id,
+        value: tag,
+      }),
+    );
+
+    const postTagsList = new PostTagList(postTags);
+
+    post.tags = postTagsList;
 
     await this.postsRepository.create(post);
 
