@@ -32,6 +32,20 @@ export class PrismaUsersRepository implements IUsersRepository {
     return PrismaUserMapper.toDomain(user);
   }
 
+  async findByEmail(email: string): Promise<User> {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        email,
+      },
+    });
+
+    if (!user) {
+      return null;
+    }
+
+    return PrismaUserMapper.toDomain(user);
+  }
+
   async findMany({ amount, page, query }: PaginationParams): Promise<User[]> {
     const PER_PAGE = amount ?? 10;
 
