@@ -32,7 +32,7 @@ describe('Create Project Service', () => {
     const result = await sut.exec({
       title: 'testing project',
       links: [],
-      tagsIds: ['back-end'],
+      tags: ['back-end'],
       topstory: '',
       userId: user.id.toValue(),
     });

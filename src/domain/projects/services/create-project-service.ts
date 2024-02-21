@@ -7,14 +7,13 @@ import { UnauthorizedError } from '@/core/errors/unauthorized-error';
 import { ProjectLinkList } from '../entities/project-link-list';
 import { ProjectLink } from '../entities/project-link';
 import { ProjectTagList } from '../entities/project-tag-link';
-import { EntityUniqueId } from '@/core/entities/entity-unique-id';
 import { ProjectTagFactory } from 'test/factories/project-tag-factory';
 
 interface CreateProjectServiceRequest {
   userId: string;
   title: string;
   topstory: string;
-  tagsIds: string[];
+  tags: string[];
   links: string[];
 }
 
@@ -33,7 +32,7 @@ export class CreateProjectService {
   async exec({
     userId,
     links = [],
-    tagsIds = [],
+    tags = [],
     title,
     topstory,
   }: CreateProjectServiceRequest): Promise<CreateProjectServiceResponse> {
@@ -49,14 +48,11 @@ export class CreateProjectService {
     });
 
     const projectTagsList = new ProjectTagList(
-      tagsIds.map((tagId, index) =>
-        ProjectTagFactory.exec(
-          {
-            projectId: project.id,
-            value: `value-${index + 1}`,
-          },
-          new EntityUniqueId(tagId),
-        ),
+      tags.map((tag) =>
+        ProjectTagFactory.exec({
+          projectId: project.id,
+          value: tag,
+        }),
       ),
     );
 
