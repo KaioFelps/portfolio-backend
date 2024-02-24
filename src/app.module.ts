@@ -6,6 +6,7 @@ import { AuthModule } from './infra/auth/auth.module';
 import { EnvModule } from './infra/env/env.module';
 import { ConfigModule } from '@nestjs/config';
 import { envSchema } from './infra/env/env';
+import { AuthController } from './infra/http/controllers/auth.controller';
 
 @Module({
   imports: [
@@ -17,7 +18,7 @@ import { envSchema } from './infra/env/env';
     AuthModule,
     EnvModule,
   ],
-  controllers: [AppController],
+  controllers: [AppController, AuthController],
   providers: [AppService],
 })
 export class AppModule {}
