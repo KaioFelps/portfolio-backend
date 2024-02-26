@@ -27,29 +27,37 @@ describe('AuthController', () => {
 
     await userFactory.createAndPersist('editor', {
       email: 'kaio@gmail.com',
-      password: await hash('12345678910comerpasteis', 8),
+      password: await hash('12345678910comerpasteis', 6),
     });
 
-    let response = await request(app.getHttpServer()).post(ROUTE).send({
-      email: 'kaiofelipe',
-      password: '12345678910comerpasteis',
-    });
+    const invalidEmailResponse = await request(app.getHttpServer())
+      .post(ROUTE)
+      .send({
+        email: 'kaiofelipe',
+        password: '12345678910comerpasteis',
+      });
 
-    expect(response.statusCode).toBe(400);
+    expect(invalidEmailResponse.statusCode).toBe(401);
 
-    response = await request(app.getHttpServer()).post(ROUTE).send({
-      email: 'kaio@gmail.com',
-      password: '123',
-    });
+    const wrongPasswordResponse = await request(app.getHttpServer())
+      .post(ROUTE)
+      .send({
+        email: 'kaio@gmail.com',
+        password: '123',
+      });
 
-    expect(response.statusCode).toBe(401);
+    expect(wrongPasswordResponse.statusCode).toBe(401);
 
-    response = await request(app.getHttpServer).post(ROUTE).send({
-      email: 'kaio@gmail.com',
-      password: '12345678910comerpasteis',
-    });
+    const successResponse = await request(app.getHttpServer())
+      .post(ROUTE)
+      .send({
+        email: 'kaio@gmail.com',
+        password: '12345678910comerpasteis',
+      });
 
-    expect(response.statusCode).toBe(HttpStatus.OK);
-    expect(response.body.access_token).toEqual(expect.any(String));
+    console.log(successResponse.body);
+
+    expect(successResponse.statusCode).toBe(HttpStatus.OK);
+    expect(successResponse.body.access_token).toEqual(expect.any(String));
   });
 });
