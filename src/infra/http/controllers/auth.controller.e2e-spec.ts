@@ -55,8 +55,6 @@ describe('AuthController', () => {
         password: '12345678910comerpasteis',
       });
 
-    console.log(successResponse.body);
-
     expect(successResponse.statusCode).toBe(HttpStatus.OK);
     expect(successResponse.body.access_token).toEqual(expect.any(String));
   });
