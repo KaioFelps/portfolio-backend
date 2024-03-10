@@ -16,7 +16,7 @@ export class TokenPayload {
 
   @IsNotEmpty()
   @IsEnum(UserRole)
-  role: string;
+  role: UserRole;
 }
 
 @Injectable()
