@@ -13,7 +13,7 @@ import { HttpModule } from './infra/http/http.module';
       isGlobal: true,
     }),
     AuthModule,
-    EnvModule,
+    { module: EnvModule, global: true },
     HttpModule,
   ],
   providers: [AppService],
