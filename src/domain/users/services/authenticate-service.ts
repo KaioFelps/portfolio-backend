@@ -12,7 +12,7 @@ interface AuthenticateServiceRequest {
 
 type AuthenticateServiceResponse = Either<
   WrongCredentialError,
-  { accessToken: string }
+  { accessToken: string; refreshToken: string }
 >;
 
 @Injectable()
@@ -48,6 +48,15 @@ export class AuthenticateService {
       role: user.role,
     });
 
-    return ok({ accessToken });
+    const refreshToken = await this.encryptor.encrypt(
+      {
+        sub: user.id.toValue(),
+        name: user.name,
+        role: user.role,
+      },
+      '10h',
+    );
+
+    return ok({ accessToken, refreshToken });
   }
 }
