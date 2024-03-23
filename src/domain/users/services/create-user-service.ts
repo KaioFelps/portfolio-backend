@@ -31,7 +31,7 @@ export class CreateUserService {
   }: CreateUserServiceRequest): Promise<CreateUserServiceResponse> {
     const adminUser = await this.usersRepository.findById(adminId);
 
-    if (adminUser.role !== UserRole.admin || !adminUser) {
+    if (!adminUser || adminUser.role !== UserRole.admin) {
       return fail(new UnauthorizedError());
     }
 
