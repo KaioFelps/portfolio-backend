@@ -4,6 +4,6 @@ import { TokenPayload } from '../jwt-strategy';
 export const CurrentUser = createParamDecorator(
   (_factory, context: ExecutionContext) => {
     const request = context.switchToHttp().getRequest();
-    return request as TokenPayload;
+    return request.user as TokenPayload;
   },
 );
