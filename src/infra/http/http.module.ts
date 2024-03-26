@@ -8,10 +8,11 @@ import { DeleteUserService } from '@/domain/users/services/delete-user-service';
 import { EditUserService } from '@/domain/users/services/edit-user-service';
 import { RefreshAuthenticationService } from '@/domain/users/services/refresh-authentication-service';
 import { FetchManyUsersService } from '@/domain/users/services/fetch-many-users-service';
+import { UserController } from './controllers/user.controller';
 
 @Module({
   imports: [CryptographyModule, DatabaseModule],
-  controllers: [AuthController],
+  controllers: [AuthController, UserController],
   providers: [
     // logs ///////////////////////////
 
