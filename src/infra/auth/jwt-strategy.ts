@@ -8,15 +8,15 @@ import { UserRole } from '@/domain/users/entities/user';
 export class TokenPayload {
   @IsNotEmpty()
   @IsUUID()
-  sub: string;
+  sub!: string;
 
   @IsNotEmpty()
   @IsString()
-  name: string;
+  name!: string;
 
   @IsNotEmpty()
   @IsEnum(UserRole)
-  role: UserRole;
+  role!: UserRole;
 }
 
 @Injectable()

@@ -11,8 +11,8 @@ export class InMemoryLogsRepository implements ILogsRepository {
   }
 
   async findMany({
-    amount: itemsPerPage,
-    page,
+    amount: itemsPerPage = 9,
+    page = 1,
     query,
   }: PaginationParams): Promise<Log[]> {
     let logs: Log[] = [];
@@ -27,7 +27,10 @@ export class InMemoryLogsRepository implements ILogsRepository {
           return item;
         }
 
-        if (item.dispatcherId.equals(new EntityUniqueId(query))) {
+        if (
+          item.dispatcherId &&
+          item.dispatcherId.equals(new EntityUniqueId(query))
+        ) {
           return item;
         }
 

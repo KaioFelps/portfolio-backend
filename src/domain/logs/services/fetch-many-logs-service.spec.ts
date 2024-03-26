@@ -25,7 +25,7 @@ describe('Fetch Many Logs Service', () => {
     });
 
     expect(result.isOk()).toBe(true);
-    expect(result.value.logs.length).toBe(2);
+    expect(result.value!.logs.length).toBe(2);
 
     result = await sut.exec({
       page: 1,
@@ -33,7 +33,7 @@ describe('Fetch Many Logs Service', () => {
     });
 
     expect(result.isOk()).toBe(true);
-    expect(result.value.logs.length).toBe(3);
+    expect(result.value!.logs.length).toBe(3);
 
     result = await sut.exec({
       page: 1,
@@ -42,6 +42,6 @@ describe('Fetch Many Logs Service', () => {
     });
 
     expect(result.isOk()).toBe(true);
-    expect(result.value.logs.length).toBe(1);
+    expect(result.value!.logs.length).toBe(1);
   });
 });

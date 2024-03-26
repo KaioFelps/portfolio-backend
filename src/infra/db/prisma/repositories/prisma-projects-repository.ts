@@ -30,7 +30,7 @@ export class PrismaProjectsRepository implements IProjectsRepository {
     DomainEvents.dispatchEventsForAggregate(project.id);
   }
 
-  async findById(id: string): Promise<Project> {
+  async findById(id: string): Promise<Project | null> {
     const project = await this.prisma.project.findUnique({
       where: {
         id,
@@ -41,6 +41,10 @@ export class PrismaProjectsRepository implements IProjectsRepository {
       },
     });
 
+    if (!project) {
+      return null;
+    }
+
     const mappedProject = PrismaProjectMapper.toDomain(project);
 
     return mappedProject;
@@ -48,7 +52,7 @@ export class PrismaProjectsRepository implements IProjectsRepository {
 
   async findMany({
     amount,
-    page,
+    page = 1,
     query,
   }: PaginationParams): Promise<Project[]> {
     const PER_PAGE = amount ?? 10;
@@ -68,10 +72,11 @@ export class PrismaProjectsRepository implements IProjectsRepository {
       },
     });
 
-    const mappedProjects = [];
+    const mappedProjects: Project[] = [];
 
     for (const project of projects) {
-      mappedProjects.push(PrismaProjectMapper.toDomain(project));
+      const mappedProject = PrismaProjectMapper.toDomain(project);
+      mappedProjects.push(mappedProject);
     }
 
     return mappedProjects;

@@ -4,6 +4,7 @@ import { Project } from '@/domain/projects/entities/project';
 import { IProjectsRepository } from '@/domain/projects/repositories/projects-repository';
 import { InMemoryProjectLinksRepository } from './in-memory-project-links-repository';
 import { InMemoryProjectTagsRepository } from './in-memory-project-tags-repository';
+import { ProjectTag } from '@/domain/projects/entities/project-tag';
 
 export class InMemoryProjectsRepository implements IProjectsRepository {
   public items: Project[] = [];
@@ -22,13 +23,13 @@ export class InMemoryProjectsRepository implements IProjectsRepository {
     DomainEvents.dispatchEventsForAggregate(project.id);
   }
 
-  async findById(id: string): Promise<Project> {
-    return this.items.find((item) => item.id.toValue() === id);
+  async findById(id: string): Promise<Project | null> {
+    return this.items.find((item) => item.id.toValue() === id) || null;
   }
 
   async findMany({
-    amount: itemsPerPage,
-    page,
+    amount: itemsPerPage = 9,
+    page = 1,
     query,
   }: PaginationParams): Promise<Project[]> {
     let projects: Project[] = [];
@@ -39,7 +40,7 @@ export class InMemoryProjectsRepository implements IProjectsRepository {
           return item;
         }
 
-        let itemFromLoop = null;
+        let itemFromLoop: ProjectTag | null = null;
 
         item.tags.getItems().forEach(async (tag) => {
           if (tag.value === query) {

@@ -12,17 +12,17 @@ export class InMemoryPostsRepository implements IPostsRepository {
     DomainEvents.dispatchEventsForAggregate(post.id);
   }
 
-  async findById(id: string): Promise<Post> {
-    return this.items.find((item) => item.id.toValue() === id);
+  async findById(id: string): Promise<Post | null> {
+    return this.items.find((item) => item.id.toValue() === id) || null;
   }
 
-  async findBySlug(slug: string): Promise<Post> {
-    return this.items.find((item) => item.slug === slug);
+  async findBySlug(slug: string): Promise<Post | null> {
+    return this.items.find((item) => item.slug === slug) || null;
   }
 
   async findMany({
-    amount: itemsPerPage,
-    page,
+    amount: itemsPerPage = 9,
+    page = 1,
     query,
   }: PaginationParams): Promise<Post[]> {
     let posts: Post[] = [];
@@ -33,7 +33,7 @@ export class InMemoryPostsRepository implements IPostsRepository {
           return item;
         }
 
-        let loopPost = null;
+        let loopPost: Post | null = null;
 
         item.tags.getItems().forEach((tag) => {
           if (tag.value === query) {

@@ -5,12 +5,12 @@ import { IUsersRepository } from '@/domain/users/repositories/users-repository';
 export class InMemoryUsersRepository implements IUsersRepository {
   public items: User[] = [];
 
-  async findById(id: string): Promise<User> {
-    return this.items.find((item) => item.id.toValue() === id);
+  async findById(id: string): Promise<User | null> {
+    return this.items.find((item) => item.id.toValue() === id) || null;
   }
 
-  async findByEmail(email: string): Promise<User> {
-    return this.items.find((item) => item.email === email);
+  async findByEmail(email: string): Promise<User | null> {
+    return this.items.find((item) => item.email === email) || null;
   }
 
   async create(user: User): Promise<void> {
@@ -24,8 +24,8 @@ export class InMemoryUsersRepository implements IUsersRepository {
   }
 
   async findMany({
-    amount: itemsPerPage,
-    page,
+    amount: itemsPerPage = 9,
+    page = 1,
     query,
   }: PaginationParams): Promise<User[]> {
     let users: User[] = [];

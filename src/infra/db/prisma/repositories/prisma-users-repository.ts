@@ -18,7 +18,7 @@ export class PrismaUsersRepository implements IUsersRepository {
     });
   }
 
-  async findById(id: string): Promise<User> {
+  async findById(id: string): Promise<User | null> {
     const user = await this.prisma.user.findUnique({
       where: {
         id,
@@ -32,7 +32,7 @@ export class PrismaUsersRepository implements IUsersRepository {
     return PrismaUserMapper.toDomain(user);
   }
 
-  async findByEmail(email: string): Promise<User> {
+  async findByEmail(email: string): Promise<User | null> {
     const user = await this.prisma.user.findUnique({
       where: {
         email,
@@ -46,7 +46,11 @@ export class PrismaUsersRepository implements IUsersRepository {
     return PrismaUserMapper.toDomain(user);
   }
 
-  async findMany({ amount, page, query }: PaginationParams): Promise<User[]> {
+  async findMany({
+    amount,
+    page = 1,
+    query = '',
+  }: PaginationParams): Promise<User[]> {
     const PER_PAGE = amount ?? 10;
 
     const offset = (page - 1) * PER_PAGE;
@@ -70,7 +74,7 @@ export class PrismaUsersRepository implements IUsersRepository {
       },
     });
 
-    const mappedUsers = [];
+    const mappedUsers: User[] = [];
 
     for (const user of users) {
       mappedUsers.push(PrismaUserMapper.toDomain(user));

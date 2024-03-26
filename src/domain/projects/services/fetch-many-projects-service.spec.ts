@@ -68,7 +68,7 @@ describe('Fetch Many Projects Service', () => {
     });
 
     expect(result.isOk()).toBe(true);
-    expect(result.value.projects.length).toBe(2);
+    expect(result.value!.projects.length).toBe(2);
 
     result = await sut.exec({
       page: 1,
@@ -76,7 +76,7 @@ describe('Fetch Many Projects Service', () => {
     });
 
     expect(result.isOk()).toBe(true);
-    expect(result.value.projects.length).toBe(3);
+    expect(result.value!.projects.length).toBe(3);
 
     result = await sut.exec({
       page: 1,
@@ -85,6 +85,6 @@ describe('Fetch Many Projects Service', () => {
     });
 
     expect(result.isOk()).toBe(true);
-    expect(result.value.projects.length).toBe(2);
+    expect(result.value!.projects.length).toBe(2);
   });
 });

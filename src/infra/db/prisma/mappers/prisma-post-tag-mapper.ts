@@ -6,7 +6,7 @@ export class PrismaPostTagMapper {
   static toDomain(tag: PrismaTag) {
     return PostTag.create(
       {
-        postId: new EntityUniqueId(tag.postId),
+        postId: new EntityUniqueId(tag.postId!),
         value: tag.value,
       },
       new EntityUniqueId(tag.id),

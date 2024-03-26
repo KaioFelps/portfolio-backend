@@ -25,11 +25,15 @@ export class DeleteUserService {
 
     const adminUser = await this.usersRepository.findById(adminId);
 
-    if (adminUser.role !== UserRole.admin || !adminUser) {
+    if (!adminUser || adminUser.role !== UserRole.admin) {
       return fail(new UnauthorizedError());
     }
 
     const user = await this.usersRepository.findById(userId);
+
+    if (!user) {
+      return ok({});
+    }
 
     if (user.role === UserRole.admin) {
       return fail(new UnauthorizedError());

@@ -8,7 +8,7 @@ export class PostEditedEvent implements DomainEvent {
 
   constructor(post: Post) {
     this.post = post;
-    this.occurredAt = post.updatedAt;
+    this.occurredAt = post.updatedAt as Date;
   }
 
   public getAggregateId(): EntityUniqueId {

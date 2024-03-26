@@ -3,8 +3,8 @@ import { Post } from '../entities/post';
 
 export abstract class IPostsRepository {
   abstract create(post: Post): Promise<void>;
-  abstract findById(id: string): Promise<Post>;
-  abstract findBySlug(slug: string): Promise<Post>;
+  abstract findById(id: string): Promise<Post | null>;
+  abstract findBySlug(slug: string): Promise<Post | null>;
   abstract findMany(params: PaginationParams): Promise<Post[]>;
   abstract save(post: Post): Promise<void>;
   abstract delete(post: Post): Promise<void>;

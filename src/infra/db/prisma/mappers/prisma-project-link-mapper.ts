@@ -6,7 +6,7 @@ export class PrismaProjectLinkMapper {
   static toDomain(link: PrismaLink) {
     return ProjectLink.create(
       {
-        projectId: new EntityUniqueId(link.projectId),
+        projectId: new EntityUniqueId(link.projectId!),
         value: link.value,
       },
       new EntityUniqueId(link.id),

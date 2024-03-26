@@ -7,7 +7,7 @@ interface GetPostBySlugServiceRequest {
   slug: string;
 }
 
-type GetPostBySlugServiceResponse = Either<null, { post: Post }>;
+type GetPostBySlugServiceResponse = Either<null, { post: Post | null }>;
 
 @Injectable()
 export class GetPostBySlugService {

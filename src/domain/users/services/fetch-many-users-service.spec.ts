@@ -20,7 +20,7 @@ describe('Fetch Many Users Service', () => {
     });
 
     expect(result.isOk()).toBe(true);
-    expect(result.value.users.length).toBe(3);
+    expect(result.value!.users.length).toBe(3);
 
     result = await sut.exec({
       page: 1,
@@ -28,7 +28,7 @@ describe('Fetch Many Users Service', () => {
     });
 
     expect(result.isOk()).toBe(true);
-    expect(result.value.users.length).toBe(4);
+    expect(result.value!.users.length).toBe(4);
 
     result = await sut.exec({
       page: 1,
@@ -37,7 +37,7 @@ describe('Fetch Many Users Service', () => {
     });
 
     expect(result.isOk()).toBe(true);
-    expect(result.value.users.length).toBe(2);
+    expect(result.value!.users.length).toBe(2);
   });
 });
 
