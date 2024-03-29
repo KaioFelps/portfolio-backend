@@ -17,17 +17,19 @@ export class PrismaProjectsRepository implements IProjectsRepository {
   ) {}
 
   async create(project: Project): Promise<void> {
-    await Promise.all([
-      this.prisma.project.create({
-        data: PrismaProjectMapper.toPrisma(project),
-      }),
+    // the best would be this to be inside the Promise.all, but the links and tags needs the project to
+    // have been already created so that they can use it's id as foreign key
+    // creating the project together with tags and links will cause an error because their foreign key is not valid so far
+    await this.prisma.project.create({
+      data: PrismaProjectMapper.toPrisma(project),
+    });
+    DomainEvents.dispatchEventsForAggregate(project.id);
 
+    await Promise.all([
       this.prismaProjectLinksRepository.createMany(project.links.getItems()),
 
       this.prismaProjectTagsRepository.createMany(project.tags.getItems()),
     ]);
-
-    DomainEvents.dispatchEventsForAggregate(project.id);
   }
 
   async findById(id: string): Promise<Project | null> {
