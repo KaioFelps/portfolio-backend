@@ -12,7 +12,10 @@ interface DeleteProjectServiceRequest {
   projectId: string;
 }
 
-type DeleteProjectServiceResponse = Either<ResourceNotFoundError, object>;
+type DeleteProjectServiceResponse = Either<
+  ResourceNotFoundError | UnauthorizedError | BadRequestError,
+  object
+>;
 
 @Injectable()
 export class DeleteProjectService {
