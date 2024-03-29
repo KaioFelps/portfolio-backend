@@ -81,16 +81,13 @@ describe.only('Edit Project Service', () => {
       projectId: project.id.toValue(),
       userId: user.id.toValue(),
       links: ['kaiofelps.dev'],
-      tags: [
-        { value: 'value-1', id: new EntityUniqueId('1') },
-        { value: 'value-3', id: new EntityUniqueId('3') },
-      ],
+      tags: ['value-1', 'value-3'],
     });
 
     expect(projectsRepository.items[0].tags.getItems()).toEqual(
       expect.arrayContaining([
-        expect.objectContaining({ id: new EntityUniqueId('1') }),
-        expect.objectContaining({ id: new EntityUniqueId('3') }),
+        expect.objectContaining({ value: 'value-1' }),
+        expect.objectContaining({ value: 'value-3' }),
       ]),
     );
 

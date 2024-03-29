@@ -18,7 +18,7 @@ interface EditProjectServiceRequest {
   projectId: string;
   title?: string;
   topstory?: string;
-  tags?: { value: string; id?: EntityUniqueId }[];
+  tags?: string[];
   links?: string[];
 }
 
@@ -76,13 +76,10 @@ export class EditProjectService {
     const currentTagsList = new ProjectTagList(currentTags);
 
     const newTags = tags.map((tag) =>
-      ProjectTag.create(
-        {
-          projectId: entityProjectId,
-          value: tag.value,
-        },
-        tag.id,
-      ),
+      ProjectTag.create({
+        projectId: entityProjectId,
+        value: tag,
+      }),
     );
 
     currentTagsList.update(newTags);
