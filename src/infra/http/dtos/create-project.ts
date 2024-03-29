@@ -13,6 +13,7 @@ export class CreateProjectDto {
 
   @IsNotEmpty()
   @IsString()
+  @IsUrl()
   topstory!: string;
 
   @IsNotEmpty()
