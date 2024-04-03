@@ -9,24 +9,35 @@ import { EditUserService } from '@/domain/users/services/edit-user-service';
 import { RefreshAuthenticationService } from '@/domain/users/services/refresh-authentication-service';
 import { FetchManyUsersService } from '@/domain/users/services/fetch-many-users-service';
 import { UserController } from './controllers/user.controller';
+import { ProjectController } from './controllers/project.controller';
+import { CreateProjectService } from '@/domain/projects/services/create-project-service';
+import { EditProjectService } from '@/domain/projects/services/edit-project-service';
+import { DeleteProjectService } from '@/domain/projects/services/delete-project-service';
+import { FetchManyProjectsService } from '@/domain/projects/services/fetch-many-projects-service';
 
 @Module({
   imports: [CryptographyModule, DatabaseModule],
-  controllers: [AuthController, UserController],
+  controllers: [AuthController, UserController, ProjectController],
   providers: [
-    // logs ///////////////////////////
+    // logs /////////////////////////////
 
-    // posts ///////////////////////////
+    // posts ////////////////////////////
 
-    // projects ///////////////////////////
+    // projects /////////////////////////
+    CreateProjectService,
+    EditProjectService,
+    DeleteProjectService,
+    FetchManyProjectsService,
 
-    // users ///////////////////////////
-    AuthenticateService,
+    // users ////////////////////////////
     CreateUserService,
     DeleteUserService,
     EditUserService,
-    RefreshAuthenticationService,
     FetchManyUsersService,
+
+    // sessions /////////////////////////
+    AuthenticateService,
+    RefreshAuthenticationService,
   ],
 })
 export class HttpModule {}
