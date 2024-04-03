@@ -28,14 +28,14 @@ function generateUniqueDatabaseURL(databaseId: string) {
 
 const databaseId = `testDb${randomInt(100)}`;
 
-beforeAll(async () => {
+beforeEach(async () => {
   const databaseUrl = generateUniqueDatabaseURL(databaseId);
   process.env.DATABASE_URL = databaseUrl;
 
   execSync('npx prisma migrate deploy');
 });
 
-afterAll(async () => {
+afterEach(async () => {
   await prisma.$executeRawUnsafe(`DROP DATABASE IF EXISTS ${databaseId};`);
   await prisma.$disconnect();
 });
