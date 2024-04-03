@@ -2,9 +2,11 @@ import { ProjectTag } from '@/domain/projects/entities/project-tag';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma-service';
 import { PrismaProjectTagMapper } from '../mappers/prisma-project-tag-mapper';
+import { IProjectTagsRepository } from '@/domain/projects/repositories/project-tags-repository';
+import { EntityUniqueId } from '@/core/entities/entity-unique-id';
 
 @Injectable()
-export class PrismaProjectTagsRepository {
+export class PrismaProjectTagsRepository implements IProjectTagsRepository {
   constructor(private prisma: PrismaService) {}
 
   async createMany(tags: ProjectTag[]): Promise<void> {
@@ -23,5 +25,17 @@ export class PrismaProjectTagsRepository {
         },
       },
     });
+  }
+
+  async findManyByProjectId(projectId: EntityUniqueId): Promise<ProjectTag[]> {
+    const prismaTags = await this.prisma.tag.findMany({
+      where: {
+        projectId: projectId.toValue(),
+      },
+    });
+
+    const tags = prismaTags.map(PrismaProjectTagMapper.toDomain);
+
+    return tags;
   }
 }
