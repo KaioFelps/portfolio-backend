@@ -11,10 +11,12 @@ export class UpdateProjectDto {
   topstory?: string;
 
   @IsArray()
+  @IsOptional()
   @IsString({ each: true })
   tags?: string[];
 
   @IsArray()
+  @IsOptional()
   @IsString({ each: true })
   links?: string[];
 }
