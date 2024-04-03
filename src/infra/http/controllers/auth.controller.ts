@@ -23,21 +23,23 @@ import { RefreshAuthenticationService } from '@/domain/users/services/refresh-au
 
 @Controller('auth')
 export class AuthController {
-  private refreshTokenOptions: CookieOptions = {
-    path: '/',
-    sameSite: 'none',
-    httpOnly: true,
-    domain:
-      this.envService.get('NODE_ENV') === 'production'
-        ? this.envService.get('DOMAIN')
-        : 'localhost',
-  };
+  private refreshTokenOptions: CookieOptions;
 
   constructor(
     private authenticateService: AuthenticateService,
     private refreshAuthenticationService: RefreshAuthenticationService,
     private envService: EnvService,
-  ) {}
+  ) {
+    this.refreshTokenOptions = {
+      path: '/',
+      sameSite: 'none',
+      httpOnly: true,
+      domain:
+        this.envService.get('NODE_ENV') === 'production'
+          ? this.envService.get('DOMAIN')
+          : 'localhost',
+    };
+  }
 
   @Post('login')
   @HttpCode(HttpStatus.OK)
