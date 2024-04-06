@@ -3,10 +3,13 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   HttpCode,
+  InternalServerErrorException,
   Param,
   Post,
   Put,
+  Query,
   UnauthorizedException,
 } from '@nestjs/common';
 import { CreateUserDto } from '../dtos/create-user';
@@ -20,6 +23,9 @@ import { UnauthorizedError } from '@/core/errors/unauthorized-error';
 import { BadRequestError } from '@/core/errors/bad-request-error';
 import { DeleteUserService } from '@/domain/users/services/delete-user-service';
 import { UserPresenter } from '../presenters/user-presenter';
+import { FetchManyUsersService } from '@/domain/users/services/fetch-many-users-service';
+import { PaginatedQueryDto } from '../dtos/paginated-query';
+import { QUANTITY_PER_PAGE } from '@/core/pagination-consts';
 
 @Controller('user')
 export class UserController {
@@ -27,7 +33,30 @@ export class UserController {
     private createUserService: CreateUserService,
     private editUserService: EditUserService,
     private deleteUserService: DeleteUserService,
+    private fetchManyUsersService: FetchManyUsersService,
   ) {}
+
+  @Get('list')
+  @HttpCode(200)
+  async getMany(
+    @Query()
+    query: PaginatedQueryDto,
+  ) {
+    const result = await this.fetchManyUsersService.exec(query);
+
+    if (result.isFail()) {
+      throw new InternalServerErrorException();
+    }
+
+    const formattedUsers = result.value.users.map(UserPresenter.toHTTP);
+
+    return {
+      users: formattedUsers,
+      totalCount: result.value.count,
+      page: query.page || 1,
+      perPage: query.amount || QUANTITY_PER_PAGE,
+    };
+  }
 
   @Post('new')
   @HttpCode(201)

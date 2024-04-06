@@ -63,6 +63,34 @@ describe('UserController', () => {
     });
   });
 
+  test('[GET] /user/list', async () => {
+    const adminUser = await userFactory.createAndPersist('admin');
+    const token = await jwt.signAsync({
+      name: adminUser.name,
+      role: adminUser.role,
+      sub: adminUser.id.toValue(),
+    });
+
+    for (let i = 0; i < 14; i++) {
+      await userFactory.createAndPersist('editor');
+    }
+
+    const response = await supertest(app.getHttpServer())
+      .get('/user/list?page=2')
+      .set({ Authorization: `Bearer ${token}` })
+      .send()
+      .expect(200);
+
+    expect(response.body).toMatchObject({
+      users: expect.any(Array),
+      totalCount: 15,
+      page: 2,
+      perPage: 12,
+    });
+
+    expect(response.body.users.length).toBe(3);
+  });
+
   test('[PUT] /user/:id/edit', async () => {
     const adminUser = await userFactory.createAndPersist('admin', {
       name: 'Kaio',
