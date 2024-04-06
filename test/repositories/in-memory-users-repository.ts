@@ -1,4 +1,5 @@
 import { PaginationParams } from '@/core/types/pagination-params';
+import { PaginationResponse } from '@/core/types/pagination-responses';
 import { User } from '@/domain/users/entities/user';
 import { IUsersRepository } from '@/domain/users/repositories/users-repository';
 
@@ -27,7 +28,7 @@ export class InMemoryUsersRepository implements IUsersRepository {
     amount: itemsPerPage = 9,
     page = 1,
     query,
-  }: PaginationParams): Promise<User[]> {
+  }: PaginationParams): Promise<PaginationResponse<User>> {
     let users: User[] = [];
 
     if (query) {
@@ -46,9 +47,14 @@ export class InMemoryUsersRepository implements IUsersRepository {
       users = this.items;
     }
 
+    const usersTotalCount = users.length;
+
     users = users.slice((page - 1) * itemsPerPage, itemsPerPage * page);
 
-    return users;
+    return {
+      value: users,
+      totalCount: usersTotalCount,
+    };
   }
 
   async delete(user: User): Promise<void> {
