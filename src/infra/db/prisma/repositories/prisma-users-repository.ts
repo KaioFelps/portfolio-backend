@@ -5,6 +5,8 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma-service';
 import { PrismaUserMapper } from '../mappers/prisma-user-mapper';
 import { PrismaRoleMapper } from '../mappers/prisma-role-mapper';
+import { PaginationResponse } from '@/core/types/pagination-responses';
+import { QUANTITY_PER_PAGE } from '@/core/pagination-consts';
 
 @Injectable()
 export class PrismaUsersRepository implements IUsersRepository {
@@ -50,8 +52,8 @@ export class PrismaUsersRepository implements IUsersRepository {
     amount,
     page = 1,
     query = '',
-  }: PaginationParams): Promise<User[]> {
-    const PER_PAGE = amount ?? 10;
+  }: PaginationParams): Promise<PaginationResponse<User>> {
+    const PER_PAGE = amount ?? QUANTITY_PER_PAGE;
 
     const offset = (page - 1) * PER_PAGE;
 
@@ -74,13 +76,31 @@ export class PrismaUsersRepository implements IUsersRepository {
       },
     });
 
+    const usersTotalCount = await this.prisma.user.count({
+      where: {
+        OR: [
+          { name: { contains: query } },
+          { email: { contains: query } },
+          {
+            role: queryToRole ? { equals: queryToRole } : undefined,
+          },
+        ],
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+
     const mappedUsers: User[] = [];
 
     for (const user of users) {
       mappedUsers.push(PrismaUserMapper.toDomain(user));
     }
 
-    return mappedUsers;
+    return {
+      value: mappedUsers,
+      totalCount: usersTotalCount,
+    };
   }
 
   async save(user: User): Promise<void> {
