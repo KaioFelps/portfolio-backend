@@ -41,7 +41,7 @@ describe('AuthController', () => {
         password: '12345678910comerpasteis',
       });
 
-    expect(invalidEmailResponse.statusCode).toBe(401);
+    expect(invalidEmailResponse.statusCode).toBe(400);
 
     const wrongPasswordResponse = await request(app.getHttpServer())
       .post(ROUTE)
