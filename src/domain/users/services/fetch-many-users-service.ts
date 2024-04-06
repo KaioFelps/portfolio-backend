@@ -7,7 +7,10 @@ import { User } from '../entities/user';
 
 interface FetchManyUsersServiceRequest extends PaginationParams {}
 
-type FetchManyUsersServiceResponse = Either<null, { users: User[] }>;
+type FetchManyUsersServiceResponse = Either<
+  null,
+  { users: User[]; count: number }
+>;
 
 @Injectable()
 export class FetchManyUsersService {
@@ -18,14 +21,15 @@ export class FetchManyUsersService {
     page,
     query,
   }: FetchManyUsersServiceRequest): Promise<FetchManyUsersServiceResponse> {
-    const users = await this.usersRepository.findMany({
+    const response = await this.usersRepository.findMany({
       amount: amount ?? QUANTITY_PER_PAGE,
       page: page ?? 1,
       query,
     });
 
     return ok({
-      users,
+      users: response.value,
+      count: response.totalCount,
     });
   }
 }
