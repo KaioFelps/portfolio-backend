@@ -7,7 +7,10 @@ import { Project } from '../entities/project';
 
 interface FetchManyProjectsServiceRequest extends PaginationParams {}
 
-type FetchManyProjectsServiceResponse = Either<null, { projects: Project[] }>;
+type FetchManyProjectsServiceResponse = Either<
+  null,
+  { projects: Project[]; count: number }
+>;
 
 @Injectable()
 export class FetchManyProjectsService {
@@ -18,14 +21,15 @@ export class FetchManyProjectsService {
     page,
     query,
   }: FetchManyProjectsServiceRequest): Promise<FetchManyProjectsServiceResponse> {
-    const projects = await this.projectsRepository.findMany({
+    const { totalCount, value } = await this.projectsRepository.findMany({
       amount: amount ?? QUANTITY_PER_PAGE,
       page: page ?? 1,
       query,
     });
 
     return ok({
-      projects,
+      projects: value,
+      count: totalCount,
     });
   }
 }

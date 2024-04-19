@@ -7,6 +7,8 @@ import { PrismaProjectMapper } from '../mappers/prisma-project-mapper';
 import { DomainEvents } from '@/core/events/domain-events';
 import { IProjectLinksRepository } from '@/domain/projects/repositories/project-links-repository';
 import { IProjectTagsRepository } from '@/domain/projects/repositories/project-tags-repository';
+import { PaginationResponse } from '@/core/types/pagination-responses';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class PrismaProjectsRepository implements IProjectsRepository {
@@ -56,10 +58,12 @@ export class PrismaProjectsRepository implements IProjectsRepository {
     amount,
     page = 1,
     query,
-  }: PaginationParams): Promise<Project[]> {
+  }: PaginationParams): Promise<PaginationResponse<Project>> {
     const PER_PAGE = amount ?? 10;
 
     const offset = (page - 1) * PER_PAGE;
+
+    const where: Prisma.ProjectWhereInput = { title: { contains: query } };
 
     const projects = await this.prisma.project.findMany({
       take: PER_PAGE,
@@ -67,10 +71,17 @@ export class PrismaProjectsRepository implements IProjectsRepository {
       orderBy: {
         createdAt: 'desc',
       },
-      where: { title: { contains: query } },
+      where,
       include: {
         links: true,
         tags: true,
+      },
+    });
+
+    const projectsTotalCount = await this.prisma.project.count({
+      where,
+      orderBy: {
+        createdAt: 'desc',
       },
     });
 
@@ -81,7 +92,7 @@ export class PrismaProjectsRepository implements IProjectsRepository {
       mappedProjects.push(mappedProject);
     }
 
-    return mappedProjects;
+    return { value: mappedProjects, totalCount: projectsTotalCount };
   }
 
   async save(project: Project): Promise<void> {

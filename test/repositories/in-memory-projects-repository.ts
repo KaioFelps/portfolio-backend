@@ -5,6 +5,7 @@ import { IProjectsRepository } from '@/domain/projects/repositories/projects-rep
 import { InMemoryProjectLinksRepository } from './in-memory-project-links-repository';
 import { InMemoryProjectTagsRepository } from './in-memory-project-tags-repository';
 import { ProjectTag } from '@/domain/projects/entities/project-tag';
+import { PaginationResponse } from '@/core/types/pagination-responses';
 
 export class InMemoryProjectsRepository implements IProjectsRepository {
   public items: Project[] = [];
@@ -31,7 +32,7 @@ export class InMemoryProjectsRepository implements IProjectsRepository {
     amount: itemsPerPage = 9,
     page = 1,
     query,
-  }: PaginationParams): Promise<Project[]> {
+  }: PaginationParams): Promise<PaginationResponse<Project>> {
     let projects: Project[] = [];
 
     if (query) {
@@ -58,9 +59,11 @@ export class InMemoryProjectsRepository implements IProjectsRepository {
       projects = this.items;
     }
 
+    const projectsTotalCount = projects.length;
+
     projects = projects.slice((page - 1) * itemsPerPage, itemsPerPage * page);
 
-    return projects;
+    return { value: projects, totalCount: projectsTotalCount };
   }
 
   async save(project: Project): Promise<void> {
