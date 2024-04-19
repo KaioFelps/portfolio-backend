@@ -4,12 +4,14 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   HttpCode,
   InternalServerErrorException,
   NotFoundException,
   Param,
   Post,
   Put,
+  Query,
   UnauthorizedException,
 } from '@nestjs/common';
 import { CreateProjectDto } from '../dtos/create-project';
@@ -22,6 +24,10 @@ import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error';
 import { DeleteProjectService } from '@/domain/projects/services/delete-project-service';
 import { BadRequestError } from '@/core/errors/bad-request-error';
 import { ProjectPresenter } from '../presenters/project-presenter';
+import { PaginatedQueryDto } from '../dtos/paginated-query';
+import { FetchManyProjectsService } from '@/domain/projects/services/fetch-many-projects-service';
+import { QUANTITY_PER_PAGE } from '@/core/pagination-consts';
+import { PublicRoute } from '@/infra/auth/decorators/public-route';
 
 /*
 import { ZodValidatorPipe } from '@/infra/lib/zod-validator-pipe';
@@ -39,7 +45,7 @@ import { z } from 'zod';
 
   @Post("/")
   async createProject(@Body(createProjectBodyPipe) body: CreateProjectBody) {}
-*/
+  */
 
 @Controller('project')
 export class ProjectController {
@@ -47,7 +53,33 @@ export class ProjectController {
     private createProjectService: CreateProjectService,
     private editProjectService: EditProjectService,
     private deleteProjectService: DeleteProjectService,
+    private fetchManyProjectsService: FetchManyProjectsService,
   ) {}
+
+  @Get('list')
+  @PublicRoute()
+  @HttpCode(200)
+  async getMany(
+    @Query()
+    query: PaginatedQueryDto,
+  ) {
+    const result = await this.fetchManyProjectsService.exec(query);
+
+    if (result.isFail()) {
+      throw new InternalServerErrorException();
+    }
+
+    const { projects, count } = result.value;
+
+    const formattedProjects = projects.map(ProjectPresenter.toHTTP);
+
+    return {
+      projects: formattedProjects,
+      totalCount: count,
+      page: query.page || 1,
+      perPage: query.amount || QUANTITY_PER_PAGE,
+    };
+  }
 
   @Post('new')
   @HttpCode(201)
@@ -126,7 +158,4 @@ export class ProjectController {
       }
     }
   }
-
-  // FETCH PROJECTS
-  // FETCHUSERS ON USERS CONTROLLER MISSING TOO
 }
