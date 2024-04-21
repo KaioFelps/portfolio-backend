@@ -3,13 +3,16 @@ import { PostFactory } from 'test/factories/post-factory';
 import { FetchManyPostsService } from './fetch-many-posts-service';
 import { PostTagList } from '../entities/post-tag-list';
 import { PostTagFactory } from 'test/factories/post-tag-factory';
+import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository';
 
 describe('Fetch Many Posts Service', () => {
   let sut: FetchManyPostsService;
+  let usersRepository: InMemoryUsersRepository;
   let postsRepository: InMemoryPostsRepository;
 
   beforeEach(async () => {
-    postsRepository = new InMemoryPostsRepository();
+    usersRepository = new InMemoryUsersRepository();
+    postsRepository = new InMemoryPostsRepository(usersRepository);
     sut = new FetchManyPostsService(postsRepository);
   });
 

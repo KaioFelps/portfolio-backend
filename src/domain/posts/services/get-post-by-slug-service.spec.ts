@@ -1,26 +1,37 @@
 import { InMemoryPostsRepository } from 'test/repositories/in-memory-posts-repository';
 import { PostFactory } from 'test/factories/post-factory';
 import { GetPostBySlugService } from './get-post-by-slug-service';
+import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository';
+import { UserFactory } from 'test/factories/user-factory';
 
 describe('Get Post By Slug Service', () => {
   let sut: GetPostBySlugService;
+  let usersRepository: InMemoryUsersRepository;
   let postsRepository: InMemoryPostsRepository;
 
   beforeEach(async () => {
-    postsRepository = new InMemoryPostsRepository();
+    usersRepository = new InMemoryUsersRepository();
+    postsRepository = new InMemoryPostsRepository(usersRepository);
     sut = new GetPostBySlugService(postsRepository);
   });
 
   it('should get a post by slug', async () => {
-    const post = PostFactory.exec({ title: 'design de fs' });
+    const user = UserFactory.exec('admin');
+    usersRepository.items.push(user);
+
+    const post = PostFactory.exec({
+      title: 'design de fs',
+      authorId: user.id,
+    });
 
     postsRepository.items.push(post);
 
     const result = await sut.exec({
       slug: post.slug,
     });
-
     expect(result.isOk()).toBe(true);
-    expect(result.value!.post).toEqual(post);
+    expect(result.value!.post?.title).toEqual(post.title);
+    expect(result.value!.post?.id).toEqual(post.id.toValue());
+    expect(result.value!.post?.author).toEqual(user.name);
   });
 });

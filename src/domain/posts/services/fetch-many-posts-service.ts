@@ -18,7 +18,7 @@ export class FetchManyPostsService {
     page,
     query,
   }: FetchManyPostsServiceRequest): Promise<FetchManyPostsServiceResponse> {
-    const posts = await this.postsRepository.findMany({
+    const { value: posts } = await this.postsRepository.findMany({
       amount: amount ?? QUANTITY_PER_PAGE,
       page: page ?? 1,
       query,
