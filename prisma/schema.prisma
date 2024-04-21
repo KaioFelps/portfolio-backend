@@ -25,7 +25,7 @@ enum UserRole {
 model Post {
   id       String @id @default(uuid())
   title    String @db.VarChar(255)
-  slug     String @db.VarChar(255)
+  slug     String @unique @db.VarChar(255)
   content  String
   topstory String
   tags     Tag[]
