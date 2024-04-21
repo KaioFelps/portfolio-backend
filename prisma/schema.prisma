@@ -26,7 +26,7 @@ model Post {
   id       String @id @default(uuid())
   title    String @db.VarChar(255)
   slug     String @unique @db.VarChar(255)
-  content  String
+  content  String @db.Text
   topstory String
   tags     Tag[]
 
