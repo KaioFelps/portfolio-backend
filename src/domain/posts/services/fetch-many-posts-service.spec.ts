@@ -44,6 +44,7 @@ describe('Fetch Many Posts Service', () => {
 
     expect(result.isOk()).toBe(true);
     expect(result.value!.posts.length).toBe(2);
+    expect(result.value!.count).toBe(5);
 
     result = await sut.exec({
       page: 1,
@@ -52,6 +53,7 @@ describe('Fetch Many Posts Service', () => {
 
     expect(result.isOk()).toBe(true);
     expect(result.value!.posts.length).toBe(3);
+    expect(result.value!.count).toBe(5);
 
     result = await sut.exec({
       page: 1,
@@ -61,5 +63,6 @@ describe('Fetch Many Posts Service', () => {
 
     expect(result.isOk()).toBe(true);
     expect(result.value!.posts.length).toBe(2);
+    expect(result.value!.count).toBe(2);
   });
 });

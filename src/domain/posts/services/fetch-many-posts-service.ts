@@ -7,7 +7,10 @@ import { Post } from '../entities/post';
 
 interface FetchManyPostsServiceRequest extends PaginationParams {}
 
-type FetchManyPostsServiceResponse = Either<null, { posts: Post[] }>;
+type FetchManyPostsServiceResponse = Either<
+  null,
+  { posts: Post[]; count: number }
+>;
 
 @Injectable()
 export class FetchManyPostsService {
@@ -18,7 +21,7 @@ export class FetchManyPostsService {
     page,
     query,
   }: FetchManyPostsServiceRequest): Promise<FetchManyPostsServiceResponse> {
-    const { value: posts } = await this.postsRepository.findMany({
+    const { value: posts, totalCount } = await this.postsRepository.findMany({
       amount: amount ?? QUANTITY_PER_PAGE,
       page: page ?? 1,
       query,
@@ -26,6 +29,7 @@ export class FetchManyPostsService {
 
     return ok({
       posts,
+      count: totalCount,
     });
   }
 }
