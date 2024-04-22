@@ -23,16 +23,20 @@ export class PostFactory {
       | 'updatedAt'
       | 'authorId'
     >,
+    id?: EntityUniqueId,
   ) {
-    return Post.create({
-      tags: new PostTagList([]),
-      title: faker.lorem.lines(1),
-      topstory: faker.image.url(),
-      authorId: new EntityUniqueId(faker.string.uuid()),
-      content: faker.lorem.paragraphs(),
-      createdAt: new Date(),
-      ...override,
-    });
+    return Post.create(
+      {
+        tags: new PostTagList([]),
+        title: faker.lorem.lines(1),
+        topstory: faker.image.url(),
+        authorId: new EntityUniqueId(faker.string.uuid()),
+        content: faker.lorem.paragraphs(),
+        createdAt: new Date(),
+        ...override,
+      },
+      id,
+    );
   }
 
   async createAndPersist(
@@ -47,8 +51,9 @@ export class PostFactory {
       | 'updatedAt'
       | 'authorId'
     >,
+    id?: EntityUniqueId,
   ) {
-    const post = PostFactory.exec(override);
+    const post = PostFactory.exec(override, id);
     const prismaPost = PrismaPostMapper.toPrisma(post);
 
     await this.prisma.post.create({ data: prismaPost });
