@@ -26,7 +26,7 @@ function generateUniqueDatabaseURL(databaseId: string) {
   return url.toString();
 }
 
-const databaseId = `testDb${randomInt(100)}`;
+const databaseId = `testDb${randomInt(1000)}`;
 
 beforeEach(async () => {
   const databaseUrl = generateUniqueDatabaseURL(databaseId);
