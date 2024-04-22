@@ -1,16 +1,17 @@
-import { PostWithAuthor } from '@/domain/posts/entities/value-objects/post-with-author';
+import { Post } from '@/domain/posts/entities/post';
 
 export class PostPresenter {
-  static toHTTP(post: PostWithAuthor) {
+  static toHTTP(post: Post) {
     return {
-      id: post.id.toValue(),
-      author: post.author,
       title: post.title,
-      slug: post.slug.value,
+      slug: post.slug,
       topstory: post.topstory,
       tags: post.tags,
-      content: post.content,
-      updatedAt: post.updatedAt,
+      preview: post.content
+        .substring(0, 100)
+        .trimStart()
+        .trimEnd()
+        .concat('...'),
       createdAt: post.createdAt,
     };
   }
