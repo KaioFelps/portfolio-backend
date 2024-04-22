@@ -25,7 +25,7 @@ export class PostWithAuthor extends ValueObject<PostWithAuthorProps> {
   }
 
   get id() {
-    return this.props.id.toValue();
+    return this.props.id;
   }
 
   get author() {
@@ -37,7 +37,7 @@ export class PostWithAuthor extends ValueObject<PostWithAuthorProps> {
   }
 
   get slug() {
-    return this.props.slug.value;
+    return this.props.slug;
   }
 
   get content() {
