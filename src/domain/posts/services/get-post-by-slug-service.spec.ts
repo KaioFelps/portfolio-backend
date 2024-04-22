@@ -31,7 +31,7 @@ describe('Get Post By Slug Service', () => {
     });
     expect(result.isOk()).toBe(true);
     expect(result.value!.post?.title).toEqual(post.title);
-    expect(result.value!.post?.id).toEqual(post.id.toValue());
+    expect(result.value!.post?.id.toValue()).toEqual(post.id.toValue());
     expect(result.value!.post?.author).toEqual(user.name);
   });
 });
