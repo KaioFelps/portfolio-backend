@@ -14,14 +14,32 @@ import { CreateProjectService } from '@/domain/projects/services/create-project-
 import { EditProjectService } from '@/domain/projects/services/edit-project-service';
 import { DeleteProjectService } from '@/domain/projects/services/delete-project-service';
 import { FetchManyProjectsService } from '@/domain/projects/services/fetch-many-projects-service';
+import { PostController } from './controllers/post.controller';
+import { LogController } from './controllers/log.controller';
+import { CreatePostService } from '@/domain/posts/services/create-post-service';
+import { EditPostService } from '@/domain/posts/services/edit-post-service';
+import { DeletePostService } from '@/domain/posts/services/delete-post-service';
+import { GetPostBySlugService } from '@/domain/posts/services/get-post-by-slug-service';
+import { FetchManyPostsService } from '@/domain/posts/services/fetch-many-posts-service';
 
 @Module({
   imports: [CryptographyModule, DatabaseModule],
-  controllers: [AuthController, UserController, ProjectController],
+  controllers: [
+    AuthController,
+    UserController,
+    ProjectController,
+    PostController,
+    LogController,
+  ],
   providers: [
     // logs /////////////////////////////
 
     // posts ////////////////////////////
+    CreatePostService,
+    EditPostService,
+    DeletePostService,
+    GetPostBySlugService,
+    FetchManyPostsService,
 
     // projects /////////////////////////
     CreateProjectService,
