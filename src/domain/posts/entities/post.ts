@@ -19,7 +19,7 @@ export interface PostProps {
 
 export class Post extends Aggregate<PostProps> {
   private constructor(props: PostProps, id?: EntityUniqueId) {
-    super(props, id);
+    super({ ...props, updatedAt: props.updatedAt ?? null }, id);
   }
 
   static create(
