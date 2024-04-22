@@ -1,4 +1,5 @@
 import { AppModule } from '@/app.module';
+import { QUANTITY_PER_PAGE } from '@/core/pagination-consts';
 import { DatabaseModule } from '@/infra/db/database.module';
 import { PrismaService } from '@/infra/db/prisma/prisma-service';
 import { INestApplication } from '@nestjs/common';
@@ -55,11 +56,43 @@ describe('PostController', () => {
     );
   });
 
-  test('[GET] /post/list', async () => {});
+  test('[GET] /post/list', async () => {
+    const user = await userFactory.createAndPersist('editor');
 
-  test('[POST] /post/new', async () => {});
+    for (let i = 0; i <= 5; i++) {
+      switch (i) {
+        case 2:
+        case 3:
+          await postFactory.createAndPersist({
+            authorId: user.id,
+            title: `must be catched ${i}`.toString(),
+          });
+          break;
+        default:
+          await postFactory.createAndPersist({
+            authorId: user.id,
+          });
+      }
+    }
 
-  test('[PUT] /post/:id/edit', async () => {});
+    const response = await supertest(app.getHttpServer())
+      .get('/post/list')
+      .query({ query: 'must be catched' })
+      .send()
+      .expect(200);
 
-  test('[DELETE] /post/:id/delete', async () => {});
+    expect(response.body).toEqual({
+      posts: expect.any(Array),
+      totalCount: 2,
+      page: 1,
+      perPage: QUANTITY_PER_PAGE,
+    });
+    expect(response.body.posts.length).toBe(2);
+  });
+
+  test.skip('[POST] /post/new', async () => {});
+
+  test.skip('[PUT] /post/:id/edit', async () => {});
+
+  test.skip('[DELETE] /post/:id/delete', async () => {});
 });
