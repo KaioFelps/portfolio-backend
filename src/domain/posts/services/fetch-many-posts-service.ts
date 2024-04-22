@@ -1,11 +1,13 @@
 import { Injectable } from '@nestjs/common';
-import { IPostsRepository } from '../repositories/posts-repository';
+import {
+  IPostsRepository,
+  PostListPaginationParams,
+} from '../repositories/posts-repository';
 import { Either, ok } from '@/core/types/either';
-import { PaginationParams } from '@/core/types/pagination-params';
 import { QUANTITY_PER_PAGE } from '@/core/pagination-consts';
 import { Post } from '../entities/post';
 
-interface FetchManyPostsServiceRequest extends PaginationParams {}
+interface FetchManyPostsServiceRequest extends PostListPaginationParams {}
 
 type FetchManyPostsServiceResponse = Either<
   null,
@@ -20,11 +22,13 @@ export class FetchManyPostsService {
     amount,
     page,
     query,
+    tag,
   }: FetchManyPostsServiceRequest): Promise<FetchManyPostsServiceResponse> {
     const { value: posts, totalCount } = await this.postsRepository.findMany({
       amount: amount ?? QUANTITY_PER_PAGE,
       page: page ?? 1,
       query,
+      tag,
     });
 
     return ok({

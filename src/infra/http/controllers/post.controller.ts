@@ -11,11 +11,11 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
-import { PaginatedQueryDto } from '../dtos/paginated-query';
 import { PostPresenter } from '../presenters/post-presenter';
 import { FetchManyPostsService } from '@/domain/posts/services/fetch-many-posts-service';
 import { PostWithAuthorPresenter } from '../presenters/post-with-author-presenter';
 import { QUANTITY_PER_PAGE } from '@/core/pagination-consts';
+import { PaginatedPostListDto } from '../dtos/paginated-post-list';
 
 @Controller('post')
 export class PostController {
@@ -48,7 +48,7 @@ export class PostController {
   @Get('list')
   @PublicRoute()
   @HttpCode(200)
-  async getMany(@Query() query: PaginatedQueryDto) {
+  async getMany(@Query() query: PaginatedPostListDto) {
     const response = await this.fetchManyPostsService.exec(query);
 
     if (response.isFail()) {

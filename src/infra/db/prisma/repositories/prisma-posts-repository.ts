@@ -1,7 +1,9 @@
-import { PaginationParams } from '@/core/types/pagination-params';
 import { Post } from '@/domain/posts/entities/post';
 import { PostWithAuthor } from '@/domain/posts/entities/value-objects/post-with-author';
-import { IPostsRepository } from '@/domain/posts/repositories/posts-repository';
+import {
+  IPostsRepository,
+  PostListPaginationParams,
+} from '@/domain/posts/repositories/posts-repository';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma-service';
 import { PrismaPostMapper } from '../mappers/prisma-post-mapper';
@@ -93,12 +95,20 @@ export class PrismaPostsRepository implements IPostsRepository {
     amount,
     page = 1,
     query,
-  }: PaginationParams): Promise<PaginationResponse<Post>> {
+    tag,
+  }: PostListPaginationParams): Promise<PaginationResponse<Post>> {
     const PER_PAGE = amount ?? QUANTITY_PER_PAGE;
 
     const offset = (page - 1) * PER_PAGE;
 
-    const where: Prisma.PostWhereInput = { title: { contains: query } };
+    const where: Prisma.PostWhereInput = {
+      title: { contains: query },
+      tags: tag
+        ? {
+            some: { value: tag },
+          }
+        : undefined,
+    };
 
     const posts = await this.prisma.post.findMany({
       take: PER_PAGE,
