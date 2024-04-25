@@ -1,6 +1,7 @@
 import { GetPostBySlugService } from '@/domain/posts/services/get-post-by-slug-service';
 import { PublicRoute } from '@/infra/auth/decorators/public-route';
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -24,6 +25,9 @@ import { TokenPayload } from '@/infra/auth/jwt-strategy';
 import { CurrentUser } from '@/infra/auth/decorators/current-user';
 import { EntityUniqueId } from '@/core/entities/entity-unique-id';
 import { UnauthorizedError } from '@/core/errors/unauthorized-error';
+import { EditPostService } from '@/domain/posts/services/edit-post-service';
+import { UpdatePostDto } from '../dtos/update-post';
+import { BadRequestError } from '@/core/errors/bad-request-error';
 
 @Controller('post')
 export class PostController {
@@ -31,6 +35,7 @@ export class PostController {
     private getPostBySlugService: GetPostBySlugService,
     private fetchManyPostsService: FetchManyPostsService,
     private createPostService: CreatePostService,
+    private editPostService: EditPostService,
   ) {}
 
   @Get('/:slug/show')
@@ -104,8 +109,33 @@ export class PostController {
   }
 
   @Put('/:id/edit')
-  async update() {
-    throw new Error('Missing Post.update implementation.');
+  @HttpCode(201)
+  async update(
+    @Body() body: UpdatePostDto,
+    @Param('id') postId: string,
+    @CurrentUser() user: TokenPayload,
+  ) {
+    const response = await this.editPostService.exec({
+      ...body,
+      authorId: user.sub,
+      postId,
+    });
+
+    if (response.isFail()) {
+      switch (response.value.constructor) {
+        case BadRequestError:
+          throw new BadRequestException(response.value.message);
+        case UnauthorizedError:
+          throw new UnauthorizedException(response.value.message);
+        default:
+          throw new InternalServerErrorException();
+      }
+    }
+
+    const { post } = response.value;
+    const mappedPost = PostPresenter.toHTTP(post);
+
+    return { post: mappedPost };
   }
 
   @Delete('/:id/delete')

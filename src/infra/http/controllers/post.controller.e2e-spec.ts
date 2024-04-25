@@ -1,6 +1,7 @@
 import { AppModule } from '@/app.module';
 import { EntityUniqueId } from '@/core/entities/entity-unique-id';
 import { QUANTITY_PER_PAGE } from '@/core/pagination-consts';
+import { PostTag } from '@/domain/posts/entities/post-tag';
 import { PostTagList } from '@/domain/posts/entities/post-tag-list';
 import { TokenPayload } from '@/infra/auth/jwt-strategy';
 import { DatabaseModule } from '@/infra/db/database.module';
@@ -131,7 +132,7 @@ describe('PostController', () => {
     });
   });
 
-  test.only('[POST] /post/new', async () => {
+  test('[POST] /post/new', async () => {
     const user = await userFactory.createAndPersist('editor');
 
     const payload: TokenPayload = {
@@ -162,7 +163,58 @@ describe('PostController', () => {
     expect(postOnDatabase?.slug).toEqual(response.body.post.slug);
   });
 
-  test.skip('[PUT] /post/:id/edit', async () => {});
+  test.only('[PUT] /post/:id/edit', async () => {
+    const user = await userFactory.createAndPersist('editor');
+
+    const post = await postFactory.createAndPersist({
+      authorId: user.id,
+    });
+
+    const tags = [
+      PostTag.create({ value: 'habbo', postId: post.id }),
+      PostTag.create({ value: 'noticia', postId: post.id }),
+      PostTag.create({ value: 'artigo', postId: post.id }),
+    ];
+
+    await prisma.tag.createMany({
+      data: tags.map(({ id, postId, value }) => ({
+        id: id.toValue(),
+        postId: postId.toValue(),
+        value,
+      })),
+    });
+
+    const token = await jwt.signAsync({
+      name: user.name,
+      role: user.role,
+      sub: user.id.toValue(),
+    } as TokenPayload);
+
+    const response = await supertest(app.getHttpServer())
+      .put(`/post/${post.id.toValue()}/edit`)
+      .set({
+        Authorization: `Bearer ${token}`,
+      })
+      .send({
+        title: 'Edited title',
+        tags: ['free fire', 'artigo'],
+        // not any field are mandatory at all
+      })
+      .expect(201);
+
+    expect(response.body.post.title).not.toEqual(post.title);
+
+    const postOnDb = await prisma.post.findUnique({
+      where: { id: post.id.toValue() },
+      include: { tags: true },
+    });
+
+    expect(postOnDb?.title).toEqual(response.body.post.title);
+
+    expect(postOnDb?.tags.map((tag) => tag.value)).toEqual(
+      expect.arrayContaining(['free fire', 'artigo']),
+    );
+  });
 
   test.skip('[DELETE] /post/:id/delete', async () => {});
 });
