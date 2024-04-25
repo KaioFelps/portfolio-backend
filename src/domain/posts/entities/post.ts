@@ -31,6 +31,7 @@ export class Post extends Aggregate<PostProps> {
         ...props,
         slug: props.slug ?? Slug.fromTitle(props.title),
         createdAt: props.createdAt ?? new Date(),
+        tags: props.tags ?? new PostTagList(),
       },
       id,
     );
@@ -99,7 +100,9 @@ export class Post extends Aggregate<PostProps> {
 
   private touch() {
     this.props.updatedAt = new Date();
+  }
 
+  public addEditedEventToDispatch() {
     this.addDomainEvent(new PostEditedEvent(this));
   }
 }
