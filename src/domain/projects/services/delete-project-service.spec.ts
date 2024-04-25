@@ -4,7 +4,7 @@ import { DeleteProjectService } from './delete-project-service';
 import { InMemoryProjectLinksRepository } from 'test/repositories/in-memory-project-links-repository';
 import { InMemoryProjectTagsRepository } from 'test/repositories/in-memory-project-tags-repository';
 import { ProjectLinkList } from '../entities/project-link-list';
-import { ProjectTagList } from '../entities/project-tag-link';
+import { ProjectTagList } from '../entities/project-tag-list';
 import { ProjectTagFactory } from 'test/factories/project-tag-factory';
 import { ProjectFactory } from 'test/factories/project-factory';
 import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository';

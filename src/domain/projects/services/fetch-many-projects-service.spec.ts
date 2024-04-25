@@ -3,7 +3,7 @@ import { ProjectFactory } from 'test/factories/project-factory';
 import { FetchManyProjectsService } from './fetch-many-projects-service';
 import { InMemoryProjectTagsRepository } from 'test/repositories/in-memory-project-tags-repository';
 import { InMemoryProjectLinksRepository } from 'test/repositories/in-memory-project-links-repository';
-import { ProjectTagList } from '../entities/project-tag-link';
+import { ProjectTagList } from '../entities/project-tag-list';
 import { ProjectTag } from '../entities/project-tag';
 import { EntityUniqueId } from '@/core/entities/entity-unique-id';
 import { randomUUID } from 'crypto';

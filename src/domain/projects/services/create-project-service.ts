@@ -6,7 +6,7 @@ import { IUsersRepository } from '@/domain/users/repositories/users-repository';
 import { UnauthorizedError } from '@/core/errors/unauthorized-error';
 import { ProjectLinkList } from '../entities/project-link-list';
 import { ProjectLink } from '../entities/project-link';
-import { ProjectTagList } from '../entities/project-tag-link';
+import { ProjectTagList } from '../entities/project-tag-list';
 import { ProjectTagFactory } from 'test/factories/project-tag-factory';
 
 interface CreateProjectServiceRequest {

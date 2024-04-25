@@ -8,7 +8,7 @@ import {
   Link as PrismaLink,
 } from '@prisma/client';
 import { PrismaProjectLinkMapper } from './prisma-project-link-mapper';
-import { ProjectTagList } from '@/domain/projects/entities/project-tag-link';
+import { ProjectTagList } from '@/domain/projects/entities/project-tag-list';
 import { PrismaProjectTagMapper } from './prisma-project-tag-mapper';
 
 type toDomainParams = PrismaProject & {

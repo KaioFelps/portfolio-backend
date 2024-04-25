@@ -2,7 +2,7 @@ import { EntityUniqueId } from '@/core/entities/entity-unique-id';
 import { Optional } from '@/core/types/optional';
 import { Project, ProjectProps } from '@/domain/projects/entities/project';
 import { ProjectLinkList } from '@/domain/projects/entities/project-link-list';
-import { ProjectTagList } from '@/domain/projects/entities/project-tag-link';
+import { ProjectTagList } from '@/domain/projects/entities/project-tag-list';
 import { PrismaProjectMapper } from '@/infra/db/prisma/mappers/prisma-project-mapper';
 import { PrismaService } from '@/infra/db/prisma/prisma-service';
 import { faker } from '@faker-js/faker';

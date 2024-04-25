@@ -3,7 +3,7 @@ import { EntityUniqueId } from '@/core/entities/entity-unique-id';
 import { Optional } from '@/core/types/optional';
 import { ProjectCreatedEvent } from '../events/project-created-event';
 import { ProjectLinkList } from './project-link-list';
-import { ProjectTagList } from './project-tag-link';
+import { ProjectTagList } from './project-tag-list';
 
 export interface ProjectProps {
   title: string;

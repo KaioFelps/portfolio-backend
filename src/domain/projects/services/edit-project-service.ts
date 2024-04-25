@@ -10,7 +10,7 @@ import { UnauthorizedError } from '@/core/errors/unauthorized-error';
 import { IProjectLinksRepository } from '../repositories/project-links-repository';
 import { EntityUniqueId } from '@/core/entities/entity-unique-id';
 import { IProjectTagsRepository } from '../repositories/project-tags-repository';
-import { ProjectTagList } from '../entities/project-tag-link';
+import { ProjectTagList } from '../entities/project-tag-list';
 import { ProjectTag } from '../entities/project-tag';
 
 interface EditProjectServiceRequest {

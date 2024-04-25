@@ -5,7 +5,7 @@ import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error';
 import { InMemoryProjectLinksRepository } from 'test/repositories/in-memory-project-links-repository';
 import { InMemoryProjectTagsRepository } from 'test/repositories/in-memory-project-tags-repository';
 import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository';
-import { ProjectTagList } from '../entities/project-tag-link';
+import { ProjectTagList } from '../entities/project-tag-list';
 import { ProjectTag } from '../entities/project-tag';
 import { UserFactory } from 'test/factories/user-factory';
 import { EntityUniqueId } from '@/core/entities/entity-unique-id';
