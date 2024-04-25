@@ -3,6 +3,6 @@ import { ProjectTag } from './project-tag';
 
 export class ProjectTagList extends WatchedList<ProjectTag> {
   compareItems(a: ProjectTag, b: ProjectTag): boolean {
-    return a.id.equals(b.id);
+    return a.value === b.value;
   }
 }
