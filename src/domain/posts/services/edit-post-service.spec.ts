@@ -13,8 +13,8 @@ describe('Edit Post Service', () => {
   let postTagsRepository: InMemoryPostTagsRepository;
 
   beforeEach(async () => {
-    postsRepository = new InMemoryPostsRepository();
     usersRepository = new InMemoryUsersRepository();
+    postsRepository = new InMemoryPostsRepository(usersRepository);
     postTagsRepository = new InMemoryPostTagsRepository();
 
     sut = new EditPostService(
@@ -36,7 +36,7 @@ describe('Edit Post Service', () => {
       postId: post.id.toValue(),
       title: 'Edited title',
       content: 'Edited content of my previous created post.',
-      tags: [{ value: 'nodejs' }],
+      tags: ['nodejs'],
     });
 
     expect(result.isOk()).toBe(true);

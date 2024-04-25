@@ -16,7 +16,7 @@ interface EditPostServiceRequest {
   title?: string;
   content?: string;
   topstory?: string;
-  tags?: { value: string; id?: EntityUniqueId }[];
+  tags?: string[];
 }
 
 type EditPostServiceResponse = Either<
@@ -61,7 +61,7 @@ export class EditPostService {
     const currentTagsList = new PostTagList(currentTags);
 
     const newTags = tags.map((tag) =>
-      PostTag.create({ postId: post.id, value: tag.value }, tag.id),
+      PostTag.create({ postId: post.id, value: tag }),
     );
 
     currentTagsList.update(newTags);
