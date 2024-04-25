@@ -2,6 +2,7 @@ import { AppModule } from '@/app.module';
 import { EntityUniqueId } from '@/core/entities/entity-unique-id';
 import { QUANTITY_PER_PAGE } from '@/core/pagination-consts';
 import { PostTagList } from '@/domain/posts/entities/post-tag-list';
+import { TokenPayload } from '@/infra/auth/jwt-strategy';
 import { DatabaseModule } from '@/infra/db/database.module';
 import { PrismaService } from '@/infra/db/prisma/prisma-service';
 import { INestApplication } from '@nestjs/common';
@@ -17,7 +18,7 @@ describe('PostController', () => {
   let app: INestApplication;
   let userFactory: UserFactory;
   let postFactory: PostFactory;
-  let _jwt: JwtService;
+  let jwt: JwtService;
   let prisma: PrismaService;
 
   beforeEach(async () => {
@@ -29,7 +30,7 @@ describe('PostController', () => {
     app = module.createNestApplication();
     userFactory = module.get(UserFactory);
     postFactory = module.get(PostFactory);
-    _jwt = module.get(JwtService);
+    jwt = module.get(JwtService);
     prisma = module.get(PrismaService);
 
     await app.init();
@@ -130,7 +131,36 @@ describe('PostController', () => {
     });
   });
 
-  test.skip('[POST] /post/new', async () => {});
+  test.only('[POST] /post/new', async () => {
+    const user = await userFactory.createAndPersist('editor');
+
+    const payload: TokenPayload = {
+      name: user.name,
+      role: user.role,
+      sub: user.id.toValue(),
+    };
+    const token = await jwt.signAsync(payload);
+
+    const response = await supertest(app.getHttpServer())
+      .post('/post/new')
+      .set({ Authorization: `Bearer ${token}` })
+      .send({
+        // authorId é opcional: se não mandar, o editor/admin logado vai ser usado como autor,
+        title: 'Noticia 1',
+        content: 'conteúdo',
+        topstory: 'https://i.imgur.com/Q0GsNvP.png',
+        tags: ['habbo'],
+      })
+      .expect(201);
+
+    expect(response.body.post.title).toEqual('Noticia 1');
+
+    const postOnDatabase = await prisma.post.findUnique({
+      where: { slug: response.body.post.slug },
+    });
+
+    expect(postOnDatabase?.slug).toEqual(response.body.post.slug);
+  });
 
   test.skip('[PUT] /post/:id/edit', async () => {});
 

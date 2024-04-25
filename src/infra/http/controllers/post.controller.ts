@@ -1,6 +1,7 @@
 import { GetPostBySlugService } from '@/domain/posts/services/get-post-by-slug-service';
 import { PublicRoute } from '@/infra/auth/decorators/public-route';
 import {
+  Body,
   Controller,
   Delete,
   Get,
@@ -10,18 +11,26 @@ import {
   Post,
   Put,
   Query,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { PostPresenter } from '../presenters/post-presenter';
 import { FetchManyPostsService } from '@/domain/posts/services/fetch-many-posts-service';
 import { PostWithAuthorPresenter } from '../presenters/post-with-author-presenter';
 import { QUANTITY_PER_PAGE } from '@/core/pagination-consts';
 import { PaginatedPostListDto } from '../dtos/paginated-post-list';
+import { CreatePostService } from '@/domain/posts/services/create-post-service';
+import { CreatePostDto } from '../dtos/create-post';
+import { TokenPayload } from '@/infra/auth/jwt-strategy';
+import { CurrentUser } from '@/infra/auth/decorators/current-user';
+import { EntityUniqueId } from '@/core/entities/entity-unique-id';
+import { UnauthorizedError } from '@/core/errors/unauthorized-error';
 
 @Controller('post')
 export class PostController {
   constructor(
     private getPostBySlugService: GetPostBySlugService,
     private fetchManyPostsService: FetchManyPostsService,
+    private createPostService: CreatePostService,
   ) {}
 
   @Get('/:slug/show')
@@ -68,8 +77,30 @@ export class PostController {
   }
 
   @Post('new')
-  async create() {
-    throw new Error('Missing Post.create implementation.');
+  @HttpCode(201)
+  async create(@Body() body: CreatePostDto, @CurrentUser() user: TokenPayload) {
+    const _authorId = body.authorId ?? user.sub;
+    const authorId = new EntityUniqueId(_authorId);
+
+    const response = await this.createPostService.exec({
+      ...body,
+      authorId,
+    });
+
+    if (response.isFail()) {
+      switch (response.value.constructor) {
+        case UnauthorizedError:
+          throw new UnauthorizedException(response.value.message);
+        default:
+          throw new InternalServerErrorException();
+      }
+    }
+
+    const { post } = response.value;
+
+    return {
+      post: PostPresenter.toHTTP(post),
+    };
   }
 
   @Put('/:id/edit')
