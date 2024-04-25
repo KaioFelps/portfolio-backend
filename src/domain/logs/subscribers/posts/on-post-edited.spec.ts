@@ -24,9 +24,11 @@ let registerEditedPostSpy: MockInstance<
 
 describe('On post edited subscriber', async () => {
   beforeEach(() => {
-    inMemoryPostsRepository = new InMemoryPostsRepository();
-    inMemoryLogsRepository = new InMemoryLogsRepository();
     inMemoryUsersRepository = new InMemoryUsersRepository();
+    inMemoryPostsRepository = new InMemoryPostsRepository(
+      inMemoryUsersRepository,
+    );
+    inMemoryLogsRepository = new InMemoryLogsRepository();
 
     createLogService = new CreateLogService(
       inMemoryLogsRepository,
@@ -44,6 +46,7 @@ describe('On post edited subscriber', async () => {
     inMemoryPostsRepository.items.push(post);
 
     post.title = 'título novo';
+    post.addEditedEventToDispatch();
     inMemoryPostsRepository.save(post);
 
     await waitFor(() => {

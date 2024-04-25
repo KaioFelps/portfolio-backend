@@ -2,25 +2,25 @@ import { EventHandler } from '@/core/events/event-handler';
 import { CreateLogService } from '../../services/create-log-service';
 import { LogAction } from '../../entities/log';
 import { DomainEvents } from '@/core/events/domain-events';
-import { PostCreatedEvent } from '@/domain/posts/events/post-created-event';
+import { PostEditedEvent } from '@/domain/posts/events/post-edited-event';
 
 export class OnPostEdited implements EventHandler {
   constructor(private createLogService: CreateLogService) {
     this.setupSubscriptions();
   }
 
-  public setupSubscriptions(): void {
+  setupSubscriptions(): void {
     DomainEvents.registerAggregateEvent(
       this.createLog.bind(this),
-      PostCreatedEvent.name,
+      PostEditedEvent.name,
     );
   }
 
-  private async createLog({ post, occurredAt }: PostCreatedEvent) {
+  private async createLog({ occurredAt, post, dispatcherId }: PostEditedEvent) {
     await this.createLogService.exec({
       action: LogAction.updated,
-      target: post.title,
-      dispatcherId: post.authorId,
+      target: post,
+      dispatcherId,
       occurredAt,
     });
   }

@@ -71,6 +71,8 @@ export class EditPostService {
     post.topstory = topstory ?? post.topstory;
     post.tags = currentTagsList;
 
+    post.addEditedEventToDispatch();
+
     await this.postsRepository.save(post);
 
     return ok({ post });
