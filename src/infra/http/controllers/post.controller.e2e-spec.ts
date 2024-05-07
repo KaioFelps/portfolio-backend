@@ -163,7 +163,7 @@ describe('PostController', () => {
     expect(postOnDatabase?.slug).toEqual(response.body.post.slug);
   });
 
-  test.only('[PUT] /post/:id/edit', async () => {
+  test('[PUT] /post/:id/edit', async () => {
     const user = await userFactory.createAndPersist('editor');
 
     const post = await postFactory.createAndPersist({
@@ -216,5 +216,29 @@ describe('PostController', () => {
     );
   });
 
-  test.skip('[DELETE] /post/:id/delete', async () => {});
+  test('[DELETE] /post/:id/delete', async () => {
+    const user = await userFactory.createAndPersist('admin');
+
+    const token = await jwt.signAsync({
+      name: user.name,
+      role: user.role,
+      sub: user.id.toValue(),
+    } as TokenPayload);
+
+    const post = await postFactory.createAndPersist({
+      authorId: user.id,
+    });
+
+    await supertest(app.getHttpServer())
+      .delete(`/post/${post.id.toValue()}/delete`)
+      .set({ Authorization: `Bearer ${token}` })
+      .send()
+      .expect(200);
+
+    const postOnDatabase = await prisma.post.findFirst({
+      where: { id: post.id.toValue() },
+    });
+
+    expect(postOnDatabase).toBeNull();
+  });
 });

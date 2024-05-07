@@ -28,6 +28,7 @@ import { UnauthorizedError } from '@/core/errors/unauthorized-error';
 import { EditPostService } from '@/domain/posts/services/edit-post-service';
 import { UpdatePostDto } from '../dtos/update-post';
 import { BadRequestError } from '@/core/errors/bad-request-error';
+import { DeletePostService } from '@/domain/posts/services/delete-post-service';
 
 @Controller('post')
 export class PostController {
@@ -36,6 +37,7 @@ export class PostController {
     private fetchManyPostsService: FetchManyPostsService,
     private createPostService: CreatePostService,
     private editPostService: EditPostService,
+    private deletePostService: DeletePostService,
   ) {}
 
   @Get('/:slug/show')
@@ -139,7 +141,22 @@ export class PostController {
   }
 
   @Delete('/:id/delete')
-  async delete() {
-    throw new Error('Missing Post.delete implementation.');
+  @HttpCode(200)
+  async delete(@Param('id') postId: string, @CurrentUser() user: TokenPayload) {
+    const response = await this.deletePostService.exec({
+      authorId: user.sub,
+      postId,
+    });
+
+    if (response.isFail()) {
+      switch (response.value.constructor) {
+        case BadRequestError:
+          throw new BadRequestException(response.value.message);
+        case UnauthorizedError:
+          throw new UnauthorizedException(response.value.message);
+        default:
+          throw new InternalServerErrorException();
+      }
+    }
   }
 }
