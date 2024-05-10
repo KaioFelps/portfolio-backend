@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ILogsRepository } from '../repositories/logs-repository';
-import { Log, LogAction } from '../entities/log';
+import { Log, LogAction, LogTargetType } from '../entities/log';
 import { Either, fail, ok } from '@/core/types/either';
 import { BadRequestError } from '@/core/errors/bad-request-error';
 import { IUsersRepository } from '@/domain/users/repositories/users-repository';
@@ -10,6 +10,7 @@ import { User } from '@/domain/users/entities/user';
 export interface CreateLogServiceRequest {
   dispatcherId?: EntityUniqueId;
   target: string;
+  targetType: LogTargetType;
   action: LogAction;
   occurredAt?: Date;
 }
@@ -26,6 +27,7 @@ export class CreateLogService {
   async exec({
     action,
     dispatcherId,
+    targetType,
     target,
     occurredAt,
   }: CreateLogServiceRequest): Promise<CreateLogServiceResponse> {
@@ -44,6 +46,7 @@ export class CreateLogService {
     const log = Log.create({
       action,
       dispatcherId,
+      targetType,
       target,
       createdAt: occurredAt,
     });

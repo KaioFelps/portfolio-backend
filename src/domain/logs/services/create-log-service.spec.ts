@@ -1,5 +1,5 @@
 import { CreateLogService } from './create-log-service';
-import { LogAction } from '../entities/log';
+import { LogAction, LogTargetType } from '../entities/log';
 import { UserFactory } from 'test/factories/user-factory';
 import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository';
 import { InMemoryLogsRepository } from 'test/repositories/in-memory-logs-repository';
@@ -24,6 +24,7 @@ describe('Create Log Service', () => {
 
     const result = await sut.exec({
       action: LogAction.created,
+      targetType: LogTargetType.post,
       target: user.name,
       dispatcherId: user.id,
     });
@@ -42,6 +43,7 @@ describe('Create Log Service', () => {
   it("shouldn't create a log without a valid dispatcher id", async () => {
     const result = await sut.exec({
       action: LogAction.created,
+      targetType: LogTargetType.post,
       target: '',
       dispatcherId: new EntityUniqueId('pseudo-id'),
     });

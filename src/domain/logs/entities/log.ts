@@ -3,13 +3,20 @@ import { EntityUniqueId } from '@/core/entities/entity-unique-id';
 import { Optional } from '@/core/types/optional';
 
 export enum LogAction {
-  created = 'created',
-  updated = 'updated',
-  deleted = 'deleted',
+  created = 'CREATED',
+  updated = 'UPDATED',
+  deleted = 'DELETED',
+}
+
+export enum LogTargetType {
+  post = 'POST',
+  project = 'PROJECT',
+  user = 'USER',
 }
 
 export interface LogProps {
   dispatcherId?: EntityUniqueId | null;
+  targetType: LogTargetType;
   target: string;
   action: LogAction;
   createdAt: Date;
@@ -42,6 +49,10 @@ export class Log extends Entity<LogProps> {
 
   get target() {
     return this.props.target;
+  }
+
+  get targetType() {
+    return this.props.targetType;
   }
 
   get action() {
