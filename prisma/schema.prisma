@@ -17,6 +17,12 @@ enum LogAction {
   DELETED
 }
 
+enum LogTargetType {
+  POST
+  PROJECT
+  USER
+}
+
 enum UserRole {
   ADMIN
   EDITOR
@@ -76,10 +82,11 @@ model Project {
 }
 
 model Log {
-  dispatcherId String    @unique @map("dispatcher_id")
+  dispatcherId String        @unique @map("dispatcher_id")
   target       String
+  targetType   LogTargetType
   action       LogAction
-  createdAt    DateTime  @default(now()) @map("created_at")
+  createdAt    DateTime      @default(now()) @map("created_at")
 
   dispatcher User @relation(fields: [dispatcherId], references: [id])
 
