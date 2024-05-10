@@ -102,4 +102,6 @@ model User {
   posts     Post[]
   Log       Log?
   createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("users")
 }
