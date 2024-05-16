@@ -29,7 +29,7 @@ export class PrismaLogsRepository implements ILogsRepository {
     const offset = (page - 1) * PER_PAGE;
 
     const where: Prisma.LogWhereInput = {
-      OR: [
+      AND: [
         {
           target: { contains: query },
           OR: [
