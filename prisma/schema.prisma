@@ -82,13 +82,14 @@ model Project {
 }
 
 model Log {
-  dispatcherId String        @unique @map("dispatcher_id")
+  id           String        @id @default(uuid())
+  dispatcherId String?       @map("dispatcher_id")
   target       String
   targetType   LogTargetType
   action       LogAction
   createdAt    DateTime      @default(now()) @map("created_at")
 
-  dispatcher User @relation(fields: [dispatcherId], references: [id])
+  Dispatcher User? @relation(fields: [dispatcherId], references: [id])
 
   @@map("logs")
 }
@@ -100,7 +101,7 @@ model User {
   password  String
   role      UserRole
   posts     Post[]
-  Log       Log?
+  Log       Log[]
   createdAt DateTime @default(now()) @map("created_at")
 
   @@map("users")
