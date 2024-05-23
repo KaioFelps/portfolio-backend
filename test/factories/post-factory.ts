@@ -30,7 +30,7 @@ export class PostFactory {
         tags: new PostTagList([]),
         title: faker.lorem.lines(1),
         topstory: faker.image.url(),
-        authorId: new EntityUniqueId(faker.string.uuid()),
+        authorId: new EntityUniqueId(),
         content: faker.lorem.paragraphs(),
         createdAt: new Date(),
         ...override,
