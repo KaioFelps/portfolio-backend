@@ -12,6 +12,8 @@ import { PrismaPostTagsRepository } from './prisma/repositories/prisma-post-tags
 import { IPostTagsRepository } from '@/domain/posts/repositories/post-tags-repository';
 import { IPostsRepository } from '@/domain/posts/repositories/posts-repository';
 import { PrismaPostsRepository } from './prisma/repositories/prisma-posts-repository';
+import { ILogsRepository } from '@/domain/logs/repositories/logs-repository';
+import { PrismaLogsRepository } from './prisma/repositories/prisma-logs-repository';
 
 @Module({
   providers: [
@@ -40,6 +42,10 @@ import { PrismaPostsRepository } from './prisma/repositories/prisma-posts-reposi
       provide: IPostsRepository,
       useClass: PrismaPostsRepository,
     },
+    {
+      provide: ILogsRepository,
+      useClass: PrismaLogsRepository,
+    },
   ],
   exports: [
     PrismaService,
@@ -49,6 +55,7 @@ import { PrismaPostsRepository } from './prisma/repositories/prisma-posts-reposi
     IProjectTagsRepository,
     IPostTagsRepository,
     IPostsRepository,
+    ILogsRepository,
   ],
 })
 export class DatabaseModule {}
