@@ -36,12 +36,6 @@ export class Post extends Aggregate<PostProps> {
       id,
     );
 
-    const postIsNew = !id;
-
-    if (postIsNew) {
-      post.addDomainEvent(new PostCreatedEvent(post));
-    }
-
     return post;
   }
 
@@ -100,6 +94,10 @@ export class Post extends Aggregate<PostProps> {
 
   private touch() {
     this.props.updatedAt = new Date();
+  }
+
+  public addCreatedEventToDispatch() {
+    this.addDomainEvent(new PostCreatedEvent(this));
   }
 
   public addEditedEventToDispatch() {
