@@ -1,8 +1,10 @@
+import { EntityUniqueId } from '@/core/entities/entity-unique-id';
 import { ValueObject } from '@/core/entities/value-objects';
 import { User } from '@/domain/users/entities/user';
 import { LogAction, LogTargetType } from '@prisma/client';
 
 export interface LogWithAuthorProps {
+  id: EntityUniqueId;
   action: LogAction;
   dispatcher?: User | null;
   target: string;
@@ -20,7 +22,7 @@ export class LogWithAuthor extends ValueObject<LogWithAuthorProps> {
   }
 
   get id() {
-    return this.id;
+    return this.props.id;
   }
 
   get action() {
