@@ -10,5 +10,8 @@
     "**/*.test.ts",
     "vitest.config.e2e.ts",
     "vitest.config.ts"
-  ]
+  ],
+  "compilerOptions": {
+    "types": []
+  }
 }
