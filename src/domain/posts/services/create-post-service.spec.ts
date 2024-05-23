@@ -11,8 +11,8 @@ describe('Create Post Service', () => {
   let usersRepository: InMemoryUsersRepository;
 
   beforeEach(async () => {
-    postsRepository = new InMemoryPostsRepository();
     usersRepository = new InMemoryUsersRepository();
+    postsRepository = new InMemoryPostsRepository(usersRepository);
     sut = new CreatePostService(postsRepository, usersRepository);
   });
 

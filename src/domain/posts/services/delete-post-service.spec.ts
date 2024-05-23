@@ -11,8 +11,8 @@ describe('Delete Post Service', () => {
   let usersRepository: InMemoryUsersRepository;
 
   beforeEach(async () => {
-    postsRepository = new InMemoryPostsRepository();
     usersRepository = new InMemoryUsersRepository();
+    postsRepository = new InMemoryPostsRepository(usersRepository);
     sut = new DeletePostService(postsRepository, usersRepository);
   });
 
