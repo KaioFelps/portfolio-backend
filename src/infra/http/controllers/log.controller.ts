@@ -1,26 +1,37 @@
-import { Controller } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  InternalServerErrorException,
+  Query,
+} from '@nestjs/common';
+import { PaginatedQueryDto } from '../dtos/paginated-query';
+import { FetchManyLogsService } from '@/domain/logs/services/fetch-many-logs-service';
+import { LogPresenter } from '../presenters/log-presenter';
+import { QUANTITY_PER_PAGE } from '@/core/pagination-consts';
 
 @Controller('log')
 export class LogController {
-  constructor() {}
+  constructor(private fetchManyLogsService: FetchManyLogsService) {}
 
-  async get() {
-    throw new Error('Missing Log.get implementation.');
-  }
+  @Get('list')
+  async getMany(@Query() query: PaginatedQueryDto) {
+    const response = await this.fetchManyLogsService.exec(query);
 
-  async getMany() {
-    throw new Error('Missing Log.getMany implementation.');
-  }
+    if (response.isFail()) {
+      switch (response.value) {
+        default:
+          throw new InternalServerErrorException();
+      }
+    }
 
-  async create() {
-    throw new Error('Missing Log.create implementation.');
-  }
+    const { count, logs } = response.value;
+    const formattedLogs = logs.map(LogPresenter.toHTTP);
 
-  async update() {
-    throw new Error('Missing Log.update implementation.');
-  }
-
-  async delete() {
-    throw new Error('Missing Log.delete implementation.');
+    return {
+      logs: formattedLogs,
+      totalCount: count,
+      page: query.page ?? 1,
+      perPage: query.amount ?? QUANTITY_PER_PAGE,
+    };
   }
 }

@@ -21,6 +21,7 @@ import { EditPostService } from '@/domain/posts/services/edit-post-service';
 import { DeletePostService } from '@/domain/posts/services/delete-post-service';
 import { GetPostBySlugService } from '@/domain/posts/services/get-post-by-slug-service';
 import { FetchManyPostsService } from '@/domain/posts/services/fetch-many-posts-service';
+import { FetchManyLogsService } from '@/domain/logs/services/fetch-many-logs-service';
 
 @Module({
   imports: [CryptographyModule, DatabaseModule],
@@ -33,6 +34,7 @@ import { FetchManyPostsService } from '@/domain/posts/services/fetch-many-posts-
   ],
   providers: [
     // logs /////////////////////////////
+    FetchManyLogsService,
 
     // posts ////////////////////////////
     CreatePostService,
