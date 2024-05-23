@@ -37,6 +37,35 @@ describe('PostController', () => {
     await app.init();
   });
 
+  test('[POST] /post/new', async () => {
+    const user = await userFactory.createAndPersist('admin');
+
+    const payload: TokenPayload = {
+      name: user.name,
+      role: user.role,
+      sub: user.id.toValue(),
+    };
+    const token = await jwt.signAsync(payload);
+
+    const response = await supertest(app.getHttpServer())
+      .post('/post/new')
+      .set({ Authorization: `Bearer ${token}` })
+      .send({
+        title: 'Noticia 1',
+        content: 'conteúdo',
+        topstory: 'https://i.imgur.com/Q0GsNvP.png',
+        tags: ['habbo'],
+      })
+      .expect(201);
+
+    const postOnDatabase = await prisma.post.findUnique({
+      where: { slug: response.body.post.slug },
+    });
+
+    expect(postOnDatabase?.slug).toEqual(response.body.post.slug);
+    expect(response.body.post.title).toEqual('Noticia 1');
+  });
+
   test('[GET] /post/:slug/show', async () => {
     const user = await userFactory.createAndPersist('editor');
     const post = await postFactory.createAndPersist({
@@ -130,37 +159,6 @@ describe('PostController', () => {
       page: 1,
       perPage: QUANTITY_PER_PAGE,
     });
-  });
-
-  test('[POST] /post/new', async () => {
-    const user = await userFactory.createAndPersist('editor');
-
-    const payload: TokenPayload = {
-      name: user.name,
-      role: user.role,
-      sub: user.id.toValue(),
-    };
-    const token = await jwt.signAsync(payload);
-
-    const response = await supertest(app.getHttpServer())
-      .post('/post/new')
-      .set({ Authorization: `Bearer ${token}` })
-      .send({
-        // authorId é opcional: se não mandar, o editor/admin logado vai ser usado como autor,
-        title: 'Noticia 1',
-        content: 'conteúdo',
-        topstory: 'https://i.imgur.com/Q0GsNvP.png',
-        tags: ['habbo'],
-      })
-      .expect(201);
-
-    expect(response.body.post.title).toEqual('Noticia 1');
-
-    const postOnDatabase = await prisma.post.findUnique({
-      where: { slug: response.body.post.slug },
-    });
-
-    expect(postOnDatabase?.slug).toEqual(response.body.post.slug);
   });
 
   test('[PUT] /post/:id/edit', async () => {
