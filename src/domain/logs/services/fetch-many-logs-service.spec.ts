@@ -23,9 +23,9 @@ describe('Fetch Many Logs Service', () => {
       }),
     );
 
-    logsRepository.items.push(LogFactory.exec());
-    logsRepository.items.push(LogFactory.exec());
-    logsRepository.items.push(LogFactory.exec());
+    logsRepository.items.push(LogFactory.exec({ action: LogAction.created }));
+    logsRepository.items.push(LogFactory.exec({ action: LogAction.created }));
+    logsRepository.items.push(LogFactory.exec({ action: LogAction.created }));
 
     logsRepository.items.push(
       LogFactory.exec({
@@ -40,7 +40,10 @@ describe('Fetch Many Logs Service', () => {
     });
 
     expect(result.isOk()).toBe(true);
-    expect(result.value!.logs.length).toBe(2);
+    expect(
+      result.value!.logs.length,
+      'primeira resposta deveria ter 2 logs.',
+    ).toBe(2);
 
     result = await sut.exec({
       page: 1,
@@ -48,15 +51,21 @@ describe('Fetch Many Logs Service', () => {
     });
 
     expect(result.isOk()).toBe(true);
-    expect(result.value!.logs.length).toBe(3);
+    expect(
+      result.value!.logs.length,
+      'penúltima resposta deveria ter 3 logs.',
+    ).toBe(3);
 
     result = await sut.exec({
       page: 1,
       amount: 3,
-      query: LogAction.deleted,
+      action: LogAction.deleted,
     });
 
     expect(result.isOk()).toBe(true);
-    expect(result.value!.logs.length).toBe(1);
+    expect(
+      result.value!.logs.length,
+      'última resposta deveria ter 1 log somente.',
+    ).toBe(1);
   });
 });
