@@ -52,10 +52,10 @@ describe('On Post Created Event handler', () => {
         authorId: user.id.toValue(),
       } as CreatePostDto);
 
-    waitFor(async () => {
+    await waitFor(async () => {
       const logsOnDb = await prisma.log.findMany();
 
       expect(logsOnDb.length).toBe(1);
-    }, 5000);
+    });
   });
 });
