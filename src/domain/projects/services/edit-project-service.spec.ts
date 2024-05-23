@@ -13,7 +13,7 @@ import { ProjectTagFactory } from 'test/factories/project-tag-factory';
 import { ProjectLinkFactory } from 'test/factories/project-link-factory';
 import { ProjectFactory } from 'test/factories/project-factory';
 
-describe.only('Edit Project Service', () => {
+describe('Edit Project Service', () => {
   let sut: EditProjectService;
   let projectsRepository: InMemoryProjectsRepository;
   let projectLinksRepository: InMemoryProjectLinksRepository;
