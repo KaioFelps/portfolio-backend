@@ -156,6 +156,8 @@ export class PrismaPostsRepository implements IPostsRepository {
   }
 
   async delete(post: Post): Promise<void> {
+    DomainEvents.dispatchEventsForAggregate(post.id);
+
     await Promise.all([
       this.prisma.post.delete({
         where: {
@@ -165,7 +167,5 @@ export class PrismaPostsRepository implements IPostsRepository {
 
       this.postTagsRepository.deleteMany(post.tags.getItems()),
     ]);
-
-    DomainEvents.dispatchEventsForAggregate(post.id);
   }
 }

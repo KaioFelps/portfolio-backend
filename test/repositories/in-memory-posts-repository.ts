@@ -76,6 +76,8 @@ export class InMemoryPostsRepository implements IPostsRepository {
     const itemIndex = this.items.findIndex((item) => item.id.equals(post.id));
 
     this.items.splice(itemIndex, 1);
+
+    DomainEvents.dispatchEventsForAggregate(post.id);
   }
 
   async findBySlugWithAuthor(slug: string): Promise<PostWithAuthor | null> {

@@ -5,6 +5,7 @@ import { Aggregate } from '@/core/entities/aggregate';
 import { PostCreatedEvent } from '../events/post-created-event';
 import { PostEditedEvent } from '../events/post-edited-event';
 import { PostTagList } from './post-tag-list';
+import { PostDeletedEvent } from '../events/post-deleted-event';
 
 export interface PostProps {
   authorId: EntityUniqueId;
@@ -98,6 +99,10 @@ export class Post extends Aggregate<PostProps> {
 
   public addCreatedEventToDispatch() {
     this.addDomainEvent(new PostCreatedEvent(this));
+  }
+
+  public addDeletedEventToDispatch() {
+    this.addDomainEvent(new PostDeletedEvent(this));
   }
 
   public addEditedEventToDispatch() {

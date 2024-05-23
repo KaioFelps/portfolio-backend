@@ -5,6 +5,7 @@ import { UnauthorizedError } from '@/core/errors/unauthorized-error';
 import { IUsersRepository } from '@/domain/users/repositories/users-repository';
 import { BadRequestError } from '@/core/errors/bad-request-error';
 import { UserRole } from '@/domain/users/entities/user';
+import { Post } from '../entities/post';
 
 interface DeletePostServiceRequest {
   authorId: string;
@@ -13,7 +14,7 @@ interface DeletePostServiceRequest {
 
 type DeletePostServiceResponse = Either<
   UnauthorizedError | BadRequestError,
-  unknown
+  { post: Post }
 >;
 
 @Injectable()
@@ -43,8 +44,9 @@ export class DeletePostService {
       return fail(new UnauthorizedError());
     }
 
+    post.addDeletedEventToDispatch();
     await this.postsRepository.delete(post);
 
-    return ok({});
+    return ok({ post });
   }
 }
