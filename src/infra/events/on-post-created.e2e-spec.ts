@@ -41,7 +41,7 @@ describe('On Post Created Event handler', () => {
 
     const postTitle = 'Testando o evento de criação de post!';
 
-    const _response = await supertest(app.getHttpServer())
+    const response = await supertest(app.getHttpServer())
       .post('/post/new')
       .set({ Authorization: `Bearer ${token}` })
       .send({
@@ -57,5 +57,7 @@ describe('On Post Created Event handler', () => {
 
       expect(logsOnDb.length).toBe(1);
     }, 10000);
+
+    expect(response.ok).toBe(true);
   });
 });

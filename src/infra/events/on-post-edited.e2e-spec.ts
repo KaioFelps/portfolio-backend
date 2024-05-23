@@ -44,7 +44,7 @@ describe('On Post Edited Event handler', () => {
 
     const newPostTitle = 'Título editadooo!!';
 
-    const _response = await supertest(app.getHttpServer())
+    const response = await supertest(app.getHttpServer())
       .put(`/post/${post.id.toValue()}/edit`)
       .set({ Authorization: `Bearer ${token}` })
       .send({
@@ -57,5 +57,7 @@ describe('On Post Edited Event handler', () => {
 
       expect(logsOnDb.length).toBe(1);
     }, 10000);
+
+    expect(response.ok).toBe(true);
   });
 });
