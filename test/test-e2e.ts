@@ -1,7 +1,8 @@
+/* eslint-disable camelcase */
 import { config } from 'dotenv';
 import { PrismaClient } from '@prisma/client';
 import { execSync } from 'child_process';
-import { randomInt } from 'crypto';
+import { randomUUID } from 'crypto';
 
 config({
   path: '.env',
@@ -15,7 +16,7 @@ config({
 
 const prisma = new PrismaClient();
 
-function generateUniqueDatabaseURL(databaseId: string) {
+function _generate_mysql_unique_database_url(databaseId: string) {
   if (!process.env.DATABASE_URL) {
     throw new Error('Please, provide a valid test database URL.');
   }
@@ -26,16 +27,29 @@ function generateUniqueDatabaseURL(databaseId: string) {
   return url.toString();
 }
 
-const databaseId = `testDb${randomInt(1000)}`;
+function generate_postgresql_unique_database_url(databaseId: string) {
+  if (!process.env.DATABASE_URL) {
+    throw new Error('Please, provide a valid test database URL.');
+  }
+
+  const url = new URL(process.env.DATABASE_URL);
+  url.searchParams.set('schema', databaseId);
+
+  return url.toString();
+}
+
+const databaseId = `testDb${randomUUID()}`;
 
 beforeEach(async () => {
-  const databaseUrl = generateUniqueDatabaseURL(databaseId);
+  const databaseUrl = generate_postgresql_unique_database_url(databaseId);
   process.env.DATABASE_URL = databaseUrl;
 
   execSync('npx prisma migrate deploy');
 });
 
 afterEach(async () => {
-  await prisma.$executeRawUnsafe(`DROP DATABASE IF EXISTS ${databaseId};`);
+  await prisma.$executeRawUnsafe(
+    `DROP SCHEMA IF EXISTS "${databaseId}" CASCADE;`,
+  );
   await prisma.$disconnect();
 });
