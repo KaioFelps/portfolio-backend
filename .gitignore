@@ -1,7 +1,6 @@
 node_modules
 .env
 .env.test
-docker-compose.yaml
 dist/
 
 private_key.pem
