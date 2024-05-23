@@ -151,6 +151,8 @@ export class PrismaPostsRepository implements IPostsRepository {
       this.postTagsRepository.createMany(post.tags.getNewItems()),
       this.postTagsRepository.deleteMany(post.tags.getRemovedItems()),
     ]);
+
+    DomainEvents.dispatchEventsForAggregate(post.id);
   }
 
   async delete(post: Post): Promise<void> {
@@ -163,5 +165,7 @@ export class PrismaPostsRepository implements IPostsRepository {
 
       this.postTagsRepository.deleteMany(post.tags.getItems()),
     ]);
+
+    DomainEvents.dispatchEventsForAggregate(post.id);
   }
 }
