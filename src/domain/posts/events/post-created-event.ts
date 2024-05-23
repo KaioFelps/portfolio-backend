@@ -4,14 +4,18 @@ import { Post } from '../entities/post';
 
 export class PostCreatedEvent implements DomainEvent {
   occurredAt: Date;
-  post: Post;
+  post: string;
+  dispatcherId: EntityUniqueId;
+  postId: EntityUniqueId;
 
   constructor(post: Post) {
-    this.post = post;
+    this.post = post.title;
+    this.postId = post.id;
+    this.dispatcherId = post.authorId;
     this.occurredAt = new Date();
   }
 
   public getAggregateId(): EntityUniqueId {
-    return this.post.id;
+    return this.postId;
   }
 }

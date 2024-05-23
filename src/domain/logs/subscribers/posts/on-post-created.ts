@@ -18,12 +18,16 @@ export class OnPostCreated implements EventHandler {
     );
   }
 
-  private async createLog({ post, occurredAt }: PostCreatedEvent) {
+  private async createLog({
+    post,
+    occurredAt,
+    dispatcherId,
+  }: PostCreatedEvent) {
     await this.createLogService.exec({
       action: LogAction.created,
       targetType: LogTargetType.post,
-      target: post.title,
-      dispatcherId: post.authorId,
+      target: post,
+      dispatcherId,
       occurredAt,
     });
   }

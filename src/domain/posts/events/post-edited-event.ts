@@ -6,14 +6,16 @@ export class PostEditedEvent implements DomainEvent {
   occurredAt: Date;
   post: string;
   dispatcherId: EntityUniqueId;
+  postId: EntityUniqueId;
 
   constructor(post: Post) {
     this.post = post.title;
     this.dispatcherId = post.authorId;
     this.occurredAt = new Date();
+    this.postId = post.id;
   }
 
   public getAggregateId(): EntityUniqueId {
-    return this.dispatcherId;
+    return this.postId;
   }
 }
