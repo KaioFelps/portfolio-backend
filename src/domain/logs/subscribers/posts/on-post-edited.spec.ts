@@ -25,10 +25,14 @@ let registerEditedPostSpy: MockInstance<
 describe('On post edited subscriber', async () => {
   beforeEach(() => {
     inMemoryUsersRepository = new InMemoryUsersRepository();
+
     inMemoryPostsRepository = new InMemoryPostsRepository(
       inMemoryUsersRepository,
     );
-    inMemoryLogsRepository = new InMemoryLogsRepository();
+
+    inMemoryLogsRepository = new InMemoryLogsRepository(
+      inMemoryUsersRepository,
+    );
 
     createLogService = new CreateLogService(
       inMemoryLogsRepository,

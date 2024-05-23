@@ -24,9 +24,15 @@ let registerCreatedPostSpy: MockInstance<
 
 describe('On post created subscriber', async () => {
   beforeEach(() => {
-    inMemoryPostsRepository = new InMemoryPostsRepository();
-    inMemoryLogsRepository = new InMemoryLogsRepository();
     inMemoryUsersRepository = new InMemoryUsersRepository();
+
+    inMemoryPostsRepository = new InMemoryPostsRepository(
+      inMemoryUsersRepository,
+    );
+
+    inMemoryLogsRepository = new InMemoryLogsRepository(
+      inMemoryUsersRepository,
+    );
 
     createLogService = new CreateLogService(
       inMemoryLogsRepository,
