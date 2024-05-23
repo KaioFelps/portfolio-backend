@@ -1,9 +1,11 @@
 import { EventHandler } from '@/core/events/event-handler';
 import { ProjectCreatedEvent } from '@/domain/projects/events/project-created-event';
 import { CreateLogService } from '../../services/create-log-service';
-import { LogAction } from '../../entities/log';
+import { LogAction, LogTargetType } from '../../entities/log';
 import { DomainEvents } from '@/core/events/domain-events';
+import { Injectable } from '@nestjs/common';
 
+@Injectable()
 export class OnProjectCreated implements EventHandler {
   constructor(private createLogService: CreateLogService) {
     this.setupSubscriptions();
@@ -16,10 +18,12 @@ export class OnProjectCreated implements EventHandler {
     );
   }
 
-  private async createLog({ project }: ProjectCreatedEvent) {
+  private async createLog({ project, occurredAt }: ProjectCreatedEvent) {
     await this.createLogService.exec({
       action: LogAction.created,
       target: project.title,
+      targetType: LogTargetType.project,
+      occurredAt,
     });
   }
 }
