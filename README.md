@@ -16,17 +16,17 @@ Site pessoal com portfólio, exposição de projetos realizados e área de blogp
 - [x] Adicionar um projeto (se admin);
 - [x] Editar um projeto (se admin);
 - [x] Apagar um projeto (se admin);
-- [ ] Visualizar uma lista paginada de logs;
+- [x] Visualizar uma lista paginada de logs;
 
 ### Usuários não-autenticados
 - [x] Obter uma lista paginada dos posts existentes e ativos com paginação;
 - [x] Visualizar um post;
 - [x] Obter uma lista paginada dos projetos criados com paginação;
 
-### Engine
-- [ ] Registrar um log ao criar um post;
-- [ ] Registrar um log ao apagar um post;
-- [ ] Registrar um log ao editar um post;
+### Eventos e background tasks
+- [x] Registrar um log ao criar um post;
+- [x] Registrar um log ao apagar um post;
+- [x] Registrar um log ao editar um post;
 - [ ] Registrar um log ao criar um projeto;
 - [ ] Registrar um log ao apagar um projeto;
 - [ ] Registrar um log ao editar um projeto;
