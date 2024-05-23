@@ -28,9 +28,11 @@ let registerCreatedProjectSpy: MockInstance<
 
 describe('On project created subscriber', async () => {
   beforeEach(() => {
-    inMemoryLogsRepository = new InMemoryLogsRepository();
-
     inMemoryUsersRepository = new InMemoryUsersRepository();
+
+    inMemoryLogsRepository = new InMemoryLogsRepository(
+      inMemoryUsersRepository,
+    );
 
     inMemoryProjectTagsRepository = new InMemoryProjectTagsRepository();
 

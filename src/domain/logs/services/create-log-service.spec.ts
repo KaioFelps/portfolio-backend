@@ -12,8 +12,8 @@ describe('Create Log Service', () => {
   let usersRepository: InMemoryUsersRepository;
 
   beforeEach(async () => {
-    logsRepository = new InMemoryLogsRepository();
     usersRepository = new InMemoryUsersRepository();
+    logsRepository = new InMemoryLogsRepository(usersRepository);
     sut = new CreateLogService(logsRepository, usersRepository);
   });
 
