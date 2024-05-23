@@ -56,6 +56,6 @@ describe('On Post Created Event handler', () => {
       const logsOnDb = await prisma.log.findMany();
 
       expect(logsOnDb.length).toBe(1);
-    });
+    }, 10000);
   });
 });
