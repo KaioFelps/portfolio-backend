@@ -51,5 +51,8 @@ afterEach(async () => {
   await prisma.$executeRawUnsafe(
     `DROP SCHEMA IF EXISTS "${databaseId}" CASCADE;`,
   );
+});
+
+afterAll(async () => {
   await prisma.$disconnect();
 });
