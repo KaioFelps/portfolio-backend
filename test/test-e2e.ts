@@ -43,6 +43,7 @@ const databaseId = `testDb${randomUUID()}`;
 beforeEach(async () => {
   const databaseUrl = generate_postgresql_unique_database_url(databaseId);
   process.env.DATABASE_URL = databaseUrl;
+  process.env.DIRECT_URL = databaseUrl;
 
   execSync('npx prisma migrate deploy');
 });
