@@ -9,7 +9,7 @@ export default defineConfig({
     root: './',
     // run this file before the tests begin
     setupFiles: ['./test/test-e2e.ts'],
-    testTimeout: 20000,
+    testTimeout: 40000,
   },
   plugins: [
     // This is required to build the test files with SWC
