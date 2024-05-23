@@ -12,6 +12,6 @@ export abstract class ILogsRepository {
   abstract create(log: Log): Promise<void>;
   abstract findMany(params: LogsPaginationParams): Promise<Log[]>;
   abstract findManyWithAuthor(
-    params: PaginationParams,
+    params: LogsPaginationParams,
   ): Promise<PaginationResponse<LogWithAuthor>>;
 }

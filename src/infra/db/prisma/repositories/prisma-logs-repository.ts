@@ -29,30 +29,18 @@ export class PrismaLogsRepository implements ILogsRepository {
     const offset = (page - 1) * PER_PAGE;
 
     const where: Prisma.LogWhereInput = {
-      AND: [
+      OR: [
+        { target: { contains: query } },
         {
-          target: { contains: query },
-          OR: [
-            {
-              Dispatcher: {
-                name: {
-                  contains: query,
-                },
-              },
+          Dispatcher: {
+            name: {
+              contains: query,
             },
-          ],
+          },
         },
-        queryAction
-          ? {
-              action: queryAction,
-            }
-          : {},
-        queryTargetType
-          ? {
-              targetType: queryTargetType,
-            }
-          : {},
       ],
+      action: queryAction ? { equals: queryAction } : undefined,
+      targetType: queryTargetType ? { equals: queryTargetType } : undefined,
     };
 
     const logs = await this.prisma.log.findMany({
@@ -85,29 +73,17 @@ export class PrismaLogsRepository implements ILogsRepository {
 
     const where: Prisma.LogWhereInput = {
       OR: [
+        { target: { contains: query } },
         {
-          target: { contains: query },
-          OR: [
-            {
-              Dispatcher: {
-                name: {
-                  contains: query,
-                },
-              },
+          Dispatcher: {
+            name: {
+              contains: query,
             },
-          ],
+          },
         },
-        queryAction
-          ? {
-              action: queryAction,
-            }
-          : {},
-        queryTargetType
-          ? {
-              targetType: queryTargetType,
-            }
-          : {},
       ],
+      action: queryAction ? { equals: queryAction } : undefined,
+      targetType: queryTargetType ? { equals: queryTargetType } : undefined,
     };
 
     const logs = await this.prisma.log.findMany({

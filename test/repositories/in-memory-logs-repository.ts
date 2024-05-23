@@ -1,9 +1,10 @@
-import { EntityUniqueId } from '@/core/entities/entity-unique-id';
-import { PaginationParams } from '@/core/types/pagination-params';
 import { PaginationResponse } from '@/core/types/pagination-responses';
 import { Log } from '@/domain/logs/entities/log';
 import { LogWithAuthor } from '@/domain/logs/entities/value-objects/log-with-author';
-import { ILogsRepository } from '@/domain/logs/repositories/logs-repository';
+import {
+  ILogsRepository,
+  LogsPaginationParams,
+} from '@/domain/logs/repositories/logs-repository';
 import { InMemoryUsersRepository } from './in-memory-users-repository';
 import { QUANTITY_PER_PAGE } from '@/core/pagination-consts';
 
@@ -20,31 +21,29 @@ export class InMemoryLogsRepository implements ILogsRepository {
     amount: itemsPerPage = QUANTITY_PER_PAGE,
     page = 1,
     query,
-  }: PaginationParams): Promise<Log[]> {
-    let logs: Log[] = [];
+    action,
+    targetType,
+  }: LogsPaginationParams): Promise<Log[]> {
+    let logs: Log[] = this.items.filter((item) => {
+      const author = item.dispatcherId
+        ? this.inMemoryUsersRepository.items.find((user) =>
+            user.id.equals(item.dispatcherId!),
+          )
+        : null;
 
-    if (query) {
-      logs = this.items.filter((item) => {
-        if (item.action.includes(query.trim())) {
-          return item;
-        }
-
-        if (item.target === query) {
-          return item;
-        }
-
-        if (
-          item.dispatcherId &&
-          item.dispatcherId.equals(new EntityUniqueId(query))
-        ) {
-          return item;
-        }
-
+      if (
+        query &&
+        !item.target.includes(query) &&
+        !author?.name.includes(query)
+      )
         return null;
-      });
-    } else {
-      logs = this.items;
-    }
+
+      if (action && item.action !== action) return null;
+
+      if (targetType && item.targetType !== targetType) return null;
+
+      return item;
+    });
 
     logs = logs.slice((page - 1) * itemsPerPage, itemsPerPage * page);
 
@@ -55,31 +54,29 @@ export class InMemoryLogsRepository implements ILogsRepository {
     query,
     amount: itemsPerPage = QUANTITY_PER_PAGE,
     page = 1,
-  }: PaginationParams): Promise<PaginationResponse<LogWithAuthor>> {
-    let logs: Log[] = [];
+    action,
+    targetType,
+  }: LogsPaginationParams): Promise<PaginationResponse<LogWithAuthor>> {
+    let logs: Log[] = this.items.filter((item) => {
+      const author = item.dispatcherId
+        ? this.inMemoryUsersRepository.items.find((user) =>
+            user.id.equals(item.dispatcherId!),
+          )
+        : null;
 
-    if (query) {
-      logs = this.items.filter((item) => {
-        if (item.action.includes(query.trim())) {
-          return item;
-        }
-
-        if (item.target === query) {
-          return item;
-        }
-
-        if (
-          item.dispatcherId &&
-          item.dispatcherId.equals(new EntityUniqueId(query))
-        ) {
-          return item;
-        }
-
+      if (
+        query &&
+        !item.target.includes(query) &&
+        !author?.name.includes(query)
+      )
         return null;
-      });
-    } else {
-      logs = this.items;
-    }
+
+      if (action && item.action !== action) return null;
+
+      if (targetType && item.targetType !== targetType) return null;
+
+      return item;
+    });
 
     logs = logs.slice((page - 1) * itemsPerPage, itemsPerPage * page);
 
@@ -88,6 +85,7 @@ export class InMemoryLogsRepository implements ILogsRepository {
     logs.forEach(async (log) => {
       logsWithAuthor.push(
         LogWithAuthor.create({
+          id: log.id,
           action: log.action,
           createdAt: log.createdAt,
           target: log.target,
