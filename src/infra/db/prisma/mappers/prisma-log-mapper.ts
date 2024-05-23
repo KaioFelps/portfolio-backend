@@ -22,22 +22,25 @@ export class PrismaLogMapper {
   }
 
   static toDomain(prismaLog: PrismaLog): Log {
-    return Log.create({
-      action: PrismaLogEnumsMappers.Action.toDomain(prismaLog.action),
-      target: prismaLog.target,
-      targetType: PrismaLogEnumsMappers.TargetType.toDomain(
-        prismaLog.targetType,
-      ),
-
-      createdAt: prismaLog.createdAt,
-      dispatcherId: prismaLog.dispatcherId
-        ? new EntityUniqueId(prismaLog.dispatcherId)
-        : null,
-    });
+    return Log.create(
+      {
+        action: PrismaLogEnumsMappers.Action.toDomain(prismaLog.action),
+        target: prismaLog.target,
+        targetType: PrismaLogEnumsMappers.TargetType.toDomain(
+          prismaLog.targetType,
+        ),
+        createdAt: prismaLog.createdAt,
+        dispatcherId: prismaLog.dispatcherId
+          ? new EntityUniqueId(prismaLog.dispatcherId)
+          : null,
+      },
+      new EntityUniqueId(prismaLog.id),
+    );
   }
 
   static toDomainWithAuthor(prismaLog: PrismaLogWithAuthor): LogWithAuthor {
     return LogWithAuthor.create({
+      id: new EntityUniqueId(prismaLog.id),
       action: prismaLog.action,
       createdAt: prismaLog.createdAt,
       target: prismaLog.target,
