@@ -158,5 +158,7 @@ export class PostController {
           throw new InternalServerErrorException();
       }
     }
+
+    return { post: PostPresenter.toHTTP(response.value.post) };
   }
 }
