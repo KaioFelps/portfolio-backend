@@ -6,6 +6,7 @@ import { ConfigModule } from '@nestjs/config';
 import { envSchema } from './infra/env/env';
 import { HttpModule } from './infra/http/http.module';
 import { APP_PIPE } from '@nestjs/core';
+import { EventsModule } from './infra/events/events.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { APP_PIPE } from '@nestjs/core';
     AuthModule,
     { module: EnvModule, global: true },
     HttpModule,
+    EventsModule,
   ],
   providers: [
     AppService,
