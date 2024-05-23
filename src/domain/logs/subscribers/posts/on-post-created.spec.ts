@@ -47,6 +47,7 @@ describe('On post created subscriber', async () => {
   it('should register a log when a post is created', async () => {
     const post = PostFactory.exec();
 
+    post.addCreatedEventToDispatch();
     inMemoryPostsRepository.create(post);
 
     await waitFor(() => {
