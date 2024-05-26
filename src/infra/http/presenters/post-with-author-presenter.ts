@@ -1,4 +1,5 @@
 import { PostWithAuthor } from '@/domain/posts/entities/value-objects/post-with-author';
+import { TagPresenter } from './tag-presenter';
 
 export class PostWithAuthorPresenter {
   static toHTTP(post: PostWithAuthor) {
@@ -8,7 +9,7 @@ export class PostWithAuthorPresenter {
       title: post.title,
       slug: post.slug.value,
       topstory: post.topstory,
-      tags: post.tags,
+      tags: post.tags.getItems().map(TagPresenter.toHTTP),
       content: post.content,
       updatedAt: post.updatedAt,
       createdAt: post.createdAt,
