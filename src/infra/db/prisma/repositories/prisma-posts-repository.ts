@@ -102,10 +102,10 @@ export class PrismaPostsRepository implements IPostsRepository {
     const offset = (page - 1) * PER_PAGE;
 
     const where: Prisma.PostWhereInput = {
-      title: { contains: query },
+      title: { contains: query, mode: 'insensitive' },
       tags: tag
         ? {
-            some: { value: tag },
+            some: { value: { equals: tag, mode: 'insensitive' } },
           }
         : undefined,
     };
