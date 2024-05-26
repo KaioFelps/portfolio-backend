@@ -32,6 +32,7 @@ describe('Create Post Service', () => {
 
     if (result.isOk()) {
       expect(postsRepository.items[0]).toEqual(result.value.post);
+      expect(result.value.post.updatedAt).toBeFalsy();
     }
   });
 

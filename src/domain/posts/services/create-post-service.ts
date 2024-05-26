@@ -57,6 +57,8 @@ export class CreatePostService {
 
     post.tags = postTagsList;
 
+    post.updatedAt = null;
+
     post.addCreatedEventToDispatch();
 
     await this.postsRepository.create(post);

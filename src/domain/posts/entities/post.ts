@@ -89,6 +89,10 @@ export class Post extends Aggregate<PostProps> {
     return this.props.createdAt;
   }
 
+  set updatedAt(value: Date | undefined | null) {
+    this.props.updatedAt = value;
+  }
+
   get updatedAt() {
     return this.props.updatedAt;
   }
