@@ -5,6 +5,7 @@ import { ProjectCreatedEvent } from '../events/project-created-event';
 import { ProjectLinkList } from './project-link-list';
 import { ProjectTagList } from './project-tag-list';
 import { ProjectDeletedEvent } from '../events/project-deleted-event';
+import { ProjectEditedEvent } from '../events/project-edited-event';
 
 export interface ProjectProps {
   title: string;
@@ -78,5 +79,9 @@ export class Project extends Aggregate<ProjectProps> {
 
   public addDeletedEventToDispatch() {
     this.addDomainEvent(new ProjectDeletedEvent(this));
+  }
+
+  public addEditedEventToDispatch() {
+    this.addDomainEvent(new ProjectEditedEvent(this));
   }
 }

@@ -72,6 +72,8 @@ export class InMemoryProjectsRepository implements IProjectsRepository {
     );
 
     this.items[itemIndex] = project;
+
+    DomainEvents.dispatchEventsForAggregate(project.id);
   }
 
   async delete(project: Project): Promise<void> {

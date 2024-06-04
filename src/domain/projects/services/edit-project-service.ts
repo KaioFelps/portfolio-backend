@@ -89,6 +89,7 @@ export class EditProjectService {
     project.links = currentLinksList;
     project.tags = currentTagsList;
 
+    project.addEditedEventToDispatch();
     await this.projectsRepository.save(project);
 
     return ok({ project });

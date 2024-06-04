@@ -6,6 +6,7 @@ import { DatabaseModule } from '../db/database.module';
 import { CreateLogService } from '@/domain/logs/services/create-log-service';
 import { OnPostDeleted } from '@/domain/logs/subscribers/posts/on-post-deleted';
 import { OnProjectDeleted } from '@/domain/logs/subscribers/projects/on-project-deleted';
+import { OnProjectEdited } from '@/domain/logs/subscribers/projects/on-project-edited';
 
 @Module({
   imports: [DatabaseModule],
@@ -21,6 +22,7 @@ import { OnProjectDeleted } from '@/domain/logs/subscribers/projects/on-project-
     // projects
     OnProjectCreated,
     OnProjectDeleted,
+    OnProjectEdited,
 
     // users
   ],

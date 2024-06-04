@@ -116,6 +116,8 @@ export class PrismaProjectsRepository implements IProjectsRepository {
         project.tags.getRemovedItems(),
       ),
     ]);
+
+    DomainEvents.dispatchEventsForAggregate(project.id);
   }
 
   async delete(project: Project): Promise<void> {
