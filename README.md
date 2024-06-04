@@ -27,7 +27,7 @@ Site pessoal com portfólio, exposição de projetos realizados e área de blogp
 - [x] Registrar um log ao criar um post;
 - [x] Registrar um log ao apagar um post;
 - [x] Registrar um log ao editar um post;
-- [ ] Registrar um log ao criar um projeto;
+- [x] Registrar um log ao criar um projeto;
 - [ ] Registrar um log ao apagar um projeto;
 - [ ] Registrar um log ao editar um projeto;
 - [ ] Registrar um log ao criar um usuário;
