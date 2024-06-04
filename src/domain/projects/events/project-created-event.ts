@@ -4,14 +4,16 @@ import { Project } from '../entities/project';
 
 export class ProjectCreatedEvent implements DomainEvent {
   occurredAt: Date;
-  project: Project;
+  project: string;
+  projectId: EntityUniqueId;
 
   constructor(project: Project) {
-    this.project = project;
+    this.project = project.title;
     this.occurredAt = new Date();
+    this.projectId = project.id;
   }
 
   public getAggregateId(): EntityUniqueId {
-    return this.project.id;
+    return this.projectId;
   }
 }

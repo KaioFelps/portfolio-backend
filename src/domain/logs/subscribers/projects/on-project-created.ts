@@ -21,7 +21,7 @@ export class OnProjectCreated implements EventHandler {
   private async createLog({ project, occurredAt }: ProjectCreatedEvent) {
     await this.createLogService.exec({
       action: LogAction.created,
-      target: project.title,
+      target: project,
       targetType: LogTargetType.project,
       occurredAt,
     });
