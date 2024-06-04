@@ -56,6 +56,7 @@ describe('On project created subscriber', async () => {
   it('should register a log when a project is created', async () => {
     const project = ProjectFactory.exec();
 
+    project.addCreatedEventToDispatch();
     inMemoryProjectsRepository.create(project);
 
     await waitFor(() => {
