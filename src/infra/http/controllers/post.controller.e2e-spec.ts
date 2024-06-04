@@ -85,7 +85,7 @@ describe('PostController', () => {
         title: post.title,
         slug: post.slug,
         topstory: post.topstory,
-        tags: post.tags,
+        tags: [],
         updatedAt: null,
       }),
     );
