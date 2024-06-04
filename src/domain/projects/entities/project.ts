@@ -4,6 +4,7 @@ import { Optional } from '@/core/types/optional';
 import { ProjectCreatedEvent } from '../events/project-created-event';
 import { ProjectLinkList } from './project-link-list';
 import { ProjectTagList } from './project-tag-list';
+import { ProjectDeletedEvent } from '../events/project-deleted-event';
 
 export interface ProjectProps {
   title: string;
@@ -31,12 +32,6 @@ export class Project extends Aggregate<ProjectProps> {
       },
       id,
     );
-
-    const projectIsNew = !id;
-
-    if (projectIsNew) {
-      project.addDomainEvent(new ProjectCreatedEvent(project));
-    }
 
     return project;
   }
@@ -75,5 +70,13 @@ export class Project extends Aggregate<ProjectProps> {
 
   get createdAt() {
     return this.props.createdAt;
+  }
+
+  public addCreatedEventToDispatch() {
+    this.addDomainEvent(new ProjectCreatedEvent(this));
+  }
+
+  public addDeletedEventToDispatch() {
+    this.addDomainEvent(new ProjectDeletedEvent(this));
   }
 }
