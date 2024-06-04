@@ -8,6 +8,9 @@ export const envSchema = z.object({
   JWT_PUBLIC_KEY: z.string(),
   NODE_ENV: z.string().optional().default('development'),
   DOMAIN: z.string(),
+  ROOTUSER_PASSWORD: z.string(),
+  ROOTUSER_EMAIL: z.string().email(),
+  ROOTUSER_NAME: z.string(),
 });
 
 export type Env = z.infer<typeof envSchema>;
