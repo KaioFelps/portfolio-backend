@@ -44,6 +44,7 @@ export class DeleteProjectService {
       return fail(new ResourceNotFoundError());
     }
 
+    project.addDeletedEventToDispatch();
     await this.projectsRepository.delete(project);
 
     return ok({});

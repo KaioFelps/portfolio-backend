@@ -119,6 +119,8 @@ export class PrismaProjectsRepository implements IProjectsRepository {
   }
 
   async delete(project: Project): Promise<void> {
+    DomainEvents.dispatchEventsForAggregate(project.id);
+
     await Promise.all([
       this.prisma.project.delete({
         where: {

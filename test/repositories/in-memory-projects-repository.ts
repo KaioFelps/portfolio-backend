@@ -78,5 +78,7 @@ export class InMemoryProjectsRepository implements IProjectsRepository {
     const itemIndex = this.items.findIndex((item) => item.equals(project));
 
     this.items.splice(itemIndex, 1);
+
+    DomainEvents.dispatchEventsForAggregate(project.id);
   }
 }
