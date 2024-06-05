@@ -39,6 +39,7 @@ export class DeleteUserService {
       return fail(new UnauthorizedError());
     }
 
+    user.addDeletedEventToDispatch(adminUser.id);
     await this.usersRepository.delete(user);
 
     return ok({});

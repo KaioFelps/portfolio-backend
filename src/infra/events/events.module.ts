@@ -7,6 +7,9 @@ import { CreateLogService } from '@/domain/logs/services/create-log-service';
 import { OnPostDeleted } from '@/domain/logs/subscribers/posts/on-post-deleted';
 import { OnProjectDeleted } from '@/domain/logs/subscribers/projects/on-project-deleted';
 import { OnProjectEdited } from '@/domain/logs/subscribers/projects/on-project-edited';
+import { OnUserCreated } from '@/domain/logs/subscribers/users/on-user-created';
+import { OnUserDeleted } from '@/domain/logs/subscribers/users/on-user-deleted';
+import { OnUserEdited } from '@/domain/logs/subscribers/users/on-user-edited';
 
 @Module({
   imports: [DatabaseModule],
@@ -25,6 +28,9 @@ import { OnProjectEdited } from '@/domain/logs/subscribers/projects/on-project-e
     OnProjectEdited,
 
     // users
+    OnUserCreated,
+    OnUserDeleted,
+    OnUserEdited,
   ],
 })
 export class EventsModule {}

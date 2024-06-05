@@ -44,6 +44,7 @@ export class CreateUserService {
       role,
     });
 
+    user.addCreatedEventToDispatch(adminUser.id);
     await this.usersRepository.create(user);
 
     return ok({ user });

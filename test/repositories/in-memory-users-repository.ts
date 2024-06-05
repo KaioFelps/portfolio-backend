@@ -1,3 +1,4 @@
+import { DomainEvents } from '@/core/events/domain-events';
 import { PaginationParams } from '@/core/types/pagination-params';
 import { PaginationResponse } from '@/core/types/pagination-responses';
 import { User } from '@/domain/users/entities/user';
@@ -16,12 +17,16 @@ export class InMemoryUsersRepository implements IUsersRepository {
 
   async create(user: User): Promise<void> {
     this.items.push(user);
+
+    DomainEvents.dispatchEventsForAggregate(user.id);
   }
 
   async save(user: User): Promise<void> {
     const userIndex = this.items.findIndex((item) => item.id.equals(user.id));
 
     this.items[userIndex] = user;
+
+    DomainEvents.dispatchEventsForAggregate(user.id);
   }
 
   async findMany({
@@ -60,5 +65,7 @@ export class InMemoryUsersRepository implements IUsersRepository {
   async delete(user: User): Promise<void> {
     const userIndex = this.items.findIndex((item) => item.id.equals(user.id));
     this.items.splice(userIndex, 1);
+
+    DomainEvents.dispatchEventsForAggregate(user.id);
   }
 }

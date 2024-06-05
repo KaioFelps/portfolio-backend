@@ -1,6 +1,9 @@
-import { Entity } from '@/core/entities/entity';
+import { Aggregate } from '@/core/entities/aggregate';
 import { EntityUniqueId } from '@/core/entities/entity-unique-id';
 import { Optional } from '@/core/types/optional';
+import { UserDeletedEvent } from '../events/user-deleted-event';
+import { UserCreatedEvent } from '../events/user-created-event';
+import { UserEditedEvent } from '../events/user-edited-event';
 
 export enum UserRole {
   admin = 'ADMIN',
@@ -15,7 +18,7 @@ export interface UserProps {
   createdAt: Date;
 }
 
-export class User extends Entity<UserProps> {
+export class User extends Aggregate<UserProps> {
   constructor(props: UserProps, id?: EntityUniqueId) {
     super(props, id);
   }
@@ -66,5 +69,17 @@ export class User extends Entity<UserProps> {
 
   get createdAt() {
     return this.props.createdAt;
+  }
+
+  public addCreatedEventToDispatch(adminId: EntityUniqueId) {
+    this.addDomainEvent(new UserCreatedEvent(this, adminId));
+  }
+
+  public addDeletedEventToDispatch(adminId: EntityUniqueId) {
+    this.addDomainEvent(new UserDeletedEvent(this, adminId));
+  }
+
+  public addEditedEventToDispatch(adminId: EntityUniqueId) {
+    this.addDomainEvent(new UserEditedEvent(this, adminId));
   }
 }

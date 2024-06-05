@@ -57,6 +57,7 @@ export class EditUserService {
       user.password = hashedPassword;
     }
 
+    user.addEditedEventToDispatch(admin.id);
     await this.usersRepository.save(user);
 
     return ok({ user });

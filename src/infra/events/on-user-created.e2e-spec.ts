@@ -6,11 +6,11 @@ import supertest from 'supertest';
 import { UserFactory } from 'test/factories/user-factory';
 import { TokenPayload } from '../auth/jwt-strategy';
 import { JwtService } from '@nestjs/jwt';
-import { CreatePostDto } from '../http/dtos/create-post';
+import { CreateUserDto } from '../http/dtos/create-user';
 import { PrismaService } from '../db/prisma/prisma-service';
 import { waitFor } from 'test/utlils/wait-for';
 
-describe('On Post Created Event handler', () => {
+describe('On User Created Event handler', () => {
   let app: INestApplication;
   let jwt: JwtService;
   let prisma: PrismaService;
@@ -30,28 +30,25 @@ describe('On Post Created Event handler', () => {
     await app.init();
   });
 
-  it('should register a new log when a post is created', async () => {
-    const user = await userFactory.createAndPersist('admin');
+  it('should register a new log when a user is created', async () => {
+    const adminUser = await userFactory.createAndPersist('admin');
 
     const token = await jwt.signAsync({
-      name: user.name,
-      role: user.role,
-      sub: user.id.toValue(),
+      name: adminUser.name,
+      role: adminUser.role,
+      sub: adminUser.id.toValue(),
     } as TokenPayload);
 
-    const postTitle = 'Testando o evento de criação de post!';
+    const userName = 'Felipe';
 
     const response = await supertest(app.getHttpServer())
-      .post('/post/new')
+      .post('/user/new')
       .set({ Authorization: `Bearer ${token}` })
       .send({
-        content: 'Conteúdo do meu primeiro post fictício!',
-        tags: ['eventos', 'domínio'],
-        title: postTitle,
-        topstory: 'https://i.imgur.com/NQ9ImcM.png',
-        authorId: user.id.toValue(),
-      } as CreatePostDto)
-      .expect(201);
+        name: userName,
+        email: 'fakeemail@gmail.com',
+        password: 'fakepassword',
+      } as CreateUserDto);
 
     await waitFor(async () => {
       const logsOnDb = await prisma.log.findMany();

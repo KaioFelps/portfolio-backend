@@ -6,11 +6,11 @@ import supertest from 'supertest';
 import { UserFactory } from 'test/factories/user-factory';
 import { TokenPayload } from '../auth/jwt-strategy';
 import { JwtService } from '@nestjs/jwt';
-import { CreatePostDto } from '../http/dtos/create-post';
 import { PrismaService } from '../db/prisma/prisma-service';
 import { waitFor } from 'test/utlils/wait-for';
+import { LogAction } from '@/domain/logs/entities/log';
 
-describe('On Post Created Event handler', () => {
+describe('On User Edited Event handler', () => {
   let app: INestApplication;
   let jwt: JwtService;
   let prisma: PrismaService;
@@ -19,42 +19,37 @@ describe('On Post Created Event handler', () => {
   beforeEach(async () => {
     const module = await Test.createTestingModule({
       imports: [AppModule, DatabaseModule],
-      providers: [UserFactory],
+      providers: [UserFactory, UserFactory],
     }).compile();
 
     app = module.createNestApplication();
     jwt = module.get(JwtService);
     prisma = module.get(PrismaService);
     userFactory = module.get(UserFactory);
-
+    userFactory = module.get(UserFactory);
     await app.init();
   });
 
-  it('should register a new log when a post is created', async () => {
-    const user = await userFactory.createAndPersist('admin');
+  it('should register a new log when a user is deleted', async () => {
+    const adminUser = await userFactory.createAndPersist('admin');
+    const user = await userFactory.createAndPersist('editor');
 
     const token = await jwt.signAsync({
-      name: user.name,
-      role: user.role,
-      sub: user.id.toValue(),
+      name: adminUser.name,
+      role: adminUser.role,
+      sub: adminUser.id.toValue(),
     } as TokenPayload);
 
-    const postTitle = 'Testando o evento de criação de post!';
-
     const response = await supertest(app.getHttpServer())
-      .post('/post/new')
+      .delete(`/user/${user.id.toValue()}/delete`)
       .set({ Authorization: `Bearer ${token}` })
-      .send({
-        content: 'Conteúdo do meu primeiro post fictício!',
-        tags: ['eventos', 'domínio'],
-        title: postTitle,
-        topstory: 'https://i.imgur.com/NQ9ImcM.png',
-        authorId: user.id.toValue(),
-      } as CreatePostDto)
-      .expect(201);
+      .send()
+      .expect(204);
 
     await waitFor(async () => {
-      const logsOnDb = await prisma.log.findMany();
+      const logsOnDb = await prisma.log.findMany({
+        where: { action: LogAction.deleted, target: user.name },
+      });
 
       expect(logsOnDb.length).toBe(1);
     }, 10000);

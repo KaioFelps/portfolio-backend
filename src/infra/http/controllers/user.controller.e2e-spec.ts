@@ -125,7 +125,7 @@ describe('UserController', () => {
     expect(userOnDb?.role).toEqual('ADMIN');
   });
 
-  test('[DELETE] user/:id/delete', async () => {
+  test('[DELETE] /user/:id/delete', async () => {
     const adminUser = await userFactory.createAndPersist('admin');
     const anotherUser = await userFactory.createAndPersist('editor');
 
@@ -141,7 +141,7 @@ describe('UserController', () => {
       .send()
       .expect(204);
 
-    const userOnDb = await prisma.user.findUnique({
+    const userOnDb = await prisma.user.findFirst({
       where: {
         id: anotherUser.id.toValue(),
       },

@@ -7,6 +7,7 @@ import { PrismaUserMapper } from '../mappers/prisma-user-mapper';
 import { PrismaRoleMapper } from '../mappers/prisma-role-mapper';
 import { PaginationResponse } from '@/core/types/pagination-responses';
 import { QUANTITY_PER_PAGE } from '@/core/pagination-consts';
+import { DomainEvents } from '@/core/events/domain-events';
 
 @Injectable()
 export class PrismaUsersRepository implements IUsersRepository {
@@ -18,6 +19,8 @@ export class PrismaUsersRepository implements IUsersRepository {
     await this.prisma.user.create({
       data: mappedUser,
     });
+
+    DomainEvents.dispatchEventsForAggregate(user.id);
   }
 
   async findById(id: string): Promise<User | null> {
@@ -110,6 +113,8 @@ export class PrismaUsersRepository implements IUsersRepository {
         id: user.id.toValue(),
       },
     });
+
+    DomainEvents.dispatchEventsForAggregate(user.id);
   }
 
   async delete(user: User): Promise<void> {
@@ -118,5 +123,7 @@ export class PrismaUsersRepository implements IUsersRepository {
         id: user.id.toValue(),
       },
     });
+
+    DomainEvents.dispatchEventsForAggregate(user.id);
   }
 }

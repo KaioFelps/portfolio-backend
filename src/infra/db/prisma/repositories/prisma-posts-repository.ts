@@ -140,6 +140,8 @@ export class PrismaPostsRepository implements IPostsRepository {
   }
 
   async save(post: Post): Promise<void> {
+    DomainEvents.dispatchEventsForAggregate(post.id);
+
     await Promise.all([
       this.prisma.post.update({
         data: PrismaPostMapper.toPrisma(post),
@@ -151,8 +153,6 @@ export class PrismaPostsRepository implements IPostsRepository {
       this.postTagsRepository.createMany(post.tags.getNewItems()),
       this.postTagsRepository.deleteMany(post.tags.getRemovedItems()),
     ]);
-
-    DomainEvents.dispatchEventsForAggregate(post.id);
   }
 
   async delete(post: Post): Promise<void> {

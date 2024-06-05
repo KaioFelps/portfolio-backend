@@ -30,9 +30,9 @@ Site pessoal com portfólio, exposição de projetos realizados e área de blogp
 - [x] Registrar um log ao criar um projeto;
 - [x] Registrar um log ao apagar um projeto;
 - [x] Registrar um log ao editar um projeto;
-- [ ] Registrar um log ao criar um usuário;
-- [ ] Registrar um log ao apagar um usuário;
-- [ ] Registrar um log ao editar um usuário;
+- [x] Registrar um log ao criar um usuário;
+- [x] Registrar um log ao apagar um usuário;
+- [x] Registrar um log ao editar um usuário;
 
 ## Installation
 
