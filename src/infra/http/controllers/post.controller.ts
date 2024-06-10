@@ -31,12 +31,14 @@ import { UpdatePostDto } from '../dtos/update-post';
 import { BadRequestError } from '@/core/errors/bad-request-error';
 import { DeletePostService } from '@/domain/posts/services/delete-post-service';
 import { TogglePostVisibilityService } from '@/domain/posts/services/toggle-post-visibility-service';
+import { FetchManyPublishedPostsService } from '@/domain/posts/services/fetch-many-published-posts-service';
 
 @Controller('post')
 export class PostController {
   constructor(
     private getPostBySlugService: GetPostBySlugService,
     private fetchManyPostsService: FetchManyPostsService,
+    private fetchManyPublishedPostsService: FetchManyPublishedPostsService,
     private createPostService: CreatePostService,
     private editPostService: EditPostService,
     private deletePostService: DeletePostService,
@@ -68,6 +70,27 @@ export class PostController {
   @PublicRoute()
   @HttpCode(200)
   async getMany(@Query() query: PaginatedPostListDto) {
+    const response = await this.fetchManyPublishedPostsService.exec(query);
+
+    if (response.isFail()) {
+      throw new InternalServerErrorException();
+    }
+
+    const { count, posts } = response.value;
+
+    const formattedPosts = posts.map(PostPresenter.toHTTP);
+
+    return {
+      posts: formattedPosts,
+      totalCount: count,
+      page: query.page ?? 1,
+      perPage: query.amount ?? QUANTITY_PER_PAGE,
+    };
+  }
+
+  @Get('list/admin')
+  @HttpCode(200)
+  async adminGetMany(@Query() query: PaginatedPostListDto) {
     const response = await this.fetchManyPostsService.exec(query);
 
     if (response.isFail()) {

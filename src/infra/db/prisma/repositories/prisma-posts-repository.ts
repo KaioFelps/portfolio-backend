@@ -139,6 +139,57 @@ export class PrismaPostsRepository implements IPostsRepository {
     return { value: mappedPosts, totalCount: postsTotalCount };
   }
 
+  async findManyPublished({
+    amount,
+    page = 1,
+    query,
+    tag,
+  }: PostListPaginationParams): Promise<PaginationResponse<Post>> {
+    const PER_PAGE = amount ?? QUANTITY_PER_PAGE;
+
+    const offset = (page - 1) * PER_PAGE;
+
+    const where: Prisma.PostWhereInput = {
+      NOT: {
+        publishedAt: null,
+      },
+      title: { contains: query, mode: 'insensitive' },
+      tags: tag
+        ? {
+            some: { value: { equals: tag, mode: 'insensitive' } },
+          }
+        : undefined,
+    };
+
+    const posts = await this.prisma.post.findMany({
+      take: PER_PAGE,
+      skip: offset,
+      orderBy: {
+        publishedAt: 'desc',
+      },
+      where,
+      include: {
+        tags: true,
+      },
+    });
+
+    const postsTotalCount = await this.prisma.post.count({
+      where,
+      orderBy: {
+        publishedAt: 'desc',
+      },
+    });
+
+    const mappedPosts: Post[] = [];
+
+    for (const post of posts) {
+      const mappedPost = PrismaPostMapper.toDomain(post);
+      mappedPosts.push(mappedPost);
+    }
+
+    return { value: mappedPosts, totalCount: postsTotalCount };
+  }
+
   async save(post: Post): Promise<void> {
     DomainEvents.dispatchEventsForAggregate(post.id);
 

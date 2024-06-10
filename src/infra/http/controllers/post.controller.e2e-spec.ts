@@ -105,6 +105,7 @@ describe('PostController', () => {
       {
         authorId: user.id,
         tags: new PostTagList([tag]),
+        publishedAt: new Date(),
       },
       postId,
     );
@@ -117,18 +118,22 @@ describe('PostController', () => {
       },
     });
 
-    for (let i = 0; i <= 5; i++) {
+    for (let i = 0; i <= 3; i++) {
       switch (i) {
         case 2:
         case 3:
           await postFactory.createAndPersist({
             authorId: user.id,
             title: `must be catched ${query} ${i}`.toString(),
+            publishedAt: new Date(),
           });
           break;
         default:
+          // this one is not going to be catched on the queryByTitle request
+          // because it has not been published
           await postFactory.createAndPersist({
             authorId: user.id,
+            title: `must be catched ${query} ${i}`.toString(),
           });
       }
     }
@@ -159,6 +164,39 @@ describe('PostController', () => {
       page: 1,
       perPage: QUANTITY_PER_PAGE,
     });
+  });
+
+  test('[GET] /post/list/admin', async () => {
+    const user = await userFactory.createAndPersist('editor');
+
+    const token = await jwt.signAsync({
+      name: user.name,
+      role: user.role,
+      sub: user.id.toValue(),
+    } as TokenPayload);
+
+    for (let i = 0; i <= 2; i++) {
+      switch (i) {
+        case 0:
+        case 2:
+          await postFactory.createAndPersist({
+            publishedAt: new Date(),
+            authorId: user.id,
+          });
+          break;
+        default:
+          await postFactory.createAndPersist({ authorId: user.id });
+      }
+    }
+
+    const response = await supertest(app.getHttpServer())
+      .get('/post/list/admin')
+      .set({ Authorization: `Bearer ${token}` })
+      .send()
+      .expect(200);
+
+    expect(response.body.posts).toHaveLength(3);
+    expect(response.body.totalCount).toBe(3);
   });
 
   test('[PUT] /post/:id/edit', async () => {

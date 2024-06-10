@@ -16,6 +16,10 @@ export abstract class IPostsRepository {
     params: PostListPaginationParams,
   ): Promise<PaginationResponse<Post>>;
 
+  abstract findManyPublished(
+    params: PostListPaginationParams,
+  ): Promise<PaginationResponse<Post>>;
+
   abstract save(post: Post): Promise<void>;
   abstract delete(post: Post): Promise<void>;
 }

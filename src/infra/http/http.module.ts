@@ -23,6 +23,7 @@ import { GetPostBySlugService } from '@/domain/posts/services/get-post-by-slug-s
 import { FetchManyPostsService } from '@/domain/posts/services/fetch-many-posts-service';
 import { FetchManyLogsService } from '@/domain/logs/services/fetch-many-logs-service';
 import { TogglePostVisibilityService } from '@/domain/posts/services/toggle-post-visibility-service';
+import { FetchManyPublishedPostsService } from '@/domain/posts/services/fetch-many-published-posts-service';
 
 @Module({
   imports: [CryptographyModule, DatabaseModule],
@@ -43,6 +44,7 @@ import { TogglePostVisibilityService } from '@/domain/posts/services/toggle-post
     DeletePostService,
     GetPostBySlugService,
     FetchManyPostsService,
+    FetchManyPublishedPostsService,
     TogglePostVisibilityService,
 
     // projects /////////////////////////
