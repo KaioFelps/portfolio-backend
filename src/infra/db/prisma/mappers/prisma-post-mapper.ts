@@ -18,6 +18,7 @@ export class PrismaPostMapper {
       title: post.title,
       topstory: post.topstory,
       createdAt: post.createdAt,
+      publishedAt: post.publishedAt,
       id: post.id.toValue(),
       updatedAt: post.updatedAt,
     };
@@ -33,6 +34,7 @@ export class PrismaPostMapper {
     content,
     slug,
     updatedAt,
+    publishedAt,
   }: toDomainParams) {
     return Post.create(
       {
@@ -44,6 +46,7 @@ export class PrismaPostMapper {
         content,
         slug: Slug.create(slug),
         updatedAt,
+        publishedAt: publishedAt ?? null,
       },
       new EntityUniqueId(id),
     );

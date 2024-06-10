@@ -15,12 +15,13 @@ export interface PostProps {
   topstory: string;
   tags: PostTagList;
   createdAt: Date;
+  publishedAt?: Date | null;
   updatedAt?: Date | null;
 }
 
 export class Post extends Aggregate<PostProps> {
   private constructor(props: PostProps, id?: EntityUniqueId) {
-    super({ ...props, updatedAt: props.updatedAt ?? null }, id);
+    super({ ...props }, id);
   }
 
   static create(
@@ -31,8 +32,10 @@ export class Post extends Aggregate<PostProps> {
       {
         ...props,
         slug: props.slug ?? Slug.fromTitle(props.title),
-        createdAt: props.createdAt ?? new Date(),
         tags: props.tags ?? new PostTagList(),
+        createdAt: props.createdAt ?? new Date(),
+        updatedAt: props.updatedAt ?? null,
+        publishedAt: props.publishedAt ?? null,
       },
       id,
     );
@@ -87,6 +90,14 @@ export class Post extends Aggregate<PostProps> {
 
   get createdAt() {
     return this.props.createdAt;
+  }
+
+  get publishedAt() {
+    return this.props.publishedAt;
+  }
+
+  set publishedAt(value: Date | undefined | null) {
+    this.props.publishedAt = value;
   }
 
   set updatedAt(value: Date | undefined | null) {

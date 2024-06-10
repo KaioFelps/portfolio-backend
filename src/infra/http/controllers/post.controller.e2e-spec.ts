@@ -198,7 +198,7 @@ describe('PostController', () => {
         tags: ['free fire', 'artigo'],
         // not any field are mandatory at all
       })
-      .expect(201);
+      .expect(200);
 
     expect(response.body.post.title).not.toEqual(post.title);
 
@@ -238,5 +238,34 @@ describe('PostController', () => {
     });
 
     expect(postOnDatabase).toBeNull();
+  });
+
+  test('[PATCH] /post/:id/visibility', async () => {
+    const user = await userFactory.createAndPersist('editor');
+
+    const post = await postFactory.createAndPersist({
+      authorId: user.id,
+    });
+
+    expect(post.publishedAt).toBeNull();
+
+    const token = await jwt.signAsync({
+      name: user.name,
+      role: user.role,
+      sub: user.id.toValue(),
+    } as TokenPayload);
+
+    await supertest(app.getHttpServer())
+      .patch(`/post/${post.id.toValue()}/visibility`)
+      .set({
+        Authorization: `Bearer ${token}`,
+      })
+      .expect(204);
+
+    const postOnDb = await prisma.post.findUnique({
+      where: { id: post.id.toValue() },
+    });
+
+    expect(postOnDb?.publishedAt).toEqual(expect.any(Date));
   });
 });

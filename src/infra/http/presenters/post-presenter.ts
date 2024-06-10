@@ -15,6 +15,7 @@ export class PostPresenter {
         .trimEnd()
         .concat('...'),
       createdAt: post.createdAt,
+      publishedAt: post.publishedAt,
     };
   }
 }

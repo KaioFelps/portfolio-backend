@@ -9,6 +9,7 @@ import {
   HttpCode,
   InternalServerErrorException,
   Param,
+  Patch,
   Post,
   Put,
   Query,
@@ -29,6 +30,7 @@ import { EditPostService } from '@/domain/posts/services/edit-post-service';
 import { UpdatePostDto } from '../dtos/update-post';
 import { BadRequestError } from '@/core/errors/bad-request-error';
 import { DeletePostService } from '@/domain/posts/services/delete-post-service';
+import { TogglePostVisibilityService } from '@/domain/posts/services/toggle-post-visibility-service';
 
 @Controller('post')
 export class PostController {
@@ -38,6 +40,7 @@ export class PostController {
     private createPostService: CreatePostService,
     private editPostService: EditPostService,
     private deletePostService: DeletePostService,
+    private togglePostVisibilityService: TogglePostVisibilityService,
   ) {}
 
   @Get('/:slug/show')
@@ -111,7 +114,7 @@ export class PostController {
   }
 
   @Put('/:id/edit')
-  @HttpCode(201)
+  @HttpCode(200)
   async update(
     @Body() body: UpdatePostDto,
     @Param('id') postId: string,
@@ -138,6 +141,29 @@ export class PostController {
     const mappedPost = PostPresenter.toHTTP(post);
 
     return { post: mappedPost };
+  }
+
+  @Patch('/:id/visibility')
+  @HttpCode(204)
+  async toggleVisibility(
+    @Param('id') postId: string,
+    @CurrentUser() user: TokenPayload,
+  ) {
+    const response = await this.togglePostVisibilityService.exec({
+      authorId: user.sub,
+      postId,
+    });
+
+    if (response.isFail()) {
+      switch (response.value.constructor) {
+        case BadRequestError:
+          throw new BadRequestException(response.value.message);
+        case UnauthorizedError:
+          throw new UnauthorizedException(response.value.message);
+        default:
+          throw new InternalServerErrorException();
+      }
+    }
   }
 
   @Delete('/:id/delete')

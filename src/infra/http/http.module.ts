@@ -22,6 +22,7 @@ import { DeletePostService } from '@/domain/posts/services/delete-post-service';
 import { GetPostBySlugService } from '@/domain/posts/services/get-post-by-slug-service';
 import { FetchManyPostsService } from '@/domain/posts/services/fetch-many-posts-service';
 import { FetchManyLogsService } from '@/domain/logs/services/fetch-many-logs-service';
+import { TogglePostVisibilityService } from '@/domain/posts/services/toggle-post-visibility-service';
 
 @Module({
   imports: [CryptographyModule, DatabaseModule],
@@ -42,6 +43,7 @@ import { FetchManyLogsService } from '@/domain/logs/services/fetch-many-logs-ser
     DeletePostService,
     GetPostBySlugService,
     FetchManyPostsService,
+    TogglePostVisibilityService,
 
     // projects /////////////////////////
     CreateProjectService,

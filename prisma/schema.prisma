@@ -36,8 +36,9 @@ model Post {
   topstory String
   tags     Tag[]
 
-  createdAt DateTime  @default(now()) @map("created_at")
-  updatedAt DateTime? @updatedAt @map("updated_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  publishedAt DateTime? @default(dbgenerated("null"))
+  updatedAt   DateTime? @updatedAt @map("updated_at")
 
   authorId String @map("author_id")
 
