@@ -4,6 +4,7 @@ import { TagPresenter } from './tag-presenter';
 export class PostPresenter {
   static toHTTP(post: Post) {
     return {
+      id: post.id.toValue(),
       title: post.title,
       slug: post.slug,
       topstory: post.topstory,
