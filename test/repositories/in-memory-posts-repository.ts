@@ -143,6 +143,7 @@ export class InMemoryPostsRepository implements IPostsRepository {
       topstory: post.topstory,
       updatedAt: post.updatedAt,
       id: post.id,
+      publishedAt: post.publishedAt,
     });
   }
 }

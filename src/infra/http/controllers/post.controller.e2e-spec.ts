@@ -70,6 +70,7 @@ describe('PostController', () => {
     const user = await userFactory.createAndPersist('editor');
     const post = await postFactory.createAndPersist({
       authorId: user.id,
+      publishedAt: new Date(),
     });
 
     const response = await supertest(app.getHttpServer()).get(

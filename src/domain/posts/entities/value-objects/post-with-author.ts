@@ -12,6 +12,7 @@ export interface PostWithAuthorProps {
   topstory: string;
   tags: PostTagList;
   createdAt: Date;
+  publishedAt?: Date | null;
   updatedAt?: Date | null;
 }
 
@@ -54,6 +55,10 @@ export class PostWithAuthor extends ValueObject<PostWithAuthorProps> {
 
   get createdAt() {
     return this.props.createdAt;
+  }
+
+  get publishedAt() {
+    return this.props.publishedAt;
   }
 
   get updatedAt() {

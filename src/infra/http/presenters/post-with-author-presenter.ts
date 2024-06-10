@@ -12,6 +12,7 @@ export class PostWithAuthorPresenter {
       tags: post.tags.getItems().map(TagPresenter.toHTTP),
       content: post.content,
       updatedAt: post.updatedAt,
+      publishedAt: post.publishedAt,
       createdAt: post.createdAt,
     };
   }

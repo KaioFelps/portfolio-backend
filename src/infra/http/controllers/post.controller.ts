@@ -48,11 +48,19 @@ export class PostController {
   @Get('/:slug/show')
   @PublicRoute()
   @HttpCode(200)
-  async get(@Param('slug') slug: string) {
-    const response = await this.getPostBySlugService.exec({ slug });
+  async get(@Param('slug') slug: string, @CurrentUser() user?: TokenPayload) {
+    const response = await this.getPostBySlugService.exec({
+      slug,
+      authorId: user?.sub,
+    });
 
     if (response.isFail()) {
-      throw new InternalServerErrorException();
+      switch (response.value.constructor) {
+        case BadRequestError:
+          throw new BadRequestException(response.value.message);
+        default:
+          throw new InternalServerErrorException();
+      }
     }
 
     const { post: domainPostWithAuthor } = response.value;
