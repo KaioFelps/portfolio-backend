@@ -3,6 +3,7 @@ import { PostFactory } from 'test/factories/post-factory';
 import { GetPostBySlugService } from './get-post-by-slug-service';
 import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository';
 import { UserFactory } from 'test/factories/user-factory';
+import { TokenPayload } from '@/infra/auth/jwt-strategy';
 
 describe('Get Post By Slug Service', () => {
   let sut: GetPostBySlugService;
@@ -26,11 +27,15 @@ describe('Get Post By Slug Service', () => {
     const result = await sut.exec({ slug: post.slug });
     const staffResult = await sut.exec({
       slug: post.slug,
-      authorId: user.id.toValue(),
+      user: {
+        name: user.name,
+        role: user.role,
+        sub: user.id.toValue(),
+      } satisfies TokenPayload,
     });
 
-    assert(result.isFail());
-    assert(staffResult.isOk());
+    assert(!result.value!.post);
+    assert(!!staffResult.value!.post);
   });
 
   it('should get a published post by slug', async () => {

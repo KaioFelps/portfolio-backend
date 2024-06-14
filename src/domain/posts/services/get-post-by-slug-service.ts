@@ -1,16 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { IPostsRepository } from '../repositories/posts-repository';
-import { Either, fail, ok } from '@/core/types/either';
+import { Either, ok } from '@/core/types/either';
 import { PostWithAuthor } from '../entities/value-objects/post-with-author';
-import { BadRequestError } from '@/core/errors/bad-request-error';
+import { TokenPayload } from '@/infra/auth/jwt-strategy';
 
 interface GetPostBySlugServiceRequest {
-  authorId?: string;
+  user?: TokenPayload;
   slug: string;
 }
 
 type GetPostBySlugServiceResponse = Either<
-  BadRequestError,
+  null,
   { post: PostWithAuthor | null }
 >;
 
@@ -20,12 +20,12 @@ export class GetPostBySlugService {
 
   async exec({
     slug,
-    authorId,
+    user,
   }: GetPostBySlugServiceRequest): Promise<GetPostBySlugServiceResponse> {
     const post = await this.postsRepository.findBySlugWithAuthor(slug);
 
-    if (!post?.publishedAt && !authorId) {
-      return fail(new BadRequestError());
+    if (!post?.publishedAt && !user) {
+      return ok({ post: null });
     }
 
     return ok({
