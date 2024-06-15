@@ -18,7 +18,6 @@ import { WrongCredentialError } from '@/core/errors/wrong-credentials-error';
 import { PublicRoute } from '@/infra/auth/decorators/public-route';
 import type { CookieOptions, Request, Response } from 'express';
 import { EnvService } from '@/infra/env/env-service';
-import { TokenPayload } from '@/infra/auth/jwt-strategy';
 import { RefreshAuthenticationService } from '@/domain/users/services/refresh-authentication-service';
 
 @Controller('auth')
@@ -78,21 +77,27 @@ export class AuthController {
 
   @Patch('refresh')
   @HttpCode(200)
+  @PublicRoute()
   @Header('Access-Control-Allow-Credentials', 'true')
   async refresh(
     @Req() request: Request,
     @Res({ passthrough: true }) response: Response,
   ) {
-    const { name, role, sub: userId } = request.user as TokenPayload;
+    const { refresh_token: refreshTokenCookie } = request.cookies;
 
     const result = await this.refreshAuthenticationService.exec({
-      id: userId,
-      name,
-      role,
+      refreshToken: refreshTokenCookie,
     });
 
     if (result.isFail()) {
-      throw new InternalServerErrorException();
+      const error = result.value;
+
+      switch (error.constructor) {
+        case WrongCredentialError:
+          throw new UnauthorizedException(error.message);
+        default:
+          throw new InternalServerErrorException();
+      }
     }
 
     const { accessToken, refreshToken } = result.value;

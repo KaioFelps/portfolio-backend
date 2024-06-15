@@ -1,13 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { Either, ok } from '@/core/types/either';
+import { Either, fail, ok } from '@/core/types/either';
 import { WrongCredentialError } from '@/core/errors/wrong-credentials-error';
 import { IEncryptor } from '@/core/crypt/encrypter';
-import { UserRole } from '@prisma/client';
 
 interface RefreshAuthenticationServiceRequest {
-  id: string;
-  name: string;
-  role: UserRole;
+  refreshToken?: string;
 }
 
 type RefreshAuthenticationServiceResponse = Either<
@@ -23,19 +20,23 @@ export class RefreshAuthenticationService {
   constructor(private encryptor: IEncryptor) {}
 
   async exec({
-    id,
-    name,
-    role,
+    refreshToken: _refreshToken,
   }: RefreshAuthenticationServiceRequest): Promise<RefreshAuthenticationServiceResponse> {
+    if (!_refreshToken) {
+      return fail(new WrongCredentialError());
+    }
+
+    const { name, role, sub } = await this.encryptor.decrypt(_refreshToken);
+
     const accessToken = await this.encryptor.encrypt({
-      sub: id,
+      sub,
       name,
       role,
     });
 
     const refreshToken = await this.encryptor.encrypt(
       {
-        sub: id,
+        sub,
         name,
         role,
       },

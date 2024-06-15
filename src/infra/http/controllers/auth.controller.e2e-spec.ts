@@ -7,6 +7,7 @@ import request from 'supertest';
 import { hash } from 'bcryptjs';
 import { JwtModule, JwtService } from '@nestjs/jwt';
 import { TokenPayload } from '@/infra/auth/jwt-strategy';
+import cookieParser from 'cookie-parser';
 
 describe('AuthController', () => {
   let app: INestApplication;
@@ -20,6 +21,8 @@ describe('AuthController', () => {
     }).compile();
 
     app = module.createNestApplication();
+    app.use(cookieParser());
+    app.enableCors({ credentials: true });
     userFactory = module.get(UserFactory);
     jwt = module.get(JwtService);
 
@@ -66,25 +69,24 @@ describe('AuthController', () => {
   test('[PATCH] /auth/refresh', async () => {
     const ROUTE = '/auth/refresh';
 
-    const user = await userFactory.createAndPersist('editor', {
+    await userFactory.createAndPersist('editor', {
       email: 'kaio2@gmail.com',
       password: await hash('12345678910comerpasteis', 6),
     });
 
-    const token = await jwt.signAsync(
-      {
-        name: user.name,
-        role: user.role,
-        sub: user.id.toValue(),
-      } as TokenPayload,
-      {
-        expiresIn: '10h',
-      },
-    );
+    const loginResponse = await request(app.getHttpServer())
+      .post('/auth/login')
+      .send({
+        email: 'kaio2@gmail.com',
+        password: '12345678910comerpasteis',
+      });
+
+    const refreshCookie = loginResponse.header['set-cookie'];
 
     const refreshResponse = await request(app.getHttpServer())
       .patch(ROUTE)
-      .set({ Authorization: `Bearer ${token}` })
+      .set('Cookie', [...refreshCookie])
+      .withCredentials(true)
       .send()
       .expect(200);
 

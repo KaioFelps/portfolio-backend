@@ -17,11 +17,16 @@ describe('Refresh Authentication Service', () => {
       name: 'Kaio Felipe',
     });
 
-    const result = await sut.exec({
-      name: user.name,
-      role: user.role,
-      id: user.id.toValue(),
-    });
+    const refreshToken = await encryptor.encrypt(
+      {
+        sub: user.id.toValue(),
+        name: user.name,
+        role: user.role,
+      },
+      '10h',
+    );
+
+    const result = await sut.exec({ refreshToken });
 
     expect(result.isOk()).toBe(true);
 

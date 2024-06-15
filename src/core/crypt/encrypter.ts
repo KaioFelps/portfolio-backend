@@ -1,3 +1,5 @@
+import { TokenPayload } from '@/infra/auth/jwt-strategy';
+
 export abstract class IEncryptor {
   abstract encrypt(
     payload: Record<string, unknown>,
@@ -6,4 +8,6 @@ export abstract class IEncryptor {
      */
     expiresIn?: number | string,
   ): Promise<string>;
+
+  abstract decrypt(token: string): Promise<TokenPayload>;
 }
