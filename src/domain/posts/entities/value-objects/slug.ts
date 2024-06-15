@@ -5,7 +5,9 @@ export class Slug {
     this.value = slug;
   }
 
-  static fromTitle(title: string) {
+  static fromTitle(title: string, id: string) {
+    const firstSliceFromId = id.trim().split('-')[0];
+
     const formattedTitle = title
       .normalize('NFKD')
       .toLowerCase()
@@ -21,7 +23,7 @@ export class Slug {
       .replace(/--+/g, '-')
       .replace(/-$/, '');
 
-    return new Slug(formattedTitle);
+    return new Slug(firstSliceFromId + '-' + formattedTitle);
   }
 
   static create(slug: string) {

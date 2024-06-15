@@ -26,12 +26,13 @@ export class Post extends Aggregate<PostProps> {
 
   static create(
     props: Optional<PostProps, 'createdAt' | 'slug'>,
-    id?: EntityUniqueId,
+    _id?: EntityUniqueId,
   ) {
+    const id = _id ?? new EntityUniqueId();
     const post = new Post(
       {
         ...props,
-        slug: props.slug ?? Slug.fromTitle(props.title),
+        slug: props.slug ?? Slug.fromTitle(props.title, id.toValue()),
         tags: props.tags ?? new PostTagList(),
         createdAt: props.createdAt ?? new Date(),
         updatedAt: props.updatedAt ?? null,
@@ -53,7 +54,7 @@ export class Post extends Aggregate<PostProps> {
 
   set title(value: string) {
     this.props.title = value;
-    this.props.slug = Slug.fromTitle(value);
+    this.props.slug = Slug.fromTitle(value, this.id.toValue());
     this.touch();
   }
 
