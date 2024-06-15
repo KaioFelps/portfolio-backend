@@ -48,7 +48,10 @@ export class PostController {
   @Get('/:slug/show')
   @PublicRoute()
   @HttpCode(200)
-  async get(@Param('slug') slug: string, @CurrentUser() user?: TokenPayload) {
+  async get(
+    @Param('slug') slug: string,
+    @CurrentUser() user: TokenPayload | null,
+  ) {
     const response = await this.getPostBySlugService.exec({
       slug,
       user,

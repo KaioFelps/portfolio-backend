@@ -24,7 +24,7 @@ describe('Get Post By Slug Service', () => {
 
     postsRepository.items.push(post);
 
-    const result = await sut.exec({ slug: post.slug });
+    const result = await sut.exec({ slug: post.slug, user: null });
     const staffResult = await sut.exec({
       slug: post.slug,
       user: {
@@ -52,6 +52,7 @@ describe('Get Post By Slug Service', () => {
 
     const result = await sut.exec({
       slug: post.slug,
+      user: null,
     });
 
     expect(result.isOk()).toBe(true);

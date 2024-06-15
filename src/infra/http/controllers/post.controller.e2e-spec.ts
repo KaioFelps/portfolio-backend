@@ -68,16 +68,45 @@ describe('PostController', () => {
 
   test('[GET] /post/:slug/show', async () => {
     const user = await userFactory.createAndPersist('editor');
+
     const post = await postFactory.createAndPersist({
       authorId: user.id,
       publishedAt: new Date(),
+    });
+
+    const nonPublishedPost = await postFactory.createAndPersist({
+      authorId: user.id,
     });
 
     const response = await supertest(app.getHttpServer()).get(
       `/post/${post.slug}/show`,
     );
 
-    expect(response.body.post).toEqual(
+    expect(
+      response.statusCode,
+      "unlogged '/post/:slug/show' request to return a '200' http status code.",
+    ).toBe(200);
+
+    const token = await jwt.signAsync({
+      name: user.name,
+      role: user.role,
+      sub: user.id.toValue(),
+    } satisfies TokenPayload);
+
+    const loggedInResponse = await supertest(app.getHttpServer())
+      .get(`/post/${nonPublishedPost.slug}/show`)
+      .set({ Authorization: `Bearer ${token}` })
+      .send();
+
+    expect(
+      loggedInResponse.statusCode,
+      "logged in '/post/:slug/show' request to return a '200' http status code.",
+    ).toBe(200);
+
+    expect(
+      response.body.post,
+      'to be able to see a published post even unlogged in.',
+    ).toEqual(
       expect.objectContaining({
         id: post.id.toValue(),
         author: user.name,
@@ -88,6 +117,25 @@ describe('PostController', () => {
         topstory: post.topstory,
         tags: [],
         updatedAt: null,
+        publishedAt: expect.any(String),
+      }),
+    );
+
+    expect(
+      loggedInResponse.body.post,
+      'to be able to see a unpublished post, once logged in.',
+    ).toEqual(
+      expect.objectContaining({
+        id: nonPublishedPost.id.toValue(),
+        author: user.name,
+        content: nonPublishedPost.content,
+        createdAt: expect.any(String),
+        title: nonPublishedPost.title,
+        slug: nonPublishedPost.slug,
+        topstory: nonPublishedPost.topstory,
+        tags: [],
+        updatedAt: null,
+        publishedAt: null,
       }),
     );
   });

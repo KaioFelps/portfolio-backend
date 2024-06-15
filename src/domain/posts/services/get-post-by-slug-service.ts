@@ -5,7 +5,7 @@ import { PostWithAuthor } from '../entities/value-objects/post-with-author';
 import { TokenPayload } from '@/infra/auth/jwt-strategy';
 
 interface GetPostBySlugServiceRequest {
-  user?: TokenPayload;
+  user: TokenPayload | null;
   slug: string;
 }
 
