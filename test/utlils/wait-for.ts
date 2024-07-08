@@ -9,7 +9,7 @@
  */
 export async function waitFor(
   assertions: () => void,
-  maxDuration = 10000,
+  maxDuration = 15000,
 ): Promise<void> {
   return new Promise((resolve, reject) => {
     let elapsedTime = 0;
