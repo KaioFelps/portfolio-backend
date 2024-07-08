@@ -17,8 +17,8 @@
     "test:watch": "vitest --watch",
     "test:cov": "vitest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "vitest --config ./vitest.config.e2e.ts",
-    "test:e2e:watch": "vitest --config ./vitest.config.e2e.ts --watch"
+    "test:e2e": "vitest --config ./vitest.config.e2e.ts --poolOptions.threads.minThreads 1 --poolOptions.threads.maxThreads 3",
+    "test:e2e:watch": "vitest --config ./vitest.config.e2e.ts --poolOptions.threads.minThreads 1 --poolOptions.threads.maxThreads 3 --watch"
   },
   "dependencies": {
     "@faker-js/faker": "^8.4.1",
