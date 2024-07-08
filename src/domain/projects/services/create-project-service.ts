@@ -14,7 +14,7 @@ interface CreateProjectServiceRequest {
   title: string;
   topstory: string;
   tags: string[];
-  links: string[];
+  links: Array<{ title: string; value: string }>;
 }
 
 type CreateProjectServiceResponse = Either<
@@ -57,8 +57,8 @@ export class CreateProjectService {
     );
 
     const projectLinksList = new ProjectLinkList(
-      links.map((link) =>
-        ProjectLink.create({ projectId: project.id, value: link }),
+      links.map(({ title, value }) =>
+        ProjectLink.create({ projectId: project.id, value, title }),
       ),
     );
 

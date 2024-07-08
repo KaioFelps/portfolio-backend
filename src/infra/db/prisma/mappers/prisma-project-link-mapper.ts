@@ -8,6 +8,7 @@ export class PrismaProjectLinkMapper {
       {
         projectId: new EntityUniqueId(link.projectId!),
         value: link.value,
+        title: link.title,
       },
       new EntityUniqueId(link.id),
     );
@@ -16,6 +17,7 @@ export class PrismaProjectLinkMapper {
   static toPrisma(link: ProjectLink): Prisma.LinkCreateManyInput {
     return {
       value: link.value,
+      title: link.title,
       id: link.id.toValue(),
       projectId: link.projectId.toValue(),
     };

@@ -4,7 +4,10 @@ import {
   ArrayMinSize,
   IsUrl,
   IsString,
+  ValidateNested,
 } from 'class-validator';
+import { LinkDto } from './link';
+import { Type } from 'class-transformer';
 
 export class CreateProjectDto {
   @IsNotEmpty()
@@ -23,6 +26,7 @@ export class CreateProjectDto {
   tags!: string[];
 
   @IsArray()
-  @IsUrl({ require_protocol: true }, { each: true })
-  links!: string[];
+  @ValidateNested({ each: true })
+  @Type(() => LinkDto)
+  links!: Array<LinkDto>;
 }

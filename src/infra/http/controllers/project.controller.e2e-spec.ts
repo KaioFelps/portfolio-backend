@@ -66,7 +66,7 @@ describe('ProjectController', () => {
         title: 'Hidro Mourão',
         topstory: 'https://i.imgur.com/payZTW9.png',
         tags: ['front-end'],
-        links: ['https://hidromourao.com'],
+        links: [{ title: 'Deploy', value: 'https://hidromourao.com' }],
       })
       .expect(201);
 
@@ -80,6 +80,7 @@ describe('ProjectController', () => {
       ]),
       links: expect.arrayContaining([
         expect.objectContaining({
+          title: 'Deploy',
           value: 'https://hidromourao.com',
         }),
       ]),

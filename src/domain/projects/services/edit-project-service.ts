@@ -19,7 +19,7 @@ interface EditProjectServiceRequest {
   title?: string;
   topstory?: string;
   tags?: string[];
-  links?: string[];
+  links?: Array<{ title: string; value: string }>;
 }
 
 type EditProjectServiceResponse = Either<
@@ -61,10 +61,11 @@ export class EditProjectService {
       await this.projectLinksRepository.findManyByProjectId(entityProjectId);
     const currentLinksList = new ProjectLinkList(currentLinks);
 
-    const newLinks = links.map((link) =>
+    const newLinks = links.map(({ title, value }) =>
       ProjectLink.create({
         projectId: entityProjectId,
-        value: link,
+        value,
+        title,
       }),
     );
 

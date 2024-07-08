@@ -3,7 +3,7 @@ import { ProjectLink } from '@/domain/projects/entities/project-link';
 export class ProjectLinkPresenter {
   static toHTTP(link: ProjectLink) {
     return {
-      id: link.id.toValue(),
+      title: link.title,
       value: link.value,
     };
   }

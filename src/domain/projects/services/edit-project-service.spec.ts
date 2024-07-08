@@ -80,7 +80,7 @@ describe('Edit Project Service', () => {
     await sut.exec({
       projectId: project.id.toValue(),
       userId: user.id.toValue(),
-      links: ['kaiofelps.dev'],
+      links: [{ title: 'Website', value: 'kaiofelps.dev' }],
       tags: ['value-1', 'value-3'],
     });
 

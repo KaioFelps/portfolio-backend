@@ -9,10 +9,13 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class ProjectLinkFactory {
-  static exec(override?: Optional<ProjectLinkProps, 'projectId' | 'value'>) {
+  static exec(
+    override?: Optional<ProjectLinkProps, 'projectId' | 'value' | 'title'>,
+  ) {
     return ProjectLink.create({
       projectId: new EntityUniqueId(),
       value: faker.internet.url(),
+      title: faker.company.name(),
       ...override,
     });
   }

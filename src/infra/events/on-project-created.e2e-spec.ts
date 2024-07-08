@@ -46,7 +46,7 @@ describe('On Project Created Event handler', () => {
         title: 'Portfólio',
         topstory: 'https://i.imgur.com/NQ9ImcM.png',
         tags: ['back-end', 'front-end', 'nestjs', 'clean architecture'],
-        links: ['https://www.kaiofelps.dev'],
+        links: [{ title: 'Deploy', value: 'https://www.kaiofelps.dev' }],
       } as CreateProjectDto);
 
     await waitFor(async () => {

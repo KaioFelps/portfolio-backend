@@ -63,6 +63,7 @@ model Tag {
 model Link {
   id    String @id @default(uuid())
   value String
+  title String
 
   projectId String? @map("project_id")
 

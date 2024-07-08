@@ -1,4 +1,12 @@
-import { IsArray, IsOptional, IsString, IsUrl } from 'class-validator';
+import {
+  IsArray,
+  IsOptional,
+  IsString,
+  IsUrl,
+  ValidateNested,
+} from 'class-validator';
+import { LinkDto } from './link';
+import { Type } from 'class-transformer';
 
 export class UpdateProjectDto {
   @IsString()
@@ -17,6 +25,7 @@ export class UpdateProjectDto {
 
   @IsArray()
   @IsOptional()
-  @IsString({ each: true })
-  links?: string[];
+  @ValidateNested({ each: true })
+  @Type(() => LinkDto)
+  links?: Array<LinkDto>;
 }
