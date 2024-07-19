@@ -24,6 +24,7 @@ import { FetchManyPostsService } from '@/domain/posts/services/fetch-many-posts-
 import { FetchManyLogsService } from '@/domain/logs/services/fetch-many-logs-service';
 import { TogglePostVisibilityService } from '@/domain/posts/services/toggle-post-visibility-service';
 import { FetchManyPublishedPostsService } from '@/domain/posts/services/fetch-many-published-posts-service';
+import { StatisticController } from './controllers/statistic.controller';
 
 @Module({
   imports: [CryptographyModule, DatabaseModule],
@@ -33,6 +34,7 @@ import { FetchManyPublishedPostsService } from '@/domain/posts/services/fetch-ma
     ProjectController,
     PostController,
     LogController,
+    StatisticController,
   ],
   providers: [
     // logs /////////////////////////////
