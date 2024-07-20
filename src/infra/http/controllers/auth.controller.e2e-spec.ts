@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { HttpStatus, INestApplication } from '@nestjs/common';
+import { INestApplication } from '@nestjs/common';
 import { UserFactory } from 'test/factories/user-factory';
 import { AppModule } from '@/app.module';
 import { DatabaseModule } from '@/infra/db/database.module';
@@ -32,7 +32,7 @@ describe('AuthController', () => {
   test('[POST] /auth/login', async () => {
     const ROUTE = '/auth/login';
 
-    await userFactory.createAndPersist('editor', {
+    const user = await userFactory.createAndPersist('editor', {
       email: 'kaio@gmail.com',
       password: await hash('12345678910comerpasteis', 6),
     });
@@ -60,16 +60,23 @@ describe('AuthController', () => {
       .send({
         email: 'kaio@gmail.com',
         password: '12345678910comerpasteis',
-      });
+      })
+      .expect(200);
 
-    expect(successResponse.statusCode).toBe(HttpStatus.OK);
-    expect(successResponse.body.access_token).toEqual(expect.any(String));
+    expect(successResponse.body).toMatchObject({
+      accessToken: expect.any(String),
+      user: expect.objectContaining({
+        id: user.id.toValue(),
+        name: user.name,
+        role: user.role,
+      }),
+    });
   });
 
   test('[PATCH] /auth/refresh', async () => {
     const ROUTE = '/auth/refresh';
 
-    await userFactory.createAndPersist('editor', {
+    const user = await userFactory.createAndPersist('editor', {
       email: 'kaio2@gmail.com',
       password: await hash('12345678910comerpasteis', 6),
     });
@@ -90,7 +97,14 @@ describe('AuthController', () => {
       .send()
       .expect(200);
 
-    expect(refreshResponse.body.access_token).toEqual(expect.any(String));
+    expect(refreshResponse.body).toMatchObject({
+      accessToken: expect.any(String),
+      user: expect.objectContaining({
+        id: user.id.toValue(),
+        name: user.name,
+        role: user.role,
+      }),
+    });
 
     expect(refreshResponse.get('Set-Cookie')).toEqual([
       expect.stringContaining('refresh_token'),
@@ -116,13 +130,13 @@ describe('AuthController', () => {
       },
     );
 
-    const logoutResposne = await request(app.getHttpServer())
+    const logoutResponse = await request(app.getHttpServer())
       .post(ROUTE)
       .set({ Authorization: `Bearer ${token}` })
       .send()
       .expect(204);
 
-    expect(logoutResposne.get('Set-Cookie')).toEqual([
+    expect(logoutResponse.get('Set-Cookie')).toEqual([
       expect.stringContaining('refresh_token=;'),
     ]);
   });

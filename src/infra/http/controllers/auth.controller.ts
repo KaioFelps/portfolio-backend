@@ -61,11 +61,11 @@ export class AuthController {
           throw new BadRequestException();
       }
     }
-    const { accessToken, refreshToken } = result.value;
+    const { accessToken, refreshToken, user } = result.value;
 
     response.cookie('refresh_token', refreshToken, this.refreshTokenOptions);
 
-    return { access_token: accessToken };
+    return { accessToken, user };
   }
 
   @Post('logout')
@@ -100,10 +100,10 @@ export class AuthController {
       }
     }
 
-    const { accessToken, refreshToken } = result.value;
+    const { accessToken, refreshToken, user } = result.value;
 
     response.cookie('refresh_token', refreshToken, this.refreshTokenOptions);
 
-    return { access_token: accessToken, refreshToken };
+    return { accessToken, refreshToken, user };
   }
 }

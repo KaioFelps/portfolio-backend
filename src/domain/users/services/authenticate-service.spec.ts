@@ -39,6 +39,11 @@ describe('Authenticate Service', () => {
 
     if (result.isOk()) {
       expect(result.value.accessToken).toEqual(expect.any(String));
+      expect(result.value.user).toMatchObject({
+        id: user.id.toValue(),
+        name: user.name,
+        role: user.role,
+      });
     }
   });
 });

@@ -4,6 +4,7 @@ import { Either, fail, ok } from '@/core/types/either';
 import { WrongCredentialError } from '@/core/errors/wrong-credentials-error';
 import { IHashComparor } from '@/core/crypt/hash-comparor';
 import { IEncryptor } from '@/core/crypt/encrypter';
+import { UserRole } from '../entities/user';
 
 interface AuthenticateServiceRequest {
   email: string;
@@ -12,7 +13,11 @@ interface AuthenticateServiceRequest {
 
 type AuthenticateServiceResponse = Either<
   WrongCredentialError,
-  { accessToken: string; refreshToken: string }
+  {
+    accessToken: string;
+    refreshToken: string;
+    user: { id: string; name: string; role: UserRole };
+  }
 >;
 
 @Injectable()
@@ -57,6 +62,10 @@ export class AuthenticateService {
       '10h',
     );
 
-    return ok({ accessToken, refreshToken });
+    return ok({
+      accessToken,
+      refreshToken,
+      user: { id: user.id.toValue(), name: user.name, role: user.role },
+    });
   }
 }
