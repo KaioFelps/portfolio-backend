@@ -4,11 +4,8 @@ import * as cookieParser from 'cookie-parser';
 import { EnvService } from './infra/env/env-service';
 import { IHashGenerator } from './core/crypt/hash-generator';
 import { PrismaService } from './infra/db/prisma/prisma-service';
-import { execSync } from 'child_process';
 
 async function bootstrap() {
-  execSync('npx prisma migrate deploy');
-
   const app = await NestFactory.create(AppModule);
   app.use(cookieParser());
   app.enableCors({ credentials: true });
