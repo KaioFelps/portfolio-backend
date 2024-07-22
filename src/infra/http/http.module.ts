@@ -25,6 +25,8 @@ import { FetchManyLogsService } from '@/domain/logs/services/fetch-many-logs-ser
 import { TogglePostVisibilityService } from '@/domain/posts/services/toggle-post-visibility-service';
 import { FetchManyPublishedPostsService } from '@/domain/posts/services/fetch-many-published-posts-service';
 import { StatisticController } from './controllers/statistic.controller';
+import { CreateTagService } from '@/domain/tags/services/create-tag-service';
+import { TagsController } from './controllers/tag.controller';
 
 @Module({
   imports: [CryptographyModule, DatabaseModule],
@@ -35,6 +37,7 @@ import { StatisticController } from './controllers/statistic.controller';
     PostController,
     LogController,
     StatisticController,
+    TagsController,
   ],
   providers: [
     // logs /////////////////////////////
@@ -64,6 +67,9 @@ import { StatisticController } from './controllers/statistic.controller';
     // sessions /////////////////////////
     AuthenticateService,
     RefreshAuthenticationService,
+
+    // tags
+    CreateTagService,
   ],
 })
 export class HttpModule {}
