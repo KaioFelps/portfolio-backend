@@ -10,7 +10,7 @@ export class PrismaProjectTagsRepository implements IProjectTagsRepository {
   constructor(private prisma: PrismaService) {}
 
   async createMany(tags: ProjectTag[]): Promise<void> {
-    await this.prisma.tag.createMany(
+    await this.prisma.tagsOnPostsOrProjects.createMany(
       PrismaProjectTagMapper.toPrismaCreateMany(tags),
     );
   }
@@ -28,9 +28,12 @@ export class PrismaProjectTagsRepository implements IProjectTagsRepository {
   }
 
   async findManyByProjectId(projectId: EntityUniqueId): Promise<ProjectTag[]> {
-    const prismaTags = await this.prisma.tag.findMany({
+    const prismaTags = await this.prisma.tagsOnPostsOrProjects.findMany({
       where: {
         projectId: projectId.toValue(),
+      },
+      include: {
+        Tag: true,
       },
     });
 

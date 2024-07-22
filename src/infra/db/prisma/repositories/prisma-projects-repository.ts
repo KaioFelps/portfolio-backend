@@ -1,6 +1,8 @@
-import { PaginationParams } from '@/core/types/pagination-params';
 import { Project } from '@/domain/projects/entities/project';
-import { IProjectsRepository } from '@/domain/projects/repositories/projects-repository';
+import {
+  IProjectsRepository,
+  ProjectListPaginationParams,
+} from '@/domain/projects/repositories/projects-repository';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma-service';
 import { PrismaProjectMapper } from '../mappers/prisma-project-mapper';
@@ -41,7 +43,9 @@ export class PrismaProjectsRepository implements IProjectsRepository {
       },
       include: {
         links: true,
-        tags: true,
+        tags: {
+          include: { Tag: true },
+        },
       },
     });
 
@@ -58,12 +62,23 @@ export class PrismaProjectsRepository implements IProjectsRepository {
     amount,
     page = 1,
     query,
-  }: PaginationParams): Promise<PaginationResponse<Project>> {
+  }: ProjectListPaginationParams): Promise<PaginationResponse<Project>> {
     const PER_PAGE = amount ?? 10;
 
     const offset = (page - 1) * PER_PAGE;
 
-    const where: Prisma.ProjectWhereInput = { title: { contains: query } };
+    const where: Prisma.ProjectWhereInput = {};
+
+    if (query) {
+      switch (query.type) {
+        case 'tag':
+          where.tags = { some: { id: query.value } };
+          break;
+        case 'title':
+          where.title = { contains: query.value, mode: 'insensitive' };
+          break;
+      }
+    }
 
     const projects = await this.prisma.project.findMany({
       take: PER_PAGE,
@@ -74,7 +89,9 @@ export class PrismaProjectsRepository implements IProjectsRepository {
       where,
       include: {
         links: true,
-        tags: true,
+        tags: {
+          include: { Tag: true },
+        },
       },
     });
 

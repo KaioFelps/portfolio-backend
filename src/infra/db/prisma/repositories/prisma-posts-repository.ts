@@ -39,7 +39,9 @@ export class PrismaPostsRepository implements IPostsRepository {
         id,
       },
       include: {
-        tags: true,
+        tags: {
+          include: { Tag: true },
+        },
       },
     });
 
@@ -58,7 +60,9 @@ export class PrismaPostsRepository implements IPostsRepository {
         slug,
       },
       include: {
-        tags: true,
+        tags: {
+          include: { Tag: true },
+        },
       },
     });
 
@@ -77,7 +81,9 @@ export class PrismaPostsRepository implements IPostsRepository {
         slug,
       },
       include: {
-        tags: true,
+        tags: {
+          include: { Tag: true },
+        },
         author: true,
       },
     });
@@ -95,20 +101,20 @@ export class PrismaPostsRepository implements IPostsRepository {
     amount,
     page = 1,
     query,
-    tag,
   }: PostListPaginationParams): Promise<PaginationResponse<Post>> {
     const PER_PAGE = amount ?? QUANTITY_PER_PAGE;
 
     const offset = (page - 1) * PER_PAGE;
 
-    const where: Prisma.PostWhereInput = {
-      title: { contains: query, mode: 'insensitive' },
-      tags: tag
-        ? {
-            some: { value: { equals: tag, mode: 'insensitive' } },
-          }
-        : undefined,
-    };
+    const where: Prisma.PostWhereInput = {};
+    switch (query?.type) {
+      case 'tag':
+        where.tags = { some: { id: { equals: query.value } } };
+        break;
+      case 'title':
+        where.title = { contains: query.value, mode: 'insensitive' };
+        break;
+    }
 
     const posts = await this.prisma.post.findMany({
       take: PER_PAGE,
@@ -118,7 +124,9 @@ export class PrismaPostsRepository implements IPostsRepository {
       },
       where,
       include: {
-        tags: true,
+        tags: {
+          include: { Tag: true },
+        },
       },
     });
 
@@ -143,23 +151,22 @@ export class PrismaPostsRepository implements IPostsRepository {
     amount,
     page = 1,
     query,
-    tag,
   }: PostListPaginationParams): Promise<PaginationResponse<Post>> {
     const PER_PAGE = amount ?? QUANTITY_PER_PAGE;
 
     const offset = (page - 1) * PER_PAGE;
 
-    const where: Prisma.PostWhereInput = {
-      NOT: {
-        publishedAt: null,
-      },
-      title: { contains: query, mode: 'insensitive' },
-      tags: tag
-        ? {
-            some: { value: { equals: tag, mode: 'insensitive' } },
-          }
-        : undefined,
-    };
+    const where: Prisma.PostWhereInput = { NOT: { publishedAt: null } };
+    switch (query?.type) {
+      case 'tag':
+        where.tags = {
+          some: { id: { equals: query.value } },
+        };
+        break;
+      case 'title':
+        where.title = { contains: query.value, mode: 'insensitive' };
+        break;
+    }
 
     const posts = await this.prisma.post.findMany({
       take: PER_PAGE,
@@ -169,7 +176,9 @@ export class PrismaPostsRepository implements IPostsRepository {
       },
       where,
       include: {
-        tags: true,
+        tags: {
+          include: { Tag: true },
+        },
       },
     });
 

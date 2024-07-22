@@ -1,8 +1,10 @@
 import { DomainEvents } from '@/core/events/domain-events';
-import { PaginationParams } from '@/core/types/pagination-params';
 import { Post } from '@/domain/posts/entities/post';
 import { PostWithAuthor } from '@/domain/posts/entities/value-objects/post-with-author';
-import { IPostsRepository } from '@/domain/posts/repositories/posts-repository';
+import {
+  IPostsRepository,
+  PostListPaginationParams,
+} from '@/domain/posts/repositories/posts-repository';
 import { InMemoryUsersRepository } from './in-memory-users-repository';
 import { Slug } from '@/domain/posts/entities/value-objects/slug';
 import { PaginationResponse } from '@/core/types/pagination-responses';
@@ -30,28 +32,23 @@ export class InMemoryPostsRepository implements IPostsRepository {
     amount: itemsPerPage = 9,
     page = 1,
     query,
-  }: PaginationParams): Promise<PaginationResponse<Post>> {
+  }: PostListPaginationParams): Promise<PaginationResponse<Post>> {
     let posts: Post[] = [];
 
     if (query) {
       posts = this.items.filter((item) => {
-        if (item.title.includes(query.trim())) {
-          return item;
+        switch (query.type) {
+          case 'tag':
+            return item.tags.getItems().find((item) => {
+              return item.tag.id.toValue() === query.value;
+            });
+          case 'title':
+            return item.title
+              .toLowerCase()
+              .includes(query.value.trim().toLowerCase());
+          default:
+            return null;
         }
-
-        let loopPost: Post | null = null;
-
-        item.tags.getItems().forEach((tag) => {
-          if (tag.value === query) {
-            loopPost = item;
-          }
-        });
-
-        if (loopPost) {
-          return item;
-        }
-
-        return null;
       });
     } else {
       posts = this.items;
@@ -68,28 +65,29 @@ export class InMemoryPostsRepository implements IPostsRepository {
     amount: itemsPerPage = 9,
     page = 1,
     query,
-  }: PaginationParams): Promise<PaginationResponse<Post>> {
+  }: PostListPaginationParams): Promise<PaginationResponse<Post>> {
     let posts: Post[] = [];
 
     if (query) {
       posts = this.items.filter((item) => {
-        if (item.title.includes(query.trim())) {
-          return item;
+        switch (query.type) {
+          case 'tag':
+            return (
+              item.publishedAt &&
+              item.tags
+                .getItems()
+                .find((item) => item.tag.id.toValue() === query.value)
+            );
+          case 'title':
+            return (
+              item.publishedAt &&
+              item.title
+                .toLowerCase()
+                .includes(query.value.trim().toLowerCase())
+            );
+          default:
+            return Boolean(item.publishedAt);
         }
-
-        let loopPost: Post | null = null;
-
-        item.tags.getItems().forEach((tag) => {
-          if (tag.value === query) {
-            loopPost = item;
-          }
-        });
-
-        if (loopPost) {
-          return item;
-        }
-
-        return null;
       });
     } else {
       posts = this.items.filter((item) => !!item.publishedAt);

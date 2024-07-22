@@ -1,5 +1,18 @@
 import { PostWithAuthor } from '@/domain/posts/entities/value-objects/post-with-author';
-import { TagPresenter } from './tag-presenter';
+import { ProjectAndPostTagPresenter } from './project-and-post-tag-presenter';
+
+export type PostWithAuthorPresented = {
+  id: string;
+  author: string;
+  title: string;
+  slug: string;
+  topstory: string;
+  tags: Array<{ id: string; value: string }>;
+  content: string;
+  updatedAt: string | Date | null | undefined;
+  publishedAt: string | Date | null | undefined;
+  createdAt: string | Date;
+};
 
 export class PostWithAuthorPresenter {
   static toHTTP(post: PostWithAuthor) {
@@ -9,11 +22,11 @@ export class PostWithAuthorPresenter {
       title: post.title,
       slug: post.slug.value,
       topstory: post.topstory,
-      tags: post.tags.getItems().map(TagPresenter.toHTTP),
+      tags: post.tags.getItems().map(ProjectAndPostTagPresenter.toHTTP),
       content: post.content,
       updatedAt: post.updatedAt,
       publishedAt: post.publishedAt,
       createdAt: post.createdAt,
-    };
+    } satisfies PostWithAuthorPresented;
   }
 }

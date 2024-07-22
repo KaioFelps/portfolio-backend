@@ -3,9 +3,19 @@ import { Post } from '../entities/post';
 import { PostWithAuthor } from '../entities/value-objects/post-with-author';
 import { PaginationResponse } from '@/core/types/pagination-responses';
 
-export interface PostListPaginationParams extends PaginationParams {
-  tag?: string;
+export class PostQuery {
+  constructor(
+    public type: 'tag' | 'title',
+    public value: string,
+  ) {}
 }
+
+export type PostListPaginationParams = Pick<
+  PaginationParams,
+  Exclude<keyof PaginationParams, keyof { query?: string }>
+> & {
+  query?: PostQuery;
+};
 
 export abstract class IPostsRepository {
   abstract create(post: Post): Promise<void>;

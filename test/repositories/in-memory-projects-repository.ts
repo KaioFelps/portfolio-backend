@@ -1,10 +1,11 @@
 import { DomainEvents } from '@/core/events/domain-events';
-import { PaginationParams } from '@/core/types/pagination-params';
 import { Project } from '@/domain/projects/entities/project';
-import { IProjectsRepository } from '@/domain/projects/repositories/projects-repository';
+import {
+  IProjectsRepository,
+  ProjectListPaginationParams,
+} from '@/domain/projects/repositories/projects-repository';
 import { InMemoryProjectLinksRepository } from './in-memory-project-links-repository';
 import { InMemoryProjectTagsRepository } from './in-memory-project-tags-repository';
-import { ProjectTag } from '@/domain/projects/entities/project-tag';
 import { PaginationResponse } from '@/core/types/pagination-responses';
 
 export class InMemoryProjectsRepository implements IProjectsRepository {
@@ -32,29 +33,24 @@ export class InMemoryProjectsRepository implements IProjectsRepository {
     amount: itemsPerPage = 9,
     page = 1,
     query,
-  }: PaginationParams): Promise<PaginationResponse<Project>> {
+  }: ProjectListPaginationParams): Promise<PaginationResponse<Project>> {
     let projects: Project[] = [];
 
     if (query) {
-      projects = this.items.filter((item) => {
-        if (item.title.includes(query.trim())) {
-          return item;
-        }
-
-        let itemFromLoop: ProjectTag | null = null;
-
-        item.tags.getItems().forEach(async (tag) => {
-          if (tag.value === query) {
-            itemFromLoop = tag;
-          }
-        });
-
-        if (itemFromLoop !== null) {
-          return itemFromLoop;
-        }
-
-        return null;
-      });
+      switch (query.type) {
+        case 'tag':
+          projects = this.items.filter((item) =>
+            item.tags
+              .getItems()
+              .find((tag) => tag.tag.id.toValue() === query.value),
+          );
+          break;
+        case 'title':
+          projects = this.items.filter((item) =>
+            item.title.toLowerCase().includes(query.value.toLowerCase()),
+          );
+          break;
+      }
     } else {
       projects = this.items;
     }
