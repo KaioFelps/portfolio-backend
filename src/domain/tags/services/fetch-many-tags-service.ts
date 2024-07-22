@@ -3,6 +3,7 @@ import { Either, ok } from '@/core/types/either';
 import { PaginationParams } from '@/core/types/pagination-params';
 import { ITagsRepository } from '../repositories/tag-repository';
 import { Tag } from '../entities/tag';
+import { Injectable } from '@nestjs/common';
 
 interface FetchManyTagsServiceRequest extends PaginationParams {}
 
@@ -11,6 +12,7 @@ type FetchManyTagsServiceResponse = Either<
   { tags: Tag[]; count: number }
 >;
 
+@Injectable()
 export class FetchManyTagsService {
   constructor(private tagsRepository: ITagsRepository) {}
 

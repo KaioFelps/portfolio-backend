@@ -4,6 +4,7 @@ import { ITagsRepository } from '../repositories/tag-repository';
 import { UserRole } from '@/domain/users/entities/user';
 import { UnauthorizedError } from '@/core/errors/unauthorized-error';
 import { EntityUniqueId } from '@/core/entities/entity-unique-id';
+import { Injectable } from '@nestjs/common';
 
 interface DeleteTagServiceRequest {
   tagId: string;
@@ -12,6 +13,7 @@ interface DeleteTagServiceRequest {
 
 type DeleteTagServiceResponse = Either<UnauthorizedError, object>;
 
+@Injectable()
 export class DeleteTagService {
   constructor(
     private usersRepository: IUsersRepository,

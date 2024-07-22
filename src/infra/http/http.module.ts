@@ -27,6 +27,9 @@ import { FetchManyPublishedPostsService } from '@/domain/posts/services/fetch-ma
 import { StatisticController } from './controllers/statistic.controller';
 import { CreateTagService } from '@/domain/tags/services/create-tag-service';
 import { TagsController } from './controllers/tag.controller';
+import { DeleteTagService } from '@/domain/tags/services/delete-tag-service';
+import { EditTagService } from '@/domain/tags/services/edit-tag-service';
+import { FetchManyTagsService } from '@/domain/tags/services/fetch-many-tags-service';
 
 @Module({
   imports: [CryptographyModule, DatabaseModule],
@@ -70,6 +73,9 @@ import { TagsController } from './controllers/tag.controller';
 
     // tags
     CreateTagService,
+    DeleteTagService,
+    EditTagService,
+    FetchManyTagsService,
   ],
 })
 export class HttpModule {}

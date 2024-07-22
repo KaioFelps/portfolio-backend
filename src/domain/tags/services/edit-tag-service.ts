@@ -2,6 +2,7 @@ import { Either, fail, ok } from '@/core/types/either';
 import { Tag } from '../entities/tag';
 import { ITagsRepository } from '../repositories/tag-repository';
 import { BadRequestError } from '@/core/errors/bad-request-error';
+import { Injectable } from '@nestjs/common';
 
 interface EditTagServiceRequest {
   tagId: string;
@@ -10,6 +11,7 @@ interface EditTagServiceRequest {
 
 type EditTagServiceResponse = Either<BadRequestError, { tag: Tag }>;
 
+@Injectable()
 export class EditTagService {
   constructor(private tagsRepository: ITagsRepository) {}
 
