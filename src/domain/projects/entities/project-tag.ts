@@ -1,9 +1,10 @@
 import { Entity } from '@/core/entities/entity';
 import { EntityUniqueId } from '@/core/entities/entity-unique-id';
+import { Tag } from '@/domain/tags/entities/tag';
 
 export interface ProjectTagProps {
   projectId: EntityUniqueId;
-  value: string;
+  tag: Tag;
 }
 
 export class ProjectTag extends Entity<ProjectTagProps> {
@@ -16,8 +17,8 @@ export class ProjectTag extends Entity<ProjectTagProps> {
     return projectTag;
   }
 
-  get value() {
-    return this.props.value;
+  get tag() {
+    return this.props.tag;
   }
 
   get projectId() {
