@@ -1,8 +1,12 @@
 import { IsOptional, IsString } from 'class-validator';
-import { PaginatedQueryDto } from './paginated-query';
+import { PaginationDto } from './pagination';
 
-export class PaginatedPostListDto extends PaginatedQueryDto {
+export class PaginatedPostListDto extends PaginationDto {
   @IsOptional()
   @IsString()
   tag?: string;
+
+  @IsOptional()
+  @IsString()
+  title?: string;
 }
