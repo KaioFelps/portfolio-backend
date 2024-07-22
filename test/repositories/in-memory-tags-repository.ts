@@ -1,3 +1,4 @@
+import { EntityUniqueId } from '@/core/entities/entity-unique-id';
 import { DomainEvents } from '@/core/events/domain-events';
 import { QUANTITY_PER_PAGE } from '@/core/pagination-consts';
 import { PaginationParams } from '@/core/types/pagination-params';
@@ -13,9 +14,9 @@ export class InMemoryTagsRepository implements ITagsRepository {
     DomainEvents.dispatchEventsForAggregate(tag.id);
   }
 
-  async delete(tag: Tag): Promise<void> {
-    this.items = this.items.filter((item) => !item.equals(tag));
-    DomainEvents.dispatchEventsForAggregate(tag.id);
+  async delete(tagId: EntityUniqueId): Promise<void> {
+    this.items = this.items.filter((item) => !item.id.equals(tagId));
+    DomainEvents.dispatchEventsForAggregate(tagId);
   }
 
   async save(tag: Tag): Promise<void> {

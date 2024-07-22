@@ -8,6 +8,7 @@ import { PrismaService } from '../prisma-service';
 import { DomainEvents } from '@/core/events/domain-events';
 import { QUANTITY_PER_PAGE } from '@/core/pagination-consts';
 import { Prisma } from '@prisma/client';
+import { EntityUniqueId } from '@/core/entities/entity-unique-id';
 
 @Injectable()
 export class PrismaTagsRepository implements ITagsRepository {
@@ -23,14 +24,14 @@ export class PrismaTagsRepository implements ITagsRepository {
     DomainEvents.dispatchEventsForAggregate(tag.id);
   }
 
-  async delete(tag: Tag): Promise<void> {
+  async delete(tagId: EntityUniqueId): Promise<void> {
     await this.prisma.tag.delete({
       where: {
-        id: tag.id.toValue(),
+        id: tagId.toValue(),
       },
     });
 
-    DomainEvents.dispatchEventsForAggregate(tag.id);
+    DomainEvents.dispatchEventsForAggregate(tagId);
   }
 
   async save(tag: Tag): Promise<void> {
