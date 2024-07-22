@@ -7,15 +7,14 @@ import { PrismaService } from './infra/db/prisma/prisma-service';
 import { execSync } from 'child_process';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  execSync('npx prisma migrate deploy');
 
+  const app = await NestFactory.create(AppModule);
   app.use(cookieParser());
   app.enableCors({ credentials: true });
 
   const env = app.get(EnvService);
   const port = env.get('PORT');
-
-  execSync('npx prisma migrate deploy');
 
   const password = await app
     .get(IHashGenerator)
