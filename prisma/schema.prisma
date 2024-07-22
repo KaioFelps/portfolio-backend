@@ -29,12 +29,12 @@ enum UserRole {
 }
 
 model Post {
-  id       String @id @default(uuid())
-  title    String @db.VarChar(255)
-  slug     String @unique @db.VarChar(255)
-  content  String @db.Text
+  id       String                  @id @default(uuid())
+  title    String                  @db.VarChar(255)
+  slug     String                  @unique @db.VarChar(255)
+  content  String                  @db.Text
   topstory String
-  tags     Tag[]
+  tags     TagsOnPostsOrProjects[]
 
   createdAt   DateTime  @default(now()) @map("created_at")
   publishedAt DateTime? @default(dbgenerated("null"))
@@ -42,22 +42,31 @@ model Post {
 
   authorId String @map("author_id")
 
-  author User @relation(fields: [authorId], references: [id])
+  author User @relation(fields: [authorId], references: [id], onDelete: NoAction)
 
   @@map("posts")
 }
 
 model Tag {
   id    String @id @default(uuid())
-  value String
+  value String @unique
 
+  postsOrProjects TagsOnPostsOrProjects[]
+
+  @@map("tags")
+}
+
+model TagsOnPostsOrProjects {
+  id        String  @id @default(uuid())
   postId    String? @map("post_id")
   projectId String? @map("project_id")
+  tagId     String
 
   Post    Post?    @relation(fields: [postId], references: [id])
   Project Project? @relation(fields: [projectId], references: [id])
+  Tag     Tag      @relation(fields: [tagId], references: [id])
 
-  @@map("tags")
+  @@map("tags_on_posts_or_projects")
 }
 
 model Link {
@@ -73,12 +82,12 @@ model Link {
 }
 
 model Project {
-  id        String   @id @default(uuid())
+  id        String                  @id @default(uuid())
   title     String
   topstory  String
-  tags      Tag[]
+  tags      TagsOnPostsOrProjects[]
   links     Link[]
-  createdAt DateTime @default(now()) @map("created_at")
+  createdAt DateTime                @default(now()) @map("created_at")
 
   @@map("projects")
 }
