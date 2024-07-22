@@ -9,6 +9,7 @@ import { EntityUniqueId } from '@/core/entities/entity-unique-id';
 import { IPostTagsRepository } from '../repositories/post-tags-repository';
 import { PostTagList } from '../entities/post-tag-list';
 import { PostTag } from '../entities/post-tag';
+import { ITagsRepository } from '@/domain/tags/repositories/tag-repository';
 
 interface EditPostServiceRequest {
   authorId: string;
@@ -27,6 +28,7 @@ type EditPostServiceResponse = Either<
 @Injectable()
 export class EditPostService {
   constructor(
+    private tagsRepository: ITagsRepository,
     private postsRepository: IPostsRepository,
     private usersRepository: IUsersRepository,
     private postTagsRepository: IPostTagsRepository,
@@ -60,11 +62,12 @@ export class EditPostService {
 
     const currentTagsList = new PostTagList(currentTags);
 
-    const newTags = tags.map((tag) =>
-      PostTag.create({ postId: post.id, value: tag }),
+    const newTags = await this.tagsRepository.findManyByIds(tags);
+    const newPostTags = newTags.map((tag) =>
+      PostTag.create({ postId: post.id, tag }),
     );
 
-    currentTagsList.update(newTags);
+    currentTagsList.update(newPostTags);
 
     post.title = title ?? post.title;
     post.content = content ?? post.content;

@@ -7,12 +7,14 @@ import { IUsersRepository } from '@/domain/users/repositories/users-repository';
 import { EntityUniqueId } from '@/core/entities/entity-unique-id';
 import { PostTag } from '../entities/post-tag';
 import { PostTagList } from '../entities/post-tag-list';
+import { ITagsRepository } from '@/domain/tags/repositories/tag-repository';
 
 interface CreateLogServiceRequest {
   title: string;
   content: string;
   authorId: EntityUniqueId;
   topstory: string;
+  /** tags ids */
   tags: string[];
 }
 
@@ -23,6 +25,7 @@ export class CreatePostService {
   constructor(
     private postsRepository: IPostsRepository,
     private usersRepository: IUsersRepository,
+    private tagsRepository: ITagsRepository,
   ) {}
 
   async exec({
@@ -46,10 +49,12 @@ export class CreatePostService {
       tags: new PostTagList(),
     });
 
-    const postTags = tags.map((tag) =>
+    const tagsFromDb = await this.tagsRepository.findManyByIds(tags);
+
+    const postTags = tagsFromDb.map((tag) =>
       PostTag.create({
         postId: post.id,
-        value: tag,
+        tag,
       }),
     );
 

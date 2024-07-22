@@ -12,6 +12,7 @@ import { EntityUniqueId } from '@/core/entities/entity-unique-id';
 import { IProjectTagsRepository } from '../repositories/project-tags-repository';
 import { ProjectTagList } from '../entities/project-tag-list';
 import { ProjectTag } from '../entities/project-tag';
+import { ITagsRepository } from '@/domain/tags/repositories/tag-repository';
 
 interface EditProjectServiceRequest {
   userId: string;
@@ -30,6 +31,7 @@ type EditProjectServiceResponse = Either<
 @Injectable()
 export class EditProjectService {
   constructor(
+    private tagsRepository: ITagsRepository,
     private projectsRepository: IProjectsRepository,
     private projectLinksRepository: IProjectLinksRepository,
     private projectTagsRepository: IProjectTagsRepository,
@@ -76,14 +78,17 @@ export class EditProjectService {
 
     const currentTagsList = new ProjectTagList(currentTags);
 
-    const newTags = tags.map((tag) =>
+    // save only tags that really exists
+    // avoiding user to input unexisting tag's ID
+    const newTags = await this.tagsRepository.findManyByIds(tags);
+    const newProjectTags = newTags.map((tag) =>
       ProjectTag.create({
         projectId: entityProjectId,
-        value: tag,
+        tag,
       }),
     );
 
-    currentTagsList.update(newTags);
+    currentTagsList.update(newProjectTags);
 
     project.title = title ?? project.title;
     project.topstory = topstory ?? project.topstory;

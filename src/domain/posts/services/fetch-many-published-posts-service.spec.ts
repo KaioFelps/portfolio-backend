@@ -4,16 +4,20 @@ import { FetchManyPublishedPostsService } from './fetch-many-published-posts-ser
 import { PostTagList } from '../entities/post-tag-list';
 import { PostTagFactory } from 'test/factories/post-tag-factory';
 import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository';
+import { InMemoryTagsRepository } from 'test/repositories/in-memory-tags-repository';
+import { TagFactory } from 'test/factories/tag-factory';
 
 describe('Fetch Many Posts Service', () => {
   let sut: FetchManyPublishedPostsService;
+  let tagsRepository: InMemoryTagsRepository;
   let usersRepository: InMemoryUsersRepository;
   let postsRepository: InMemoryPostsRepository;
 
   beforeEach(async () => {
+    tagsRepository = new InMemoryTagsRepository();
     usersRepository = new InMemoryUsersRepository();
     postsRepository = new InMemoryPostsRepository(usersRepository);
-    sut = new FetchManyPublishedPostsService(postsRepository);
+    sut = new FetchManyPublishedPostsService(postsRepository, tagsRepository);
   });
 
   it('should only fetch published posts', async () => {
@@ -23,14 +27,12 @@ describe('Fetch Many Posts Service', () => {
     const result = await sut.exec({});
 
     expect(result.isOk()).toBe(true);
-
-    expect(result.value?.posts).toHaveLength(1);
+    if (result.isOk()) expect(result.value?.posts).toHaveLength(1);
   });
 
   it('should fetch posts that corresponds to the params', async () => {
-    postsRepository.items.push(
-      PostFactory.exec({ title: 'design de fs', publishedAt: new Date() }),
-    );
+    const tag1 = TagFactory.exec({ value: 'design' });
+    tagsRepository.items.push(tag1);
 
     const postToBePushed = PostFactory.exec({
       title: 'teste 1',
@@ -38,26 +40,15 @@ describe('Fetch Many Posts Service', () => {
     });
     postToBePushed.tags = new PostTagList([
       PostTagFactory.exec({
-        value: 'design',
-        postId: postToBePushed.id,
-      }),
-      PostTagFactory.exec({
-        value: 'back-end',
+        tag: tag1,
         postId: postToBePushed.id,
       }),
     ]);
 
-    postsRepository.items.push(postToBePushed);
-
     postsRepository.items.push(
-      PostFactory.exec({ title: 'teste 2', publishedAt: new Date() }),
-    );
-
-    postsRepository.items.push(
+      postToBePushed,
+      PostFactory.exec({ title: 'design de fs', publishedAt: new Date() }),
       PostFactory.exec({ title: 'teste 3', publishedAt: new Date() }),
-    );
-
-    postsRepository.items.push(
       PostFactory.exec({ title: 'teste 4', publishedAt: new Date() }),
     );
 
@@ -67,8 +58,10 @@ describe('Fetch Many Posts Service', () => {
     });
 
     expect(result.isOk()).toBe(true);
-    expect(result.value!.posts.length).toBe(2);
-    expect(result.value!.count).toBe(5);
+    if (result.isOk()) {
+      expect(result.value!.posts.length).toBe(1);
+      expect(result.value!.count).toBe(4);
+    }
 
     result = await sut.exec({
       page: 1,
@@ -76,17 +69,21 @@ describe('Fetch Many Posts Service', () => {
     });
 
     expect(result.isOk()).toBe(true);
-    expect(result.value!.posts.length).toBe(3);
-    expect(result.value!.count).toBe(5);
+    if (result.isOk()) {
+      expect(result.value!.posts.length).toBe(3);
+      expect(result.value!.count).toBe(4);
+    }
 
     result = await sut.exec({
       page: 1,
       amount: 3,
-      query: 'design',
+      tag: 'design',
     });
 
     expect(result.isOk()).toBe(true);
-    expect(result.value!.posts.length).toBe(2);
-    expect(result.value!.count).toBe(2);
+    if (result.isOk()) {
+      expect(result.value!.posts.length).toBe(1);
+      expect(result.value!.count).toBe(1);
+    }
   });
 });

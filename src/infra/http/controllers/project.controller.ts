@@ -112,7 +112,7 @@ export class ProjectController {
   }
 
   @Put('/:id/edit')
-  @HttpCode(204)
+  @HttpCode(200)
   async update(
     @Body() updateProjectDto: UpdateProjectDto,
     @CurrentUser() user: TokenPayload,
@@ -132,6 +132,8 @@ export class ProjectController {
           throw new BadRequestException();
       }
     }
+
+    return { project: ProjectPresenter.toHTTP(result.value.project) };
   }
 
   @Delete('/:id/delete')

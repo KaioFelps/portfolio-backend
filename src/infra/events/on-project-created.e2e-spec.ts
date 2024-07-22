@@ -9,23 +9,26 @@ import { JwtService } from '@nestjs/jwt';
 import { CreateProjectDto } from '../http/dtos/create-project';
 import { PrismaService } from '../db/prisma/prisma-service';
 import { waitFor } from 'test/utlils/wait-for';
+import { TagFactory } from 'test/factories/tag-factory';
 
 describe('On Project Created Event handler', () => {
   let app: INestApplication;
   let jwt: JwtService;
   let prisma: PrismaService;
   let userFactory: UserFactory;
+  let tagFactory: TagFactory;
 
   beforeEach(async () => {
     const module = await Test.createTestingModule({
       imports: [AppModule, DatabaseModule],
-      providers: [UserFactory],
+      providers: [UserFactory, TagFactory],
     }).compile();
 
     app = module.createNestApplication();
     jwt = module.get(JwtService);
     prisma = module.get(PrismaService);
     userFactory = module.get(UserFactory);
+    tagFactory = module.get(TagFactory);
 
     await app.init();
   });
@@ -39,15 +42,20 @@ describe('On Project Created Event handler', () => {
       sub: user.id.toValue(),
     } as TokenPayload);
 
+    const tag = await tagFactory.createAndPersist({
+      value: 'front end',
+    });
+
     const response = await supertest(app.getHttpServer())
       .post('/project/new')
       .set({ Authorization: `Bearer ${token}` })
       .send({
         title: 'Portfólio',
         topstory: 'https://i.imgur.com/NQ9ImcM.png',
-        tags: ['back-end', 'front-end', 'nestjs', 'clean architecture'],
+        tags: [tag.id.toValue()],
         links: [{ title: 'Deploy', value: 'https://www.kaiofelps.dev' }],
-      } as CreateProjectDto);
+      } as CreateProjectDto)
+      .expect(201);
 
     await waitFor(async () => {
       const logsOnDb = await prisma.log.findMany();

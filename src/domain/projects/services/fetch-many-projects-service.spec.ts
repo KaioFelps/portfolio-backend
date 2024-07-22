@@ -7,53 +7,54 @@ import { ProjectTagList } from '../entities/project-tag-list';
 import { ProjectTag } from '../entities/project-tag';
 import { EntityUniqueId } from '@/core/entities/entity-unique-id';
 import { randomUUID } from 'crypto';
+import { InMemoryTagsRepository } from 'test/repositories/in-memory-tags-repository';
+import { TagFactory } from 'test/factories/tag-factory';
 
 describe('Fetch Many Projects Service', () => {
   let sut: FetchManyProjectsService;
+  let tagsRepository: InMemoryTagsRepository;
   let projectsRepository: InMemoryProjectsRepository;
   let projectTagsRepository: InMemoryProjectTagsRepository;
   let projectLinksRepository: InMemoryProjectLinksRepository;
 
-  beforeEach(async () => {
+  beforeAll(async () => {
+    tagsRepository = new InMemoryTagsRepository();
     projectTagsRepository = new InMemoryProjectTagsRepository();
-
     projectLinksRepository = new InMemoryProjectLinksRepository();
-
     projectsRepository = new InMemoryProjectsRepository(
       projectTagsRepository,
       projectLinksRepository,
     );
 
-    sut = new FetchManyProjectsService(projectsRepository);
+    sut = new FetchManyProjectsService(projectsRepository, tagsRepository);
   });
 
-  it('should fetch projects that corresponds to the params', async () => {
-    projectsRepository.items.push(
-      ProjectFactory.exec({ title: 'design de fs' }),
-    );
+  beforeAll(async () => {
+    const tag1 = TagFactory.exec({ value: 'tag-1' });
+    const tag2 = TagFactory.exec({ value: 'tag-2' });
+    const tag3 = TagFactory.exec({ value: 'design' });
+    tagsRepository.items.push(tag1, tag2, tag3);
 
-    const projectId = new EntityUniqueId(randomUUID());
-
-    projectsRepository.items.push(
-      ProjectFactory.exec({
-        tags: new ProjectTagList([
-          ProjectTag.create(
-            { projectId, value: 'tag-1' },
-            new EntityUniqueId('1'),
-          ),
-          ProjectTag.create(
-            { projectId, value: 'tag-2' },
-            new EntityUniqueId('2'),
-          ),
-        ]),
-        title: 'teste 1',
-      }),
-    );
+    const project1Tags1And2Id = new EntityUniqueId(randomUUID());
+    const projectWithTags1And2 = ProjectFactory.exec({
+      tags: new ProjectTagList([
+        ProjectTag.create(
+          { projectId: project1Tags1And2Id, tag: tag1 },
+          new EntityUniqueId('1'),
+        ),
+        ProjectTag.create(
+          { projectId: project1Tags1And2Id, tag: tag2 },
+          new EntityUniqueId('2'),
+        ),
+      ]),
+      title: 'teste 1',
+    });
+    projectsRepository.items.push(projectWithTags1And2);
 
     const projectWithDesignTag = ProjectFactory.exec({ title: 'teste-2' });
     projectWithDesignTag.tags = new ProjectTagList([
       ProjectTag.create({
-        value: 'design',
+        tag: tag3,
         projectId: projectWithDesignTag.id,
       }),
     ]);
@@ -61,30 +62,44 @@ describe('Fetch Many Projects Service', () => {
 
     projectsRepository.items.push(ProjectFactory.exec({ title: 'teste 3' }));
     projectsRepository.items.push(ProjectFactory.exec({ title: 'teste 4' }));
+    projectsRepository.items.push(
+      ProjectFactory.exec({ title: 'design de fs' }),
+    );
 
-    let result = await sut.exec({
+    // adds 5 projects in total
+  });
+
+  test('pagination and amount query parameters', async () => {
+    const result = await sut.exec({
       page: 2,
       amount: 3,
     });
 
     expect(result.isOk()).toBe(true);
-    expect(result.value!.projects.length).toBe(2);
+    if (result.isOk()) expect(result.value.projects.length).toBe(2);
+  });
 
-    result = await sut.exec({
+  test('tag query parameter', async () => {
+    const result = await sut.exec({
       page: 1,
+      amount: 3,
+      tag: 'design',
+    });
+
+    expect(result.isOk()).toBe(true);
+    if (result.isOk()) expect(result.value.projects.length).toBe(1);
+  });
+
+  test('title query parameter', async () => {
+    const result = await sut.exec({
+      title: 'teste',
       amount: 3,
     });
 
     expect(result.isOk()).toBe(true);
-    expect(result.value!.projects.length).toBe(3);
-
-    result = await sut.exec({
-      page: 1,
-      amount: 3,
-      query: 'design',
-    });
-
-    expect(result.isOk()).toBe(true);
-    expect(result.value!.projects.length).toBe(2);
+    if (result.isOk()) {
+      expect(result.value.count).toBe(4);
+      expect(result.value.projects.length).toBe(3);
+    }
   });
 });

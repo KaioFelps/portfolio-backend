@@ -9,23 +9,26 @@ import { JwtService } from '@nestjs/jwt';
 import { CreatePostDto } from '../http/dtos/create-post';
 import { PrismaService } from '../db/prisma/prisma-service';
 import { waitFor } from 'test/utlils/wait-for';
+import { TagFactory } from 'test/factories/tag-factory';
 
 describe('On Post Created Event handler', () => {
   let app: INestApplication;
   let jwt: JwtService;
   let prisma: PrismaService;
   let userFactory: UserFactory;
+  let tagFactory: TagFactory;
 
   beforeEach(async () => {
     const module = await Test.createTestingModule({
       imports: [AppModule, DatabaseModule],
-      providers: [UserFactory],
+      providers: [UserFactory, TagFactory],
     }).compile();
 
     app = module.createNestApplication();
     jwt = module.get(JwtService);
     prisma = module.get(PrismaService);
     userFactory = module.get(UserFactory);
+    tagFactory = module.get(TagFactory);
 
     await app.init();
   });
@@ -41,12 +44,15 @@ describe('On Post Created Event handler', () => {
 
     const postTitle = 'Testando o evento de criação de post!';
 
+    const tagEventos = await tagFactory.createAndPersist({ value: 'eventos' });
+    const tagDominios = await tagFactory.createAndPersist({ value: 'domínio' });
+
     const response = await supertest(app.getHttpServer())
       .post('/post/new')
       .set({ Authorization: `Bearer ${token}` })
       .send({
         content: 'Conteúdo do meu primeiro post fictício!',
-        tags: ['eventos', 'domínio'],
+        tags: [tagEventos.id.toValue(), tagDominios.id.toValue()],
         title: postTitle,
         topstory: 'https://i.imgur.com/NQ9ImcM.png',
         authorId: user.id.toValue(),
@@ -57,7 +63,7 @@ describe('On Post Created Event handler', () => {
       const logsOnDb = await prisma.log.findMany();
 
       expect(logsOnDb.length).toBe(1);
-    }, 10000);
+    });
 
     expect(response.ok).toBe(true);
   });

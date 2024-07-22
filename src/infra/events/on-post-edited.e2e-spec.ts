@@ -10,6 +10,7 @@ import { CreatePostDto } from '../http/dtos/create-post';
 import { PrismaService } from '../db/prisma/prisma-service';
 import { waitFor } from 'test/utlils/wait-for';
 import { PostFactory } from 'test/factories/post-factory';
+import { TagFactory } from 'test/factories/tag-factory';
 
 describe('On Post Edited Event handler', () => {
   let app: INestApplication;
@@ -17,11 +18,12 @@ describe('On Post Edited Event handler', () => {
   let prisma: PrismaService;
   let userFactory: UserFactory;
   let postFactory: PostFactory;
+  let tagFactory: TagFactory;
 
   beforeEach(async () => {
     const module = await Test.createTestingModule({
       imports: [AppModule, DatabaseModule],
-      providers: [UserFactory, PostFactory],
+      providers: [UserFactory, PostFactory, TagFactory],
     }).compile();
 
     app = module.createNestApplication();
@@ -29,6 +31,7 @@ describe('On Post Edited Event handler', () => {
     prisma = module.get(PrismaService);
     userFactory = module.get(UserFactory);
     postFactory = module.get(PostFactory);
+    tagFactory = module.get(TagFactory);
     await app.init();
   });
 
@@ -44,11 +47,13 @@ describe('On Post Edited Event handler', () => {
 
     const newPostTitle = 'Título editadooo!!';
 
+    const tagEventos = await tagFactory.createAndPersist({ value: 'eventos' });
+
     const response = await supertest(app.getHttpServer())
       .put(`/post/${post.id.toValue()}/edit`)
       .set({ Authorization: `Bearer ${token}` })
       .send({
-        tags: ['eventos'],
+        tags: [tagEventos.id.toValue()],
         title: newPostTitle,
       } as CreatePostDto);
 

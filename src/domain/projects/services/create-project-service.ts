@@ -8,11 +8,13 @@ import { ProjectLinkList } from '../entities/project-link-list';
 import { ProjectLink } from '../entities/project-link';
 import { ProjectTagList } from '../entities/project-tag-list';
 import { ProjectTagFactory } from 'test/factories/project-tag-factory';
+import { ITagsRepository } from '@/domain/tags/repositories/tag-repository';
 
 interface CreateProjectServiceRequest {
   userId: string;
   title: string;
   topstory: string;
+  /** tags ids */
   tags: string[];
   links: Array<{ title: string; value: string }>;
 }
@@ -26,6 +28,7 @@ type CreateProjectServiceResponse = Either<
 export class CreateProjectService {
   constructor(
     private projectsRepository: IProjectsRepository,
+    private tagsRepository: ITagsRepository,
     private usersRepository: IUsersRepository,
   ) {}
 
@@ -47,11 +50,13 @@ export class CreateProjectService {
       topstory,
     });
 
+    const tagsFromDb = await this.tagsRepository.findManyByIds(tags);
+
     const projectTagsList = new ProjectTagList(
-      tags.map((tag) =>
+      tagsFromDb.map((tag) =>
         ProjectTagFactory.exec({
           projectId: project.id,
-          value: tag,
+          tag,
         }),
       ),
     );

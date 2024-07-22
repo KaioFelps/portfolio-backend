@@ -10,24 +10,25 @@ import { ProjectFactory } from 'test/factories/project-factory';
 import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository';
 import { UserFactory } from 'test/factories/user-factory';
 import { UnauthorizedError } from '@/core/errors/unauthorized-error';
+import { InMemoryTagsRepository } from 'test/repositories/in-memory-tags-repository';
+import { TagFactory } from 'test/factories/tag-factory';
 
 describe('Delete Project Service', () => {
   let sut: DeleteProjectService;
   let projectsRepository: InMemoryProjectsRepository;
+  let tagsRepository: InMemoryTagsRepository;
   let projectLinksRepository: InMemoryProjectLinksRepository;
   let projectTagsRepository: InMemoryProjectTagsRepository;
   let usersRepository: InMemoryUsersRepository;
 
   beforeEach(async () => {
+    tagsRepository = new InMemoryTagsRepository();
     projectLinksRepository = new InMemoryProjectLinksRepository();
-
     projectTagsRepository = new InMemoryProjectTagsRepository();
-
     projectsRepository = new InMemoryProjectsRepository(
       projectTagsRepository,
       projectLinksRepository,
     );
-
     usersRepository = new InMemoryUsersRepository();
 
     sut = new DeleteProjectService(projectsRepository, usersRepository);
@@ -40,8 +41,14 @@ describe('Delete Project Service', () => {
       topstory: '',
     });
 
+    const tag = TagFactory.exec();
+    tagsRepository.items.push(tag);
+
     project.tags = new ProjectTagList([
-      ProjectTagFactory.exec({ value: 'back-end', projectId: project.id }),
+      ProjectTagFactory.exec({
+        tag,
+        projectId: project.id,
+      }),
     ]);
 
     projectsRepository.items.push(project);
@@ -80,8 +87,11 @@ describe('Delete Project Service', () => {
       topstory: '',
     });
 
+    const tag = TagFactory.exec({ value: 'back-end' });
+    tagsRepository.items.push(tag);
+
     project.tags = new ProjectTagList([
-      ProjectTagFactory.exec({ value: 'back-end', projectId: project.id }),
+      ProjectTagFactory.exec({ tag, projectId: project.id }),
     ]);
 
     projectsRepository.items.push(project);

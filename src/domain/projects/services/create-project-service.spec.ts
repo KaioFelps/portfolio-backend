@@ -4,9 +4,11 @@ import { InMemoryProjectsRepository } from 'test/repositories/in-memory-projects
 import { UserFactory } from 'test/factories/user-factory';
 import { InMemoryProjectTagsRepository } from 'test/repositories/in-memory-project-tags-repository';
 import { InMemoryProjectLinksRepository } from 'test/repositories/in-memory-project-links-repository';
+import { InMemoryTagsRepository } from 'test/repositories/in-memory-tags-repository';
 
 describe('Create Project Service', () => {
   let sut: CreateProjectService;
+  let tagsRepository: InMemoryTagsRepository;
   let projectsRepository: InMemoryProjectsRepository;
   let usersRepository: InMemoryUsersRepository;
   let projectTagsRepository: InMemoryProjectTagsRepository;
@@ -14,15 +16,18 @@ describe('Create Project Service', () => {
 
   beforeEach(async () => {
     projectLinksRepository = new InMemoryProjectLinksRepository();
-
+    tagsRepository = new InMemoryTagsRepository();
     projectTagsRepository = new InMemoryProjectTagsRepository();
-
     projectsRepository = new InMemoryProjectsRepository(
       projectTagsRepository,
       projectLinksRepository,
     );
     usersRepository = new InMemoryUsersRepository();
-    sut = new CreateProjectService(projectsRepository, usersRepository);
+    sut = new CreateProjectService(
+      projectsRepository,
+      tagsRepository,
+      usersRepository,
+    );
   });
 
   it('should create a project', async () => {

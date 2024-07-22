@@ -12,27 +12,29 @@ import { EntityUniqueId } from '@/core/entities/entity-unique-id';
 import { ProjectTagFactory } from 'test/factories/project-tag-factory';
 import { ProjectLinkFactory } from 'test/factories/project-link-factory';
 import { ProjectFactory } from 'test/factories/project-factory';
+import { InMemoryTagsRepository } from 'test/repositories/in-memory-tags-repository';
+import { TagFactory } from 'test/factories/tag-factory';
 
 describe('Edit Project Service', () => {
   let sut: EditProjectService;
+  let tagsRepository: InMemoryTagsRepository;
   let projectsRepository: InMemoryProjectsRepository;
   let projectLinksRepository: InMemoryProjectLinksRepository;
   let projectTagsRepository: InMemoryProjectTagsRepository;
   let userRepository: InMemoryUsersRepository;
 
   beforeEach(async () => {
+    tagsRepository = new InMemoryTagsRepository();
     projectLinksRepository = new InMemoryProjectLinksRepository();
-
     projectTagsRepository = new InMemoryProjectTagsRepository();
-
+    userRepository = new InMemoryUsersRepository();
     projectsRepository = new InMemoryProjectsRepository(
       projectTagsRepository,
       projectLinksRepository,
     );
 
-    userRepository = new InMemoryUsersRepository();
-
     sut = new EditProjectService(
+      tagsRepository,
       projectsRepository,
       projectLinksRepository,
       projectTagsRepository,
@@ -51,18 +53,17 @@ describe('Edit Project Service', () => {
 
     projectsRepository.items.push(project);
 
+    const tag1 = TagFactory.exec();
+    const tag2 = TagFactory.exec();
+    tagsRepository.items.push(tag1, tag2);
+
     projectTagsRepository.items.push(
       ProjectTagFactory.exec(
         {
           projectId: project.id,
+          tag: tag1,
         },
         new EntityUniqueId('1'),
-      ),
-      ProjectTagFactory.exec(
-        {
-          projectId: project.id,
-        },
-        new EntityUniqueId('2'),
       ),
     );
 
@@ -77,17 +78,28 @@ describe('Edit Project Service', () => {
       }),
     );
 
-    await sut.exec({
+    const result = await sut.exec({
       projectId: project.id.toValue(),
       userId: user.id.toValue(),
       links: [{ title: 'Website', value: 'kaiofelps.dev' }],
-      tags: ['value-1', 'value-3'],
+      tags: [tag2.id.toValue(), tag1.id.toValue()],
     });
+
+    expect(result.isOk()).toBe(true);
+    if (result.isOk()) {
+      expect(result.value.project.tags.getItems()[0].tag).toEqual(tag1);
+      expect(result.value.project.tags.getItems()[1].tag).toEqual(tag2);
+      expect(result.value.project.tags.getItems().length).toBe(2);
+    }
 
     expect(projectsRepository.items[0].tags.getItems()).toEqual(
       expect.arrayContaining([
-        expect.objectContaining({ value: 'value-1' }),
-        expect.objectContaining({ value: 'value-3' }),
+        expect.objectContaining({
+          props: expect.objectContaining({ tag: tag1 }),
+        }),
+        expect.objectContaining({
+          props: expect.objectContaining({ tag: tag2 }),
+        }),
       ]),
     );
 
@@ -105,11 +117,14 @@ describe('Edit Project Service', () => {
       topstory: '',
     });
 
+    const tag = TagFactory.exec('value-1');
+    tagsRepository.items.push(tag);
+
     project.tags = new ProjectTagList([
       ProjectTag.create(
         {
           projectId: project.id,
-          value: 'value-1',
+          tag,
         },
         new EntityUniqueId('1'),
       ),

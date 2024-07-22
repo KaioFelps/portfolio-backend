@@ -51,7 +51,7 @@ describe('On Project Edited Event handler', () => {
       .send({
         title: newProjectTitle,
       } as CreateProjectDto)
-      .expect(204);
+      .expect(200);
 
     await waitFor(async () => {
       const logsOnDb = await prisma.log.findMany({

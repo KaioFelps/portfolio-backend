@@ -13,22 +13,26 @@ import { randomUUID } from 'crypto';
 import supertest from 'supertest';
 import { PostFactory } from 'test/factories/post-factory';
 import { PostTagFactory } from 'test/factories/post-tag-factory';
+import { TagFactory } from 'test/factories/tag-factory';
 import { UserFactory } from 'test/factories/user-factory';
+import { PostPresented } from '../presenters/post-presenter';
 
 describe('PostController', () => {
   let app: INestApplication;
   let userFactory: UserFactory;
   let postFactory: PostFactory;
+  let tagFactory: TagFactory;
   let jwt: JwtService;
   let prisma: PrismaService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [AppModule, DatabaseModule],
-      providers: [UserFactory, PostFactory, JwtModule],
+      providers: [UserFactory, PostFactory, JwtModule, TagFactory],
     }).compile();
 
     app = module.createNestApplication();
+    tagFactory = module.get(TagFactory);
     userFactory = module.get(UserFactory);
     postFactory = module.get(PostFactory);
     jwt = module.get(JwtService);
@@ -47,6 +51,8 @@ describe('PostController', () => {
     };
     const token = await jwt.signAsync(payload);
 
+    const tag = await tagFactory.createAndPersist({ value: 'habbo' });
+
     const response = await supertest(app.getHttpServer())
       .post('/post/new')
       .set({ Authorization: `Bearer ${token}` })
@@ -54,7 +60,7 @@ describe('PostController', () => {
         title: 'Noticia 1',
         content: 'conteúdo',
         topstory: 'https://i.imgur.com/Q0GsNvP.png',
-        tags: ['habbo'],
+        tags: [tag.id.toValue()],
       })
       .expect(201);
 
@@ -62,8 +68,18 @@ describe('PostController', () => {
       where: { slug: response.body.post.slug },
     });
 
+    const post = response.body.post as PostPresented;
     expect(postOnDatabase?.slug).toEqual(response.body.post.slug);
-    expect(response.body.post.title).toEqual('Noticia 1');
+    expect(post).toMatchObject({
+      topstory: 'https://i.imgur.com/Q0GsNvP.png',
+      tags: [{ id: expect.any(String), value: tag.value }],
+      id: expect.any(String),
+      createdAt: expect.any(String),
+      slug: expect.any(String),
+      title: 'Noticia 1',
+      preview: expect.any(String),
+      publishedAt: null,
+    } as PostPresented);
   });
 
   test('[GET] /post/:slug/show', async () => {
@@ -145,25 +161,26 @@ describe('PostController', () => {
 
     const user = await userFactory.createAndPersist('editor');
     const postId = new EntityUniqueId(randomUUID());
-    const tag = PostTagFactory.exec({
-      value: 'catch-tag',
+    const tag = await tagFactory.createAndPersist({ value: 'catch-tag' });
+    const postTag = PostTagFactory.exec({
       postId,
+      tag,
     });
 
     await postFactory.createAndPersist(
       {
         authorId: user.id,
-        tags: new PostTagList([tag]),
+        tags: new PostTagList([postTag]),
         publishedAt: new Date(),
       },
       postId,
     );
 
-    await prisma.tag.create({
+    await prisma.tagsOnPostsOrProjects.create({
       data: {
-        value: tag.value,
         id: tag.id.toValue(),
-        postId: tag.postId.toValue(),
+        postId: postId.toValue(),
+        tagId: tag.id.toValue(),
       },
     });
 
@@ -178,18 +195,18 @@ describe('PostController', () => {
           });
           break;
         default:
-          // this one is not going to be catched on the queryByTitle request
+          // this should be returned by queryByTitle request
           // because it has not been published
           await postFactory.createAndPersist({
             authorId: user.id,
-            title: `must be catched ${query} ${i}`.toString(),
+            title: `must not be catched ${query} ${i}`.toString(),
           });
       }
     }
 
     const queryByTitleResponse = await supertest(app.getHttpServer())
       .get('/post/list')
-      .query({ query })
+      .query({ title: query })
       .send()
       .expect(200);
 
@@ -213,6 +230,12 @@ describe('PostController', () => {
       page: 1,
       perPage: QUANTITY_PER_PAGE,
     });
+
+    expect(queryByTagResponse.body.posts[0].tags[0]).toEqual(
+      expect.objectContaining({
+        value: 'catch-tag',
+      }),
+    );
   });
 
   test('[GET] /post/list/admin', async () => {
@@ -255,17 +278,24 @@ describe('PostController', () => {
       authorId: user.id,
     });
 
-    const tags = [
-      PostTag.create({ value: 'habbo', postId: post.id }),
-      PostTag.create({ value: 'noticia', postId: post.id }),
-      PostTag.create({ value: 'artigo', postId: post.id }),
+    const tags = await Promise.all([
+      tagFactory.createAndPersist({ value: 'habbo' }),
+      tagFactory.createAndPersist({ value: 'noticia' }),
+      tagFactory.createAndPersist({ value: 'artigo' }),
+      tagFactory.createAndPersist({ value: 'free fire' }),
+    ]);
+
+    const postTags = [
+      PostTag.create({ tag: tags[0], postId: post.id }),
+      PostTag.create({ tag: tags[1], postId: post.id }),
+      PostTag.create({ tag: tags[2], postId: post.id }),
     ];
 
-    await prisma.tag.createMany({
-      data: tags.map(({ id, postId, value }) => ({
-        id: id.toValue(),
+    await prisma.tagsOnPostsOrProjects.createMany({
+      data: postTags.map(({ id, postId, tag }) => ({
+        tagId: tag.id.toValue(),
         postId: postId.toValue(),
-        value,
+        id: id.toValue(),
       })),
     });
 
@@ -282,7 +312,10 @@ describe('PostController', () => {
       })
       .send({
         title: 'Edited title',
-        tags: ['free fire', 'artigo'],
+        tags: [
+          tags[3].id.toValue() /** free-fire */,
+          tags[2].id.toValue() /** artigo */,
+        ],
         // not any field are mandatory at all
       })
       .expect(200);
@@ -296,8 +329,15 @@ describe('PostController', () => {
 
     expect(postOnDb?.title).toEqual(response.body.post.title);
 
-    expect(postOnDb?.tags.map((tag) => tag.value)).toEqual(
-      expect.arrayContaining(['free fire', 'artigo']),
+    expect(postOnDb?.tags.map((tag) => tag.tagId)).toEqual(
+      expect.arrayContaining([tags[3].id.toValue(), tags[2].id.toValue()]),
+    );
+
+    expect(response.body.post.tags).toEqual(
+      expect.arrayContaining([
+        { id: tags[3].id.toValue(), value: 'free fire' },
+        { id: tags[2].id.toValue(), value: 'artigo' },
+      ]),
     );
   });
 

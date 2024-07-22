@@ -4,16 +4,23 @@ import { InMemoryPostsRepository } from 'test/repositories/in-memory-posts-repos
 import { CreatePostService } from './create-post-service';
 import { UnauthorizedError } from '@/core/errors/unauthorized-error';
 import { EntityUniqueId } from '@/core/entities/entity-unique-id';
+import { InMemoryTagsRepository } from 'test/repositories/in-memory-tags-repository';
 
 describe('Create Post Service', () => {
   let sut: CreatePostService;
+  let tagsRepository: InMemoryTagsRepository;
   let postsRepository: InMemoryPostsRepository;
   let usersRepository: InMemoryUsersRepository;
 
   beforeEach(async () => {
+    tagsRepository = new InMemoryTagsRepository();
     usersRepository = new InMemoryUsersRepository();
     postsRepository = new InMemoryPostsRepository(usersRepository);
-    sut = new CreatePostService(postsRepository, usersRepository);
+    sut = new CreatePostService(
+      postsRepository,
+      usersRepository,
+      tagsRepository,
+    );
   });
 
   it('should create a post', async () => {

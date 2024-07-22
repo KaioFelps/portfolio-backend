@@ -7,11 +7,13 @@ import { JwtModule, JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
 import supertest from 'supertest';
 import { ProjectFactory } from 'test/factories/project-factory';
+import { TagFactory } from 'test/factories/tag-factory';
 import { UserFactory } from 'test/factories/user-factory';
 
 describe('ProjectController', () => {
   let app: INestApplication;
   let userFactory: UserFactory;
+  let tagsFactory: TagFactory;
   let projectFactory: ProjectFactory;
   let jwt: JwtService;
   let prisma: PrismaService;
@@ -19,11 +21,12 @@ describe('ProjectController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [AppModule, DatabaseModule],
-      providers: [UserFactory, ProjectFactory, JwtModule],
+      providers: [UserFactory, ProjectFactory, TagFactory, JwtModule],
     }).compile();
 
     app = module.createNestApplication();
     userFactory = module.get(UserFactory);
+    tagsFactory = module.get(TagFactory);
     projectFactory = module.get(ProjectFactory);
     jwt = module.get(JwtService);
     prisma = module.get(PrismaService);
@@ -59,13 +62,15 @@ describe('ProjectController', () => {
       sub: user.id.toValue(),
     });
 
+    const tag = await tagsFactory.createAndPersist({ value: 'front end' });
+
     const result = await supertest(app.getHttpServer())
       .post('/project/new')
       .set({ Authorization: `Bearer ${token}` })
       .send({
         title: 'Hidro Mourão',
         topstory: 'https://i.imgur.com/payZTW9.png',
-        tags: ['front-end'],
+        tags: [tag.id.toValue()],
         links: [{ title: 'Deploy', value: 'https://hidromourao.com' }],
       })
       .expect(201);
@@ -75,7 +80,8 @@ describe('ProjectController', () => {
       title: 'Hidro Mourão',
       tags: expect.arrayContaining([
         expect.objectContaining({
-          value: 'front-end',
+          value: 'front end',
+          id: tag.id.toValue(),
         }),
       ]),
       links: expect.arrayContaining([
@@ -97,16 +103,18 @@ describe('ProjectController', () => {
       sub: user.id.toValue(),
     });
 
+    const tag = await tagsFactory.createAndPersist({ value: 'front end' });
+
     const project = await projectFactory.createAndPersist();
 
-    await supertest(app.getHttpServer())
+    const response = await supertest(app.getHttpServer())
       .put(`/project/${project.id.toValue()}/edit`)
       .set({ Authorization: `Bearer ${token}` })
       .send({
         title: 'Edited title of the project',
-        tags: ['front-end'],
+        tags: [tag.id.toValue()],
       })
-      .expect(204);
+      .expect(200);
 
     const projectOnDb = await prisma.project.findUnique({
       where: { id: project.id.toValue() },
@@ -114,8 +122,12 @@ describe('ProjectController', () => {
     });
 
     expect(projectOnDb!.title).toEqual('Edited title of the project');
-    expect(projectOnDb!.tags).toEqual(
-      expect.arrayContaining([expect.objectContaining({ value: 'front-end' })]),
+    expect(projectOnDb!.tags[0].tagId).toEqual(tag.id.toValue());
+    expect(projectOnDb!.tags.length).toBe(1);
+    expect(response.body.project.tags).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ value: 'front end', id: tag.id.toValue() }),
+      ]),
     );
   });
 
