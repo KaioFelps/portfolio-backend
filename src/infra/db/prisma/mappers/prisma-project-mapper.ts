@@ -4,15 +4,15 @@ import { ProjectLinkList } from '@/domain/projects/entities/project-link-list';
 import {
   Prisma,
   Project as PrismaProject,
-  Tag as PrismaTag,
   Link as PrismaLink,
 } from '@prisma/client';
 import { PrismaProjectLinkMapper } from './prisma-project-link-mapper';
 import { ProjectTagList } from '@/domain/projects/entities/project-tag-list';
 import { PrismaProjectTagMapper } from './prisma-project-tag-mapper';
+import { PrismaComposedTag } from '../types/composed-tag';
 
 type toDomainParams = PrismaProject & {
-  tags: PrismaTag[];
+  tags: PrismaComposedTag[];
   links: PrismaLink[];
 };
 

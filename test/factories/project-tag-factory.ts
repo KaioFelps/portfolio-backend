@@ -4,19 +4,19 @@ import {
   ProjectTag,
   ProjectTagProps,
 } from '@/domain/projects/entities/project-tag';
-import { faker } from '@faker-js/faker';
 import { Injectable } from '@nestjs/common';
+import { TagFactory } from './tag-factory';
 
 @Injectable()
 export class ProjectTagFactory {
   static exec(
-    override?: Optional<ProjectTagProps, 'projectId' | 'value'>,
+    override?: Optional<ProjectTagProps, 'tag' | 'projectId'>,
     id?: EntityUniqueId,
   ) {
     return ProjectTag.create(
       {
         projectId: new EntityUniqueId(),
-        value: faker.lorem.sentence(),
+        tag: TagFactory.exec(),
         ...override,
       },
       id,

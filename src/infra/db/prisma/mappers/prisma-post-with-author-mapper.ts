@@ -2,15 +2,16 @@ import { EntityUniqueId } from '@/core/entities/entity-unique-id';
 import {
   Post as PrismaPost,
   Tag as PrismaTag,
+  TagsOnPostsOrProjects as PrismaTagsOnPostsOrProjects,
   User as PrismaUser,
 } from '@prisma/client';
-import { PrismaPostTagMapper } from './prisma-post-tag-mapper';
 import { Slug } from '@/domain/posts/entities/value-objects/slug';
-import { PostTagList } from '@/domain/posts/entities/post-tag-list';
 import { PostWithAuthor } from '@/domain/posts/entities/value-objects/post-with-author';
+import { PostTagList } from '@/domain/posts/entities/post-tag-list';
+import { PrismaPostTagMapper } from './prisma-post-tag-mapper';
 
 type toDomainParams = PrismaPost & {
-  tags: PrismaTag[];
+  tags: Array<{ Tag: PrismaTag } & PrismaTagsOnPostsOrProjects>;
   author: PrismaUser;
 };
 

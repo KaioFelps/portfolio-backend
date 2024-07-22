@@ -1,13 +1,18 @@
 import { EntityUniqueId } from '@/core/entities/entity-unique-id';
 import { ProjectTag } from '@/domain/projects/entities/project-tag';
-import { Prisma, Tag as PrismaTag } from 'prisma/prisma-client';
+import {
+  Prisma,
+  TagsOnPostsOrProjects as PrismaTag,
+} from 'prisma/prisma-client';
+import { PrismaTagMapper } from './prisma-tag-mapper';
+import type { PrismaComposedTag } from '../types/composed-tag';
 
 export class PrismaProjectTagMapper {
-  static toDomain(tag: PrismaTag) {
+  static toDomain(tag: PrismaComposedTag) {
     return ProjectTag.create(
       {
         projectId: new EntityUniqueId(tag.projectId!),
-        value: tag.value,
+        tag: PrismaTagMapper.toDomain(tag.Tag),
       },
       new EntityUniqueId(tag.id),
     );
@@ -17,19 +22,23 @@ export class PrismaProjectTagMapper {
     return {
       id: tag.id.toValue(),
       projectId: tag.projectId.toValue(),
-      value: tag.value,
+      tagId: tag.tag.id.toValue(),
       postId: null,
     };
   }
 
-  static toPrismaCreateMany(tags: ProjectTag[]): Prisma.TagCreateManyArgs {
-    const mappedTags: Prisma.TagCreateManyInput[] = tags.map((tag) => {
-      return {
-        id: tag.id.toValue(),
-        projectId: tag.projectId.toValue(),
-        value: tag.value,
-      };
-    });
+  static toPrismaCreateMany(
+    tags: ProjectTag[],
+  ): Prisma.TagsOnPostsOrProjectsCreateManyArgs {
+    const mappedTags: Prisma.TagsOnPostsOrProjectsCreateManyInput[] = tags.map(
+      (tag) => {
+        return {
+          id: tag.id.toValue(),
+          projectId: tag.projectId.toValue(),
+          tagId: tag.tag.id.toValue(),
+        };
+      },
+    );
 
     return {
       data: mappedTags,
