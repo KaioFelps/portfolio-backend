@@ -6,7 +6,7 @@ import { IProjectsRepository } from '@/domain/projects/repositories/projects-rep
 import { PrismaProjectsRepository } from './prisma/repositories/prisma-projects-repository';
 import { PrismaProjectLinksRepository } from './prisma/repositories/prisma-project-links-repository';
 import { IProjectLinksRepository } from '@/domain/projects/repositories/project-links-repository';
-import { PrismaProjectTagsRepository } from './prisma/repositories/prisma-project-tag-repository';
+import { PrismaProjectTagsRepository } from './prisma/repositories/prisma-project-tags-repository';
 import { IProjectTagsRepository } from '@/domain/projects/repositories/project-tags-repository';
 import { PrismaPostTagsRepository } from './prisma/repositories/prisma-post-tags-repository';
 import { IPostTagsRepository } from '@/domain/posts/repositories/post-tags-repository';
@@ -14,6 +14,8 @@ import { IPostsRepository } from '@/domain/posts/repositories/posts-repository';
 import { PrismaPostsRepository } from './prisma/repositories/prisma-posts-repository';
 import { ILogsRepository } from '@/domain/logs/repositories/logs-repository';
 import { PrismaLogsRepository } from './prisma/repositories/prisma-logs-repository';
+import { ITagsRepository } from '@/domain/tags/repositories/tag-repository';
+import { PrismaTagsRepository } from './prisma/repositories/prisma-tags-repository';
 
 @Module({
   providers: [
@@ -46,6 +48,7 @@ import { PrismaLogsRepository } from './prisma/repositories/prisma-logs-reposito
       provide: ILogsRepository,
       useClass: PrismaLogsRepository,
     },
+    { provide: ITagsRepository, useClass: PrismaTagsRepository },
   ],
   exports: [
     PrismaService,
@@ -56,6 +59,7 @@ import { PrismaLogsRepository } from './prisma/repositories/prisma-logs-reposito
     IPostTagsRepository,
     IPostsRepository,
     ILogsRepository,
+    ITagsRepository,
   ],
 })
 export class DatabaseModule {}
