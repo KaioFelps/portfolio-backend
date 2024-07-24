@@ -37,7 +37,7 @@ export class PrismaTagsRepository implements ITagsRepository {
   async save(tag: Tag): Promise<void> {
     const mappedTag = PrismaTagMapper.toPrisma(tag);
 
-    this.prisma.tag.update({
+    await this.prisma.tag.update({
       data: mappedTag,
       where: {
         id: tag.id.toValue(),
