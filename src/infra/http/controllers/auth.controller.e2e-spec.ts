@@ -8,11 +8,16 @@ import { hash } from 'bcryptjs';
 import { JwtModule, JwtService } from '@nestjs/jwt';
 import { TokenPayload } from '@/infra/auth/jwt-strategy';
 import cookieParser from 'cookie-parser';
+import { DomainEvents } from '@/core/events/domain-events';
 
 describe('AuthController', () => {
   let app: INestApplication;
   let userFactory: UserFactory;
   let jwt: JwtService;
+
+  afterEach(() => {
+    DomainEvents.AggregateEvent['clearEveryAggregateEvent!']();
+  });
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({

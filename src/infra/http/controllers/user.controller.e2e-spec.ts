@@ -1,4 +1,5 @@
 import { AppModule } from '@/app.module';
+import { DomainEvents } from '@/core/events/domain-events';
 import { TokenPayload } from '@/infra/auth/jwt-strategy';
 import { DatabaseModule } from '@/infra/db/database.module';
 import { PrismaService } from '@/infra/db/prisma/prisma-service';
@@ -27,6 +28,10 @@ describe('UserController', () => {
     prisma = module.get(PrismaService);
 
     await app.init();
+  });
+
+  afterEach(() => {
+    DomainEvents.AggregateEvent['clearEveryAggregateEvent!']();
   });
 
   test('[POST] /user/new', async () => {

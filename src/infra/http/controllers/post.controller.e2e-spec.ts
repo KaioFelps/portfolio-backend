@@ -16,6 +16,7 @@ import { PostTagFactory } from 'test/factories/post-tag-factory';
 import { TagFactory } from 'test/factories/tag-factory';
 import { UserFactory } from 'test/factories/user-factory';
 import { PostPresented } from '../presenters/post-presenter';
+import { DomainEvents } from '@/core/events/domain-events';
 
 describe('PostController', () => {
   let app: INestApplication;
@@ -39,6 +40,10 @@ describe('PostController', () => {
     prisma = module.get(PrismaService);
 
     await app.init();
+  });
+
+  afterEach(() => {
+    DomainEvents.AggregateEvent['clearEveryAggregateEvent!']();
   });
 
   test('[POST] /post/new', async () => {

@@ -9,6 +9,7 @@ import { UserFactory } from 'test/factories/user-factory';
 import { TagFactory } from 'test/factories/tag-factory';
 import { QUANTITY_PER_PAGE } from '@/core/pagination-consts';
 import { PrismaService } from '@/infra/db/prisma/prisma-service';
+import { DomainEvents } from '@/core/events/domain-events';
 
 describe('TagController', () => {
   let app: INestApplication;
@@ -30,6 +31,10 @@ describe('TagController', () => {
     jwt = module.get(JwtService);
 
     await app.init();
+  });
+
+  afterEach(() => {
+    DomainEvents.AggregateEvent['clearEveryAggregateEvent!']();
   });
 
   test('[POST] /tag/new', async () => {

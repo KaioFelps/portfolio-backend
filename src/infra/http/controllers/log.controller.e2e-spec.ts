@@ -1,4 +1,5 @@
 import { AppModule } from '@/app.module';
+import { DomainEvents } from '@/core/events/domain-events';
 import { Log, LogAction, LogTargetType } from '@/domain/logs/entities/log';
 import { TokenPayload } from '@/infra/auth/jwt-strategy';
 import { DatabaseModule } from '@/infra/db/database.module';
@@ -27,6 +28,10 @@ describe('LogController', () => {
     jwt = module.get(JwtService);
 
     await app.init();
+  });
+
+  afterEach(() => {
+    DomainEvents.AggregateEvent['clearEveryAggregateEvent!']();
   });
 
   test('[GET] /log/list', async () => {

@@ -16,6 +16,10 @@ export abstract class DomainEvents {
   private static aggregateEventsMap: Map<string, DomainEvent[]> = new Map();
 
   public static AggregateEvent = class {
+    public static 'clearEveryAggregateEvent!'() {
+      DomainEvents.aggregateEventsMap.clear();
+    }
+
     public static getAggregateEvents(id: EntityUniqueId) {
       return DomainEvents.aggregateEventsMap.get(id.toValue()) ?? [];
     }

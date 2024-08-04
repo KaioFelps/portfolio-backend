@@ -14,6 +14,7 @@ import { PrismaProjectTagMapper } from '@/infra/db/prisma/mappers/prisma-project
 import { ProjectTagFactory } from 'test/factories/project-tag-factory';
 import { EntityUniqueId } from '@/core/entities/entity-unique-id';
 import { PrismaProjectMapper } from '@/infra/db/prisma/mappers/prisma-project-mapper';
+import { DomainEvents } from '@/core/events/domain-events';
 
 describe('ProjectController', () => {
   let app: INestApplication;
@@ -37,6 +38,10 @@ describe('ProjectController', () => {
     prisma = module.get(PrismaService);
 
     await app.init();
+  });
+
+  afterEach(() => {
+    DomainEvents.AggregateEvent['clearEveryAggregateEvent!']();
   });
 
   test('[GET] /project/list', async () => {
