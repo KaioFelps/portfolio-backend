@@ -94,7 +94,9 @@ export abstract class WatchedList<T> {
     }
   }
 
-  public update(items: T[]): void {
+  public update(items: T[] | null): void {
+    if (items === null) return;
+
     const newItems = items.filter((a) => {
       return !this.getItems().some((b) => this.compareItems(a, b));
     });

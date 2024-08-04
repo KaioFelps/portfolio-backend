@@ -69,6 +69,13 @@ export class InMemoryProjectsRepository implements IProjectsRepository {
 
     this.items[itemIndex] = project;
 
+    await Promise.all([
+      this.projectLinksRepository.deleteMany(project.links.getItems()),
+      this.projectLinksRepository.createMany(project.links.getItems()),
+      this.projectTagsRepository.deleteMany(project.tags.getItems()),
+      this.projectTagsRepository.createMany(project.tags.getItems()),
+    ]);
+
     DomainEvents.dispatchEventsForAggregate(project.id);
   }
 

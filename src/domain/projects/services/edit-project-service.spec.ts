@@ -65,6 +65,13 @@ describe('Edit Project Service', () => {
         },
         new EntityUniqueId('1'),
       ),
+      ProjectTagFactory.exec(
+        {
+          projectId: project.id,
+          tag: tag2,
+        },
+        new EntityUniqueId('2'),
+      ),
     );
 
     projectLinksRepository.items.push(
@@ -82,21 +89,17 @@ describe('Edit Project Service', () => {
       projectId: project.id.toValue(),
       userId: user.id.toValue(),
       links: [{ title: 'Website', value: 'kaiofelps.dev' }],
-      tags: [tag2.id.toValue(), tag1.id.toValue()],
+      tags: [tag2.id.toValue()],
     });
 
     expect(result.isOk()).toBe(true);
     if (result.isOk()) {
-      expect(result.value.project.tags.getItems()[0].tag).toEqual(tag1);
-      expect(result.value.project.tags.getItems()[1].tag).toEqual(tag2);
-      expect(result.value.project.tags.getItems().length).toBe(2);
+      assert(result.value.project.tags.getItems()[0].tag.equals(tag2));
+      expect(result.value.project.tags.getItems().length).toBe(1);
     }
 
     expect(projectsRepository.items[0].tags.getItems()).toEqual(
       expect.arrayContaining([
-        expect.objectContaining({
-          props: expect.objectContaining({ tag: tag1 }),
-        }),
         expect.objectContaining({
           props: expect.objectContaining({ tag: tag2 }),
         }),
@@ -105,6 +108,40 @@ describe('Edit Project Service', () => {
 
     expect(projectsRepository.items[0].links.getItems()).toEqual([
       expect.objectContaining({ value: 'kaiofelps.dev' }),
+    ]);
+  });
+
+  it('should not reset links if no link is sent', async () => {
+    const user = UserFactory.exec('admin');
+    userRepository.items.push(user);
+
+    const project = ProjectFactory.exec({
+      title: 'initial title',
+      topstory: 'initial_topstory_url.com',
+    });
+
+    projectsRepository.items.push(project);
+
+    projectLinksRepository.items.push(
+      ProjectLinkFactory.exec({
+        projectId: project.id,
+        value: 'github.com',
+      }),
+      ProjectLinkFactory.exec({
+        projectId: project.id,
+        value: 'bitbucket.com',
+      }),
+    );
+
+    const result = await sut.exec({
+      projectId: project.id.toValue(),
+      userId: user.id.toValue(),
+    });
+
+    expect(result.isOk()).toBe(true);
+    expect(projectsRepository.items[0].links.getItems()).toEqual([
+      expect.objectContaining({ value: 'github.com' }),
+      expect.objectContaining({ value: 'bitbucket.com' }),
     ]);
   });
 

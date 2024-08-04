@@ -19,8 +19,8 @@ interface EditProjectServiceRequest {
   projectId: string;
   title?: string;
   topstory?: string;
-  tags?: string[];
-  links?: Array<{ title: string; value: string }>;
+  tags?: string[] | null;
+  links?: Array<{ title: string; value: string }> | null;
 }
 
 type EditProjectServiceResponse = Either<
@@ -43,8 +43,8 @@ export class EditProjectService {
     title,
     topstory,
     projectId,
-    tags = [],
-    links = [],
+    tags = null,
+    links = null,
   }: EditProjectServiceRequest): Promise<EditProjectServiceResponse> {
     const entityProjectId = new EntityUniqueId(projectId);
     const user = await this.usersRepository.findById(userId);
@@ -63,13 +63,15 @@ export class EditProjectService {
       await this.projectLinksRepository.findManyByProjectId(entityProjectId);
     const currentLinksList = new ProjectLinkList(currentLinks);
 
-    const newLinks = links.map(({ title, value }) =>
-      ProjectLink.create({
-        projectId: entityProjectId,
-        value,
-        title,
-      }),
-    );
+    const newLinks = links
+      ? links.map(({ title, value }) =>
+          ProjectLink.create({
+            projectId: entityProjectId,
+            value,
+            title,
+          }),
+        )
+      : null;
 
     currentLinksList.update(newLinks);
 
@@ -80,15 +82,18 @@ export class EditProjectService {
 
     // save only tags that really exists
     // avoiding user to input unexisting tag's ID
-    const newTags = await this.tagsRepository.findManyByIds(tags);
-    const newProjectTags = newTags.map((tag) =>
-      ProjectTag.create({
-        projectId: entityProjectId,
-        tag,
-      }),
-    );
 
-    currentTagsList.update(newProjectTags);
+    if (tags) {
+      const newTags = await this.tagsRepository.findManyByIds(tags);
+      const newProjectTags = newTags.map((tag) =>
+        ProjectTag.create({
+          projectId: entityProjectId,
+          tag,
+        }),
+      );
+
+      currentTagsList.update(newProjectTags);
+    }
 
     project.title = title ?? project.title;
     project.topstory = topstory ?? project.topstory;
