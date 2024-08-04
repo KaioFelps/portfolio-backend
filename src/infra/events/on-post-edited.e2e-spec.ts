@@ -11,6 +11,7 @@ import { PrismaService } from '../db/prisma/prisma-service';
 import { waitFor } from 'test/utlils/wait-for';
 import { PostFactory } from 'test/factories/post-factory';
 import { TagFactory } from 'test/factories/tag-factory';
+import { LogAction, LogTargetType } from '@/domain/logs/entities/log';
 
 describe('On Post Edited Event handler', () => {
   let app: INestApplication;
@@ -58,10 +59,15 @@ describe('On Post Edited Event handler', () => {
       } as CreatePostDto);
 
     await waitFor(async () => {
-      const logsOnDb = await prisma.log.findMany();
+      const logsOnDb = await prisma.log.findMany({
+        where: {
+          action: LogAction.updated,
+          targetType: LogTargetType.post,
+        },
+      });
 
       expect(logsOnDb.length).toBe(1);
-    }, 10000);
+    });
 
     expect(response.ok).toBe(true);
   });
