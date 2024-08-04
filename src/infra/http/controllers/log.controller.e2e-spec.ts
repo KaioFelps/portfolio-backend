@@ -38,7 +38,7 @@ describe('LogController', () => {
       sub: user.id.toValue(),
     } as TokenPayload);
 
-    Promise.all([
+    await Promise.all([
       logFactory.createAndPersist({
         dispatcherId: user.id,
         targetType: LogTargetType.project,
