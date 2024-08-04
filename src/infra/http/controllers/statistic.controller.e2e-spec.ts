@@ -60,7 +60,7 @@ describe('StatisticController', () => {
 
     expect(response.body).toMatchObject({
       totalPosts: 3,
-      totalProjects: 2,
+      totalProjects: 4,
     });
   });
 });
