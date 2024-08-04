@@ -18,7 +18,7 @@ export class PrismaProjectTagsRepository implements IProjectTagsRepository {
   async deleteMany(tags: ProjectTag[]): Promise<void> {
     const tagsIds = tags.map((tag) => tag.id.toValue());
 
-    await this.prisma.tag.deleteMany({
+    await this.prisma.tagsOnPostsOrProjects.deleteMany({
       where: {
         id: {
           in: tagsIds,

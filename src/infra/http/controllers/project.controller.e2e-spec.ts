@@ -10,6 +10,10 @@ import { ProjectFactory } from 'test/factories/project-factory';
 import { TagFactory } from 'test/factories/tag-factory';
 import { UserFactory } from 'test/factories/user-factory';
 import { ProjectPresented } from '../presenters/project-presenter';
+import { PrismaProjectTagMapper } from '@/infra/db/prisma/mappers/prisma-project-tag-mapper';
+import { ProjectTagFactory } from 'test/factories/project-tag-factory';
+import { EntityUniqueId } from '@/core/entities/entity-unique-id';
+import { PrismaProjectMapper } from '@/infra/db/prisma/mappers/prisma-project-mapper';
 
 describe('ProjectController', () => {
   let app: INestApplication;
@@ -131,8 +135,20 @@ describe('ProjectController', () => {
     });
 
     const tag = await tagsFactory.createAndPersist({ value: 'front end' });
+    const tag2 = await tagsFactory.createAndPersist({ value: 'remover' });
 
-    const project = await projectFactory.createAndPersist();
+    const projectId = new EntityUniqueId();
+    const projectTag = ProjectTagFactory.exec({ projectId, tag });
+    const projectTag2 = ProjectTagFactory.exec({ projectId, tag: tag2 });
+
+    const project = ProjectFactory.exec({}, projectId);
+    await prisma.project.create({
+      data: PrismaProjectMapper.toPrisma(project),
+    });
+
+    await prisma.tagsOnPostsOrProjects.createMany(
+      PrismaProjectTagMapper.toPrismaCreateMany([projectTag, projectTag2]),
+    );
 
     const response = await supertest(app.getHttpServer())
       .put(`/project/${project.id.toValue()}/edit`)
