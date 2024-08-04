@@ -58,7 +58,7 @@ describe('TagController', () => {
 
   test('[GET] /tag/list', async () => {
     for (let i = 0; i <= 14; i++) {
-      await tagFactory.createAndPersist();
+      await tagFactory.createAndPersist({ value: `tag-${i + 1}` });
     }
 
     const response = await supertest(app.getHttpServer())
