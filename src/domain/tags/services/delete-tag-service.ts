@@ -3,7 +3,6 @@ import { IUsersRepository } from '@/domain/users/repositories/users-repository';
 import { ITagsRepository } from '../repositories/tag-repository';
 import { UserRole } from '@/domain/users/entities/user';
 import { UnauthorizedError } from '@/core/errors/unauthorized-error';
-import { EntityUniqueId } from '@/core/entities/entity-unique-id';
 import { Injectable } from '@nestjs/common';
 
 interface DeleteTagServiceRequest {
@@ -25,11 +24,18 @@ export class DeleteTagService {
     userId,
   }: DeleteTagServiceRequest): Promise<DeleteTagServiceResponse> {
     const user = await this.usersRepository.findById(userId);
+    const tag = await this.tagsRepository.findById(tagId);
 
     if (!user || user.role !== UserRole.admin)
       return fail(new UnauthorizedError());
 
-    await this.tagsRepository.delete(new EntityUniqueId(tagId));
+    if (!tag) return ok({});
+
+    try {
+      await this.tagsRepository.delete(tag.id);
+    } finally {
+      tag.dispose();
+    }
 
     return ok({});
   }

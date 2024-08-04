@@ -45,7 +45,12 @@ export class DeleteProjectService {
     }
 
     project.addDeletedEventToDispatch();
-    await this.projectsRepository.delete(project);
+
+    try {
+      await this.projectsRepository.delete(project);
+    } finally {
+      project.dispose();
+    }
 
     return ok({});
   }

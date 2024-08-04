@@ -20,7 +20,11 @@ export class CreateTagService {
       value,
     });
 
-    await this.tagsRepository.create(tag);
+    try {
+      await this.tagsRepository.create(tag);
+    } finally {
+      tag.dispose();
+    }
 
     return ok({
       tag,

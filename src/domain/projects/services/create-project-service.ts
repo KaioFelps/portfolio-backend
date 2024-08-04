@@ -71,7 +71,12 @@ export class CreateProjectService {
     project.links = projectLinksList;
 
     project.addCreatedEventToDispatch();
-    await this.projectsRepository.create(project);
+
+    try {
+      await this.projectsRepository.create(project);
+    } finally {
+      project.dispose();
+    }
 
     return ok({ project });
   }

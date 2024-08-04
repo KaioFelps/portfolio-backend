@@ -41,7 +41,11 @@ export class TogglePostVisibilityService {
 
     post.publishedAt = post.publishedAt ? null : new Date();
 
-    await this.postsRepository.save(post);
+    try {
+      await this.postsRepository.save(post);
+    } finally {
+      post.dispose();
+    }
 
     return ok({ post });
   }

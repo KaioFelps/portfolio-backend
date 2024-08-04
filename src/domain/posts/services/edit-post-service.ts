@@ -76,7 +76,11 @@ export class EditPostService {
 
     post.addEditedEventToDispatch();
 
-    await this.postsRepository.save(post);
+    try {
+      await this.postsRepository.save(post);
+    } finally {
+      post.dispose();
+    }
 
     return ok({ post });
   }

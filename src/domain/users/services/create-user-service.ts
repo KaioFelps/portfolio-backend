@@ -45,7 +45,12 @@ export class CreateUserService {
     });
 
     user.addCreatedEventToDispatch(adminUser.id);
-    await this.usersRepository.create(user);
+
+    try {
+      await this.usersRepository.create(user);
+    } finally {
+      user.dispose();
+    }
 
     return ok({ user });
   }

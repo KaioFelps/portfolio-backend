@@ -58,7 +58,12 @@ export class EditUserService {
     }
 
     user.addEditedEventToDispatch(admin.id);
-    await this.usersRepository.save(user);
+
+    try {
+      await this.usersRepository.save(user);
+    } finally {
+      user.dispose();
+    }
 
     return ok({ user });
   }

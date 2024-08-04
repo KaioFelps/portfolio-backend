@@ -4,9 +4,33 @@ import { DomainEvent } from './domain-event';
 
 type DomainEventCallback = (event: unknown) => void;
 
-export class DomainEvents {
+/**
+ * This class manages the whole application instance's domain events
+ *
+ * It should never be implemented neither instantiated
+ */
+export abstract class DomainEvents {
   private static handlersMap: Record<string, DomainEventCallback[]> = {};
   private static markedAggregates: Aggregate<unknown>[] = [];
+
+  private static aggregateEventsMap: Map<string, DomainEvent[]> = new Map();
+
+  public static AggregateEvent = class {
+    public static getAggregateEvents(id: EntityUniqueId) {
+      return DomainEvents.aggregateEventsMap.get(id.toValue()) ?? [];
+    }
+
+    public static clearAggregateEvents(id: EntityUniqueId) {
+      DomainEvents.aggregateEventsMap.delete(id.toValue());
+    }
+
+    public static addAggregateEvent(id: EntityUniqueId, event: DomainEvent) {
+      if (!DomainEvents.aggregateEventsMap.get(id.toValue()))
+        return DomainEvents.aggregateEventsMap.set(id.toValue(), [event]);
+
+      DomainEvents.aggregateEventsMap.get(id.toValue())!.push(event);
+    }
+  };
 
   public static markAggregateForDispatch(aggregate: Aggregate<unknown>) {
     const aggregateFound = this.findMarkedAggregateById(aggregate.id);
@@ -61,6 +85,8 @@ export class DomainEvents {
     aggregate.getDomainEvents().forEach((event) => {
       this.dispatch(event);
     });
+
+    aggregate.clearDomainEvents();
   }
 
   private static dispatch(event: DomainEvent) {

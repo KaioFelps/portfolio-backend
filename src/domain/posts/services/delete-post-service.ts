@@ -45,7 +45,12 @@ export class DeletePostService {
     }
 
     post.addDeletedEventToDispatch();
-    await this.postsRepository.delete(post);
+
+    try {
+      await this.postsRepository.delete(post);
+    } finally {
+      post.dispose();
+    }
 
     return ok({ post });
   }

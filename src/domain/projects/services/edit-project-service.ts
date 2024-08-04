@@ -101,7 +101,12 @@ export class EditProjectService {
     project.tags = currentTagsList;
 
     project.addEditedEventToDispatch();
-    await this.projectsRepository.save(project);
+
+    try {
+      await this.projectsRepository.save(project);
+    } finally {
+      project.dispose();
+    }
 
     return ok({ project });
   }

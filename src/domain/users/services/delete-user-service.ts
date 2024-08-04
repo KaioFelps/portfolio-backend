@@ -40,7 +40,12 @@ export class DeleteUserService {
     }
 
     user.addDeletedEventToDispatch(adminUser.id);
-    await this.usersRepository.delete(user);
+
+    try {
+      await this.usersRepository.delete(user);
+    } finally {
+      user.dispose();
+    }
 
     return ok({});
   }

@@ -66,7 +66,11 @@ export class CreatePostService {
 
     post.addCreatedEventToDispatch();
 
-    await this.postsRepository.create(post);
+    try {
+      await this.postsRepository.create(post);
+    } finally {
+      post.dispose();
+    }
 
     return ok({ post });
   }

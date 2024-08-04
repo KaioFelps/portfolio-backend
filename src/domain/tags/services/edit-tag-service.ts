@@ -30,7 +30,11 @@ export class EditTagService {
     tag.value = value;
     tag.addEditedEventToDispatch();
 
-    await this.tagsRepository.save(tag);
+    try {
+      await this.tagsRepository.save(tag);
+    } finally {
+      tag.dispose();
+    }
 
     return ok({ tag });
   }
