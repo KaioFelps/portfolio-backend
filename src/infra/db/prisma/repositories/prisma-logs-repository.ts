@@ -28,20 +28,17 @@ export class PrismaLogsRepository implements ILogsRepository {
   }: LogsPaginationParams): Promise<Log[]> {
     const offset = (page - 1) * PER_PAGE;
 
-    const where: Prisma.LogWhereInput = {
-      OR: [
+    const where: Prisma.LogWhereInput = {};
+
+    if (query) {
+      where.OR = [
         { target: { contains: query } },
-        {
-          Dispatcher: {
-            name: {
-              contains: query,
-            },
-          },
-        },
-      ],
-      action: queryAction ? { equals: queryAction } : undefined,
-      targetType: queryTargetType ? { equals: queryTargetType } : undefined,
-    };
+        { Dispatcher: { name: { contains: query } } },
+      ];
+    }
+
+    if (queryAction) where.action = { equals: queryAction };
+    if (queryTargetType) where.targetType = { equals: queryTargetType };
 
     const logs = await this.prisma.log.findMany({
       take: PER_PAGE,
@@ -71,20 +68,17 @@ export class PrismaLogsRepository implements ILogsRepository {
   }: LogsPaginationParams): Promise<PaginationResponse<LogWithAuthor>> {
     const offset = (page - 1) * PER_PAGE;
 
-    const where: Prisma.LogWhereInput = {
-      OR: [
+    const where: Prisma.LogWhereInput = {};
+
+    if (query) {
+      where.OR = [
         { target: { contains: query } },
-        {
-          Dispatcher: {
-            name: {
-              contains: query,
-            },
-          },
-        },
-      ],
-      action: queryAction ? { equals: queryAction } : undefined,
-      targetType: queryTargetType ? { equals: queryTargetType } : undefined,
-    };
+        { Dispatcher: { name: { contains: query } } },
+      ];
+    }
+
+    if (queryAction) where.action = { equals: queryAction };
+    if (queryTargetType) where.targetType = { equals: queryTargetType };
 
     const logs = await this.prisma.log.findMany({
       take: PER_PAGE,
