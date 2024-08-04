@@ -9,6 +9,7 @@ import supertest from 'supertest';
 import { ProjectFactory } from 'test/factories/project-factory';
 import { TagFactory } from 'test/factories/tag-factory';
 import { UserFactory } from 'test/factories/user-factory';
+import { ProjectPresented } from '../presenters/project-presenter';
 
 describe('ProjectController', () => {
   let app: INestApplication;
@@ -52,6 +53,32 @@ describe('ProjectController', () => {
     });
 
     expect(response.body.projects.length).toBe(3);
+  });
+
+  test('[GET] /project/:id', async () => {
+    const project = await projectFactory.createAndPersist();
+
+    const user = await userFactory.createAndPersist('editor');
+    const token = await jwt.signAsync({
+      name: user.name,
+      role: user.role,
+      sub: user.id.toValue(),
+    });
+
+    const response = await supertest(app.getHttpServer())
+      .get('/project/' + project.id.toValue())
+      .set({ Authorization: `Bearer ${token}` })
+      .send()
+      .expect(200);
+
+    expect(response.body.project).toMatchObject({
+      createdAt: expect.any(String),
+      id: project.id.toValue(),
+      links: [],
+      tags: [],
+      title: project.title,
+      topstory: project.topstory,
+    } as ProjectPresented);
   });
 
   test('[POST] /project/new', async () => {

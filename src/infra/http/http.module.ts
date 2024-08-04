@@ -30,6 +30,7 @@ import { TagsController } from './controllers/tag.controller';
 import { DeleteTagService } from '@/domain/tags/services/delete-tag-service';
 import { EditTagService } from '@/domain/tags/services/edit-tag-service';
 import { FetchManyTagsService } from '@/domain/tags/services/fetch-many-tags-service';
+import { GetProjectByIdService } from '@/domain/projects/services/get-project-by-id-service';
 
 @Module({
   imports: [CryptographyModule, DatabaseModule],
@@ -60,6 +61,7 @@ import { FetchManyTagsService } from '@/domain/tags/services/fetch-many-tags-ser
     EditProjectService,
     DeleteProjectService,
     FetchManyProjectsService,
+    GetProjectByIdService,
 
     // users ////////////////////////////
     CreateUserService,

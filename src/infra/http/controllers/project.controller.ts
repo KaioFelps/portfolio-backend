@@ -28,6 +28,7 @@ import { PaginatedQueryDto } from '../dtos/paginated-query';
 import { FetchManyProjectsService } from '@/domain/projects/services/fetch-many-projects-service';
 import { QUANTITY_PER_PAGE } from '@/core/pagination-consts';
 import { PublicRoute } from '@/infra/auth/decorators/public-route';
+import { GetProjectByIdService } from '@/domain/projects/services/get-project-by-id-service';
 
 /*
 import { ZodValidatorPipe } from '@/infra/lib/zod-validator-pipe';
@@ -54,6 +55,7 @@ export class ProjectController {
     private editProjectService: EditProjectService,
     private deleteProjectService: DeleteProjectService,
     private fetchManyProjectsService: FetchManyProjectsService,
+    private getProjectByIdService: GetProjectByIdService,
   ) {}
 
   @Get('list')
@@ -108,6 +110,22 @@ export class ProjectController {
 
     return {
       project: ProjectPresenter.toHTTP(result.value.project),
+    };
+  }
+
+  @Get('/:id')
+  @HttpCode(200)
+  async get(@Param('id') projectId: string) {
+    const result = await this.getProjectByIdService.exec({ id: projectId });
+
+    if (result.isFail()) {
+      throw new InternalServerErrorException();
+    }
+
+    const { project } = result.value;
+
+    return {
+      project: !project ? null : ProjectPresenter.toHTTP(project),
     };
   }
 
