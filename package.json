@@ -21,9 +21,6 @@
     "test:e2e": "vitest --config ./vitest.config.e2e.ts --poolOptions.threads.minThreads 1 --poolOptions.threads.maxThreads 3",
     "test:e2e:watch": "vitest --config ./vitest.config.e2e.ts --poolOptions.threads.minThreads 1 --poolOptions.threads.maxThreads 3 --watch"
   },
-  "prisma": {
-    "seed": "ts-node prisma/seed.ts"
-  },
   "dependencies": {
     "@faker-js/faker": "^8.4.1",
     "@nestjs/common": "^10.3.8",

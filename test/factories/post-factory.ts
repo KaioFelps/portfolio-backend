@@ -25,7 +25,7 @@ export class PostFactory {
     >,
     id?: EntityUniqueId,
   ) {
-    return Post.create(
+    const post = Post.create(
       {
         tags: new PostTagList([]),
         title: faker.lorem.lines(1),
@@ -37,6 +37,10 @@ export class PostFactory {
       },
       id,
     );
+
+    if (!id) post.addCreatedEventToDispatch();
+
+    return post;
   }
 
   async createAndPersist(

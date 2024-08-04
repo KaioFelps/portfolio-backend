@@ -19,7 +19,7 @@ export class ProjectFactory {
     >,
     id?: EntityUniqueId,
   ) {
-    return Project.create(
+    const project = Project.create(
       {
         links: new ProjectLinkList(),
         tags: new ProjectTagList(),
@@ -30,6 +30,10 @@ export class ProjectFactory {
       },
       id,
     );
+
+    if (!id) project.addCreatedEventToDispatch();
+
+    return project;
   }
 
   async createAndPersist(
