@@ -61,7 +61,7 @@ describe('On Project Created Event handler', () => {
       const logsOnDb = await prisma.log.findMany();
 
       expect(logsOnDb.length).toBe(1);
-    }, 10000);
+    });
 
     expect(response.ok).toBe(true);
   });

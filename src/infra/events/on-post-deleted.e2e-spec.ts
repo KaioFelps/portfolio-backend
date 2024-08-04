@@ -54,7 +54,7 @@ describe('On Post Edited Event handler', () => {
       });
 
       expect(logsOnDb.length).toBe(1);
-    }, 10000);
+    });
 
     expect(response.ok).toBe(true);
   });
