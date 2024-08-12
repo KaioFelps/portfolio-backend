@@ -24,11 +24,11 @@ import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error';
 import { DeleteProjectService } from '@/domain/projects/services/delete-project-service';
 import { BadRequestError } from '@/core/errors/bad-request-error';
 import { ProjectPresenter } from '../presenters/project-presenter';
-import { PaginatedQueryDto } from '../dtos/paginated-query';
 import { FetchManyProjectsService } from '@/domain/projects/services/fetch-many-projects-service';
 import { QUANTITY_PER_PAGE } from '@/core/pagination-consts';
 import { PublicRoute } from '@/infra/auth/decorators/public-route';
 import { GetProjectByIdService } from '@/domain/projects/services/get-project-by-id-service';
+import { TitleAndTagPaginatedQueryDto } from '../dtos/title-and-query-paginated-query';
 
 /*
 import { ZodValidatorPipe } from '@/infra/lib/zod-validator-pipe';
@@ -63,7 +63,7 @@ export class ProjectController {
   @HttpCode(200)
   async getMany(
     @Query()
-    query: PaginatedQueryDto,
+    query: TitleAndTagPaginatedQueryDto,
   ) {
     const result = await this.fetchManyProjectsService.exec(query);
 
