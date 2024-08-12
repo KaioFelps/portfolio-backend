@@ -19,7 +19,7 @@ import { PostPresenter } from '../presenters/post-presenter';
 import { FetchManyPostsService } from '@/domain/posts/services/fetch-many-posts-service';
 import { PostWithAuthorPresenter } from '../presenters/post-with-author-presenter';
 import { QUANTITY_PER_PAGE } from '@/core/pagination-consts';
-import { PaginatedPostListDto } from '../dtos/paginated-post-list';
+import { TitleAndTagPaginatedQueryDto } from '../dtos/title-and-query-paginated-query';
 import { CreatePostService } from '@/domain/posts/services/create-post-service';
 import { CreatePostDto } from '../dtos/create-post';
 import { TokenPayload } from '@/infra/auth/jwt-strategy';
@@ -75,7 +75,7 @@ export class PostController {
   @Get('list')
   @PublicRoute()
   @HttpCode(200)
-  async getMany(@Query() query: PaginatedPostListDto) {
+  async getMany(@Query() query: TitleAndTagPaginatedQueryDto) {
     const response = await this.fetchManyPublishedPostsService.exec(query);
 
     if (response.isFail()) {
@@ -96,7 +96,7 @@ export class PostController {
 
   @Get('list/admin')
   @HttpCode(200)
-  async adminGetMany(@Query() query: PaginatedPostListDto) {
+  async adminGetMany(@Query() query: TitleAndTagPaginatedQueryDto) {
     const response = await this.fetchManyPostsService.exec(query);
 
     if (response.isFail()) {
