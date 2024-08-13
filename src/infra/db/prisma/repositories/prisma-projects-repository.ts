@@ -72,7 +72,7 @@ export class PrismaProjectsRepository implements IProjectsRepository {
     if (query) {
       switch (query.type) {
         case 'tag':
-          where.tags = { some: { id: query.value } };
+          where.tags = { some: { tagId: query.value } };
           break;
         case 'title':
           where.title = { contains: query.value, mode: 'insensitive' };

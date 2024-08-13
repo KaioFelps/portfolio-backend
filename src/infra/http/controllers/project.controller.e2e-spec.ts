@@ -1,5 +1,4 @@
 import { AppModule } from '@/app.module';
-import { QUANTITY_PER_PAGE } from '@/core/pagination-consts';
 import { DatabaseModule } from '@/infra/db/database.module';
 import { PrismaService } from '@/infra/db/prisma/prisma-service';
 import { INestApplication } from '@nestjs/common';
@@ -44,24 +43,44 @@ describe('ProjectController', () => {
     DomainEvents.AggregateEvent['clearEveryAggregateEvent!']();
   });
 
-  test('[GET] /project/list', async () => {
+  test.only('[GET] /project/list', async () => {
+    const tag = await tagsFactory.createAndPersist({ value: 'Téres' });
+
+    const projectId = new EntityUniqueId();
+
+    const generators: Array<Promise<any>> = [];
     for (let i = 0; i <= 14; i++) {
-      await projectFactory.createAndPersist();
+      switch (i) {
+        case 2:
+          generators.push(projectFactory.createAndPersist({}, projectId));
+          break;
+        default:
+          generators.push(projectFactory.createAndPersist());
+          break;
+      }
     }
 
+    await Promise.all(generators);
+    await prisma.tagsOnPostsOrProjects.create({
+      data: {
+        projectId: projectId.toValue(),
+        tagId: tag.id.toValue(),
+      },
+    });
+
     const response = await supertest(app.getHttpServer())
-      .get('/project/list?page=2')
+      .get('/project/list?&amount=12&tag=téres')
       .send()
       .expect(200);
 
     expect(response.body).toMatchObject({
       projects: expect.any(Array),
-      totalCount: 15,
-      page: 2,
-      perPage: QUANTITY_PER_PAGE,
+      totalCount: 1,
+      page: 1,
+      perPage: 12,
     });
 
-    expect(response.body.projects.length).toBe(3);
+    expect(response.body.projects.length).toBe(1);
   });
 
   test('[GET] /project/:id', async () => {

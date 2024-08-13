@@ -41,8 +41,9 @@ export class ProjectFactory {
       ProjectProps,
       'createdAt' | 'links' | 'tags' | 'title' | 'topstory'
     >,
+    id?: EntityUniqueId,
   ) {
-    const project = ProjectFactory.exec(override);
+    const project = ProjectFactory.exec(override, id);
     const prismaUser = PrismaProjectMapper.toPrisma(project);
 
     await this.prisma.project.create({ data: prismaUser });

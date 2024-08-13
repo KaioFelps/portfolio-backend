@@ -58,7 +58,9 @@ export class PrismaTagsRepository implements ITagsRepository {
   }
 
   async findByValue(value: string): Promise<Tag | null> {
-    const tag = await this.prisma.tag.findUnique({ where: { value } });
+    const tag = await this.prisma.tag.findFirst({
+      where: { value: { equals: value, mode: 'insensitive' } },
+    });
 
     if (!tag) return null;
 

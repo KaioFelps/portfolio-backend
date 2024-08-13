@@ -109,7 +109,7 @@ export class PrismaPostsRepository implements IPostsRepository {
     const where: Prisma.PostWhereInput = {};
     switch (query?.type) {
       case 'tag':
-        where.tags = { some: { id: { equals: query.value } } };
+        where.tags = { some: { tagId: { equals: query.value } } };
         break;
       case 'title':
         where.title = { contains: query.value, mode: 'insensitive' };
