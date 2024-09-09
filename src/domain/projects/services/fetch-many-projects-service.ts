@@ -3,12 +3,11 @@ import {
   IProjectsRepository,
   ProjectQuery,
 } from '../repositories/projects-repository';
-import { Either, fail, ok } from '@/core/types/either';
+import { Either, ok } from '@/core/types/either';
 import { PaginationParams } from '@/core/types/pagination-params';
 import { QUANTITY_PER_PAGE } from '@/core/pagination-consts';
 import { Project } from '../entities/project';
 import { ITagsRepository } from '@/domain/tags/repositories/tag-repository';
-import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error';
 
 interface FetchManyProjectsServiceRequest
   extends Omit<PaginationParams, 'query'> {
@@ -17,7 +16,7 @@ interface FetchManyProjectsServiceRequest
 }
 
 type FetchManyProjectsServiceResponse = Either<
-  ResourceNotFoundError,
+  null,
   { projects: Project[]; count: number }
 >;
 
@@ -40,7 +39,13 @@ export class FetchManyProjectsService {
       query = new ProjectQuery('title', title);
     } else if (tag) {
       const dbTag = await this.tagsRepository.findByValue(tag);
-      if (!dbTag) return fail(new ResourceNotFoundError());
+
+      // return an empty list of projects if tag does not exist, instead of an error
+      if (!dbTag)
+        return ok({
+          projects: [],
+          count: 0,
+        });
 
       query = new ProjectQuery('tag', dbTag.id.toValue());
     }

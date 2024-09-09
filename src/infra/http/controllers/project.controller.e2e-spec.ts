@@ -43,7 +43,7 @@ describe('ProjectController', () => {
     DomainEvents.AggregateEvent['clearEveryAggregateEvent!']();
   });
 
-  test.only('[GET] /project/list', async () => {
+  test('[GET] /project/list', async () => {
     const tag = await tagsFactory.createAndPersist({ value: 'Téres' });
 
     const projectId = new EntityUniqueId();
@@ -68,6 +68,7 @@ describe('ProjectController', () => {
       },
     });
 
+    // expect it to accept lower case searches
     const response = await supertest(app.getHttpServer())
       .get('/project/list?&amount=12&tag=téres')
       .send()
@@ -81,6 +82,15 @@ describe('ProjectController', () => {
     });
 
     expect(response.body.projects.length).toBe(1);
+
+    // should not break on searched an unexisting tag
+    const responseWithUnexistingTag = await supertest(app.getHttpServer())
+      .get('/project/list?tag=tér')
+      .send()
+      .expect(200);
+
+    expect(responseWithUnexistingTag.body.projects.length).toBe(0);
+    expect(responseWithUnexistingTag.body.totalCount).toBe(0);
   });
 
   test('[GET] /project/:id', async () => {

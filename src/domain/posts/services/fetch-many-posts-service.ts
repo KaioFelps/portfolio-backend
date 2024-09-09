@@ -1,11 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { IPostsRepository, PostQuery } from '../repositories/posts-repository';
-import { Either, fail, ok } from '@/core/types/either';
+import { Either, ok } from '@/core/types/either';
 import { QUANTITY_PER_PAGE } from '@/core/pagination-consts';
 import { Post } from '../entities/post';
 import { PaginationParams } from '@/core/types/pagination-params';
 import { ITagsRepository } from '@/domain/tags/repositories/tag-repository';
-import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error';
 
 interface FetchManyPostsServiceRequest
   extends Omit<PaginationParams, keyof { query?: string }> {
@@ -14,7 +13,7 @@ interface FetchManyPostsServiceRequest
 }
 
 type FetchManyPostsServiceResponse = Either<
-  ResourceNotFoundError,
+  null,
   { posts: Post[]; count: number }
 >;
 
@@ -37,7 +36,12 @@ export class FetchManyPostsService {
       query = new PostQuery('title', title);
     } else if (tag) {
       const tagFromDb = await this.tagsRepository.findByValue(tag);
-      if (!tagFromDb) return fail(new ResourceNotFoundError());
+      if (!tagFromDb)
+        return ok({
+          posts: [],
+          count: 0,
+        });
+
       query = new PostQuery('tag', tagFromDb.id.toValue());
     }
 
