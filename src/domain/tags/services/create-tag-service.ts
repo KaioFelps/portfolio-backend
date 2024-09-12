@@ -20,6 +20,8 @@ export class CreateTagService {
       value,
     });
 
+    tag.addCreatedEventToDispatch();
+
     try {
       await this.tagsRepository.create(tag);
     } finally {

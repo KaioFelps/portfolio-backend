@@ -31,6 +31,8 @@ export class DeleteTagService {
 
     if (!tag) return ok({});
 
+    tag.addDeletedEventToDispatch();
+
     try {
       await this.tagsRepository.delete(tag.id);
     } finally {

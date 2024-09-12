@@ -10,6 +10,9 @@ import { OnProjectEdited } from '@/domain/logs/subscribers/projects/on-project-e
 import { OnUserCreated } from '@/domain/logs/subscribers/users/on-user-created';
 import { OnUserDeleted } from '@/domain/logs/subscribers/users/on-user-deleted';
 import { OnUserEdited } from '@/domain/logs/subscribers/users/on-user-edited';
+import { OnTagCreated } from '@/domain/logs/subscribers/tags/on-tag-created';
+import { OnTagDeleted } from '@/domain/logs/subscribers/tags/on-tag-deleted';
+import { OnTagEdited } from '@/domain/logs/subscribers/tags/on-tag-edited';
 
 @Module({
   imports: [DatabaseModule],
@@ -31,6 +34,11 @@ import { OnUserEdited } from '@/domain/logs/subscribers/users/on-user-edited';
     OnUserCreated,
     OnUserDeleted,
     OnUserEdited,
+
+    // tags
+    OnTagCreated,
+    OnTagDeleted,
+    OnTagEdited,
   ],
 })
 export class EventsModule {}
