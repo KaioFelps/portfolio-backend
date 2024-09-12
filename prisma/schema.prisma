@@ -21,6 +21,7 @@ enum LogTargetType {
   POST
   PROJECT
   USER
+  TAG
 }
 
 enum UserRole {
