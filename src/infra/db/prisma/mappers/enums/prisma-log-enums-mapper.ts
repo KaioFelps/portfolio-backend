@@ -39,6 +39,8 @@ export namespace PrismaLogEnumsMappers {
           return 'PROJECT';
         case LogTargetType.user:
           return 'USER';
+        case LogTargetType.tag:
+          return 'TAG';
       }
     }
 
@@ -50,6 +52,8 @@ export namespace PrismaLogEnumsMappers {
           return LogTargetType.project;
         case 'USER':
           return LogTargetType.user;
+        case 'TAG':
+          return LogTargetType.tag;
       }
     }
   }
