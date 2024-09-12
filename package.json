@@ -12,7 +12,7 @@
     "start:dev": "npx @nestjs/cli start --watch",
     "start:debug": "npx @nestjs/cli start --debug --watch",
     "start:prod": "node dist/src/main",
-    "squarecloud": "npx prisma migrate deploy && npm run build && npm run start:prod",
+    "squarecloud": "npx prisma migrate deploy && npx prisma generate && npm run build && npm run start:prod",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "vitest",
     "test:watch": "vitest --watch",
