@@ -24,15 +24,10 @@ Site pessoal com portfólio, exposição de projetos realizados e área de blogp
 - [x] Obter uma lista paginada dos projetos criados com paginação;
 
 ### Eventos e background tasks
-- [x] Registrar um log ao criar um post;
-- [x] Registrar um log ao apagar um post;
-- [x] Registrar um log ao editar um post;
-- [x] Registrar um log ao criar um projeto;
-- [x] Registrar um log ao apagar um projeto;
-- [x] Registrar um log ao editar um projeto;
-- [x] Registrar um log ao criar um usuário;
-- [x] Registrar um log ao apagar um usuário;
-- [x] Registrar um log ao editar um usuário;
+- [x] Registrar um log ao criar; editar; deletar um post;
+- [x] Registrar um log ao criar; editar; deletar um projeto;
+- [x] Registrar um log ao criar; editar; deletar um usuário;
+- [x] Registrar um log ao criar; editar; deletar uma tag.
 
 ## Installation
 
