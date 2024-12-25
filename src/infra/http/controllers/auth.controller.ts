@@ -19,6 +19,7 @@ import { PublicRoute } from '@/infra/auth/decorators/public-route';
 import type { CookieOptions, Request, Response } from 'express';
 import { EnvService } from '@/infra/env/env-service';
 import { RefreshAuthenticationService } from '@/domain/users/services/refresh-authentication-service';
+import { UnauthorizedError } from '@/core/errors/unauthorized-error';
 
 @Controller('auth')
 export class AuthController {
@@ -56,7 +57,6 @@ export class AuthController {
       switch (error.constructor) {
         case WrongCredentialError:
           throw new UnauthorizedException(error.message);
-
         default:
           throw new BadRequestException();
       }
@@ -72,7 +72,7 @@ export class AuthController {
   @HttpCode(204)
   @Header('Access-Control-Allow-Credentials', 'true')
   async logout(@Res({ passthrough: true }) response: Response) {
-    response.cookie('refresh_token', '', this.refreshTokenOptions);
+    this.cleanRefreshToken(response);
   }
 
   @Patch('refresh')
@@ -94,6 +94,8 @@ export class AuthController {
 
       switch (error.constructor) {
         case WrongCredentialError:
+        case UnauthorizedError:
+          this.cleanRefreshToken(response);
           throw new UnauthorizedException(error.message);
         default:
           throw new InternalServerErrorException();
@@ -105,5 +107,9 @@ export class AuthController {
     response.cookie('refresh_token', refreshToken, this.refreshTokenOptions);
 
     return { accessToken, refreshToken, user };
+  }
+
+  private cleanRefreshToken(response: Response) {
+    response.cookie('refresh_token', '', this.refreshTokenOptions);
   }
 }
