@@ -42,7 +42,7 @@ export class CreateProjectService {
     const user = await this.usersRepository.findById(userId);
 
     if (!user) {
-      return fail(new UnauthorizedError());
+      return fail(new UnauthorizedError(`User of id ${userId} not found.`));
     }
 
     const project = Project.create({
