@@ -1,0 +1,39 @@
+name: Tests Suits
+
+on:
+    workflow_call: 
+
+jobs:
+    unit_tests:
+        name: Run Unit Tests
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - uses: actions/setup-node@v4
+              with:
+                node-version: 20
+                cache: npm
+            
+            - run: npm ci
+            - run: npm run test
+
+    e2e_tests:
+        name: Run E-2-E Tests
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - uses: actions/setup-node@v4
+              with:
+                node-version: 20
+                cache: npm
+            
+            - name: Raise Docker Services
+              run: docker compose --env-file .env.test -f docker-compose-ci.yaml up -d
+            
+            - name: Check Docker Running Containers
+              run: docker ps -a
+            
+            - name: Run Tests
+              run: |
+                npm ci
+                npm run test:e2e

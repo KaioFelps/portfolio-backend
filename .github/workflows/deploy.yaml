@@ -1,0 +1,41 @@
+name: Deploy to Square Cloud
+
+on:
+    workflow_call:
+
+jobs:
+    deploy:
+        
+        name: Deploy
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - uses: actions/setup-node@v4
+              with:
+                node-version: 20
+                cache: npm
+            
+            - name: Build the application
+              run: |
+                npm ci
+                npm run build
+            
+            - name: Prepare the package
+              run: |
+                mkdir __package
+                cp -a dist __package
+                cp -r prisma __package
+                cp run.sh __package
+                cp package.json __package
+                cp package-lock.json __package
+            
+            - name: Setup Square Cloud CLI
+              uses: squarecloudofc/github-action@v2
+              with:
+                token: ${{ secrets.SQUARE_TOKEN }}
+                install-only: true
+        
+            - name: Commit the application
+              run: |
+                cd __package
+                square commit --restart ${{ secrets.SQUARE_APPLICATION_ID }}

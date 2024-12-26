@@ -1,0 +1,15 @@
+name: Workflow Pipeline
+
+on:
+    push:
+    pull_request: 
+
+jobs:
+    tests: 
+        uses: ./.github/workflows/tests.yaml
+
+    deploy:
+        secrets: inherit
+        needs: [tests]
+        if: github.ref_name == 'main' && github.event_name == 'push'
+        uses: ./.github/workflows/deploy.yaml
