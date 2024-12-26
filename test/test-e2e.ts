@@ -18,8 +18,6 @@ expand(
   }),
 );
 
-console.log(process.env.DATABASE_URL);
-
 const prisma = new PrismaClient();
 
 function _generate_mysql_unique_database_url(databaseId: string) {
