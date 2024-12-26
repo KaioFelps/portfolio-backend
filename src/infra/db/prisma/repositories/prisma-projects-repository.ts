@@ -80,34 +80,31 @@ export class PrismaProjectsRepository implements IProjectsRepository {
       }
     }
 
-    const projects = await this.prisma.project.findMany({
-      take: PER_PAGE,
-      skip: offset,
-      orderBy: {
-        createdAt: 'desc',
-      },
-      where,
-      include: {
-        links: true,
-        tags: {
-          include: { Tag: true },
+    const [projects, projectsTotalCount] = await Promise.all([
+      this.prisma.project.findMany({
+        take: PER_PAGE,
+        skip: offset,
+        orderBy: {
+          createdAt: 'desc',
         },
-      },
-    });
+        where,
+        include: {
+          links: true,
+          tags: {
+            include: { Tag: true },
+          },
+        },
+      }),
 
-    const projectsTotalCount = await this.prisma.project.count({
-      where,
-      orderBy: {
-        createdAt: 'desc',
-      },
-    });
+      this.prisma.project.count({
+        where,
+        orderBy: {
+          createdAt: 'desc',
+        },
+      }),
+    ]);
 
-    const mappedProjects: Project[] = [];
-
-    for (const project of projects) {
-      const mappedProject = PrismaProjectMapper.toDomain(project);
-      mappedProjects.push(mappedProject);
-    }
+    const mappedProjects = projects.map(PrismaProjectMapper.toDomain);
 
     return { value: mappedProjects, totalCount: projectsTotalCount };
   }

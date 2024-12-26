@@ -62,43 +62,40 @@ export class PrismaUsersRepository implements IUsersRepository {
 
     const queryToRole = PrismaRoleMapper.toPrisma(query);
 
-    const users = await this.prisma.user.findMany({
-      take: PER_PAGE,
-      skip: offset,
-      orderBy: {
-        createdAt: 'desc',
-      },
-      where: {
-        OR: [
-          { name: { contains: query } },
-          { email: { contains: query } },
-          {
-            role: queryToRole ? { equals: queryToRole } : undefined,
-          },
-        ],
-      },
-    });
+    const [users, usersTotalCount] = await Promise.all([
+      this.prisma.user.findMany({
+        take: PER_PAGE,
+        skip: offset,
+        orderBy: {
+          createdAt: 'desc',
+        },
+        where: {
+          OR: [
+            { name: { contains: query } },
+            { email: { contains: query } },
+            {
+              role: queryToRole ? { equals: queryToRole } : undefined,
+            },
+          ],
+        },
+      }),
+      this.prisma.user.count({
+        where: {
+          OR: [
+            { name: { contains: query } },
+            { email: { contains: query } },
+            {
+              role: queryToRole ? { equals: queryToRole } : undefined,
+            },
+          ],
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+      }),
+    ]);
 
-    const usersTotalCount = await this.prisma.user.count({
-      where: {
-        OR: [
-          { name: { contains: query } },
-          { email: { contains: query } },
-          {
-            role: queryToRole ? { equals: queryToRole } : undefined,
-          },
-        ],
-      },
-      orderBy: {
-        createdAt: 'desc',
-      },
-    });
-
-    const mappedUsers: User[] = [];
-
-    for (const user of users) {
-      mappedUsers.push(PrismaUserMapper.toDomain(user));
-    }
+    const mappedUsers = users.map(PrismaUserMapper.toDomain);
 
     return {
       value: mappedUsers,

@@ -80,31 +80,28 @@ export class PrismaLogsRepository implements ILogsRepository {
     if (queryAction) where.action = { equals: queryAction };
     if (queryTargetType) where.targetType = { equals: queryTargetType };
 
-    const logs = await this.prisma.log.findMany({
-      take: PER_PAGE,
-      skip: offset,
-      orderBy: {
-        createdAt: 'desc',
-      },
-      where,
-      include: {
-        Dispatcher: true,
-      },
-    });
+    const [logs, logsTotalCount] = await Promise.all([
+      this.prisma.log.findMany({
+        take: PER_PAGE,
+        skip: offset,
+        orderBy: {
+          createdAt: 'desc',
+        },
+        where,
+        include: {
+          Dispatcher: true,
+        },
+      }),
 
-    const logsTotalCount = await this.prisma.log.count({
-      where,
-      orderBy: {
-        createdAt: 'desc',
-      },
-    });
+      this.prisma.log.count({
+        where,
+        orderBy: {
+          createdAt: 'desc',
+        },
+      }),
+    ]);
 
-    const mappedLogs: LogWithAuthor[] = [];
-
-    for (const log of logs) {
-      const mappedLog = PrismaLogMapper.toDomainWithAuthor(log);
-      mappedLogs.push(mappedLog);
-    }
+    const mappedLogs = logs.map(PrismaLogMapper.toDomainWithAuthor);
 
     return { value: mappedLogs, totalCount: logsTotalCount };
   }

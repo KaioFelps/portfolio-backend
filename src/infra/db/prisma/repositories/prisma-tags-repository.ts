@@ -79,28 +79,24 @@ export class PrismaTagsRepository implements ITagsRepository {
 
     const where: Prisma.TagWhereInput = { id: query };
 
-    const tags = await this.prisma.tag.findMany({
-      take: amount,
-      skip: offset,
-      orderBy: {
-        value: 'asc',
-      },
-      where,
-    });
+    const [tags, tagsTotalCount] = await Promise.all([
+      this.prisma.tag.findMany({
+        take: amount,
+        skip: offset,
+        orderBy: {
+          value: 'asc',
+        },
+        where,
+      }),
+      this.prisma.tag.count({
+        where,
+        orderBy: {
+          value: 'asc',
+        },
+      }),
+    ]);
 
-    const tagsTotalCount = await this.prisma.tag.count({
-      where,
-      orderBy: {
-        value: 'asc',
-      },
-    });
-
-    const mappedTags: Tag[] = [];
-
-    for (const tag of tags) {
-      const mappedTag = PrismaTagMapper.toDomain(tag);
-      mappedTags.push(mappedTag);
-    }
+    const mappedTags = tags.map(PrismaTagMapper.toDomain);
 
     return { value: mappedTags, totalCount: tagsTotalCount };
   }

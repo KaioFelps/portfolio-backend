@@ -22,15 +22,14 @@ export class PrismaPostsRepository implements IPostsRepository {
   ) {}
 
   async create(post: Post): Promise<void> {
-    await this.prisma.post.create({
-      data: PrismaPostMapper.toPrisma(post),
-    });
-
-    DomainEvents.dispatchEventsForAggregate(post.id);
-
     await Promise.all([
+      this.prisma.post.create({
+        data: PrismaPostMapper.toPrisma(post),
+      }),
       this.postTagsRepository.createMany(post.tags.getItems()),
     ]);
+
+    DomainEvents.dispatchEventsForAggregate(post.id);
   }
 
   async findById(id: string): Promise<Post | null> {
@@ -116,33 +115,29 @@ export class PrismaPostsRepository implements IPostsRepository {
         break;
     }
 
-    const posts = await this.prisma.post.findMany({
-      take: PER_PAGE,
-      skip: offset,
-      orderBy: {
-        createdAt: 'desc',
-      },
-      where,
-      include: {
-        tags: {
-          include: { Tag: true },
+    const [posts, postsTotalCount] = await Promise.all([
+      this.prisma.post.findMany({
+        take: PER_PAGE,
+        skip: offset,
+        orderBy: {
+          createdAt: 'desc',
         },
-      },
-    });
+        where,
+        include: {
+          tags: {
+            include: { Tag: true },
+          },
+        },
+      }),
+      this.prisma.post.count({
+        where,
+        orderBy: {
+          createdAt: 'desc',
+        },
+      }),
+    ]);
 
-    const postsTotalCount = await this.prisma.post.count({
-      where,
-      orderBy: {
-        createdAt: 'desc',
-      },
-    });
-
-    const mappedPosts: Post[] = [];
-
-    for (const post of posts) {
-      const mappedPost = PrismaPostMapper.toDomain(post);
-      mappedPosts.push(mappedPost);
-    }
+    const mappedPosts = posts.map(PrismaPostMapper.toDomain);
 
     return { value: mappedPosts, totalCount: postsTotalCount };
   }
@@ -168,33 +163,29 @@ export class PrismaPostsRepository implements IPostsRepository {
         break;
     }
 
-    const posts = await this.prisma.post.findMany({
-      take: PER_PAGE,
-      skip: offset,
-      orderBy: {
-        publishedAt: 'desc',
-      },
-      where,
-      include: {
-        tags: {
-          include: { Tag: true },
+    const [posts, postsTotalCount] = await Promise.all([
+      this.prisma.post.findMany({
+        take: PER_PAGE,
+        skip: offset,
+        orderBy: {
+          publishedAt: 'desc',
         },
-      },
-    });
+        where,
+        include: {
+          tags: {
+            include: { Tag: true },
+          },
+        },
+      }),
+      this.prisma.post.count({
+        where,
+        orderBy: {
+          publishedAt: 'desc',
+        },
+      }),
+    ]);
 
-    const postsTotalCount = await this.prisma.post.count({
-      where,
-      orderBy: {
-        publishedAt: 'desc',
-      },
-    });
-
-    const mappedPosts: Post[] = [];
-
-    for (const post of posts) {
-      const mappedPost = PrismaPostMapper.toDomain(post);
-      mappedPosts.push(mappedPost);
-    }
+    const mappedPosts = posts.map(PrismaPostMapper.toDomain);
 
     return { value: mappedPosts, totalCount: postsTotalCount };
   }
@@ -216,8 +207,6 @@ export class PrismaPostsRepository implements IPostsRepository {
   }
 
   async delete(post: Post): Promise<void> {
-    DomainEvents.dispatchEventsForAggregate(post.id);
-
     await Promise.all([
       this.prisma.post.delete({
         where: {
@@ -227,5 +216,7 @@ export class PrismaPostsRepository implements IPostsRepository {
 
       this.postTagsRepository.deleteMany(post.tags.getItems()),
     ]);
+
+    DomainEvents.dispatchEventsForAggregate(post.id);
   }
 }
