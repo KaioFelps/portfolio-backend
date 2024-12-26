@@ -35,6 +35,18 @@ export class FetchManyProjectsService {
   }: FetchManyProjectsServiceRequest): Promise<FetchManyProjectsServiceResponse> {
     let query: ProjectQuery | undefined;
 
+    const performanceObs = new PerformanceObserver((items) =>
+      console.log(
+        'Tempo de buscar projetos (Service): ' +
+          items.getEntries()[0].duration / 1000 +
+          ' segundos',
+      ),
+    );
+
+    // TODO: remove this performance observer
+    performanceObs.observe({ type: 'measure' });
+    performance.mark('Starting Fetching Projects');
+
     if (title) {
       query = new ProjectQuery('title', title);
     } else if (tag) {
@@ -55,6 +67,8 @@ export class FetchManyProjectsService {
       page: page ?? 1,
       query,
     });
+
+    performance.measure('total', 'Starting Fetching Projects');
 
     return ok({
       projects: value,
