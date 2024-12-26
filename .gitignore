@@ -7,3 +7,5 @@ public_key.pem
 private_key_base64.txt
 public_key_base64.txt
 secret.txt
+__package
+__package.zip
