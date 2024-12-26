@@ -1,5 +1,5 @@
-# Kaio Felps: site pessoal
-Site pessoal com portfólio, exposição de projetos realizados e área de blogposts. Neste repositório, está o código fonte back-end, feito em NestJs.
+# Kaio Felps :: site pessoal
+Meu site pessoal, com exposição de projetos realizados e área de blogposts. Neste repositório, há o código fonte da API (back-end), feito em NestJs.
 
 ## Requisitos funcionais
 ### Editores e administradores
@@ -57,5 +57,6 @@ $ npm run start:prod
 $ npm run test
 
 # e2e tests
+$ docker compose --env-file .env.test -f docker-compose-ci.yaml up -d
 $ npm run test:e2e
 ```
