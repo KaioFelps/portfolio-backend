@@ -1,8 +1,8 @@
-DISPLAY_NAME=Portfólio [backend]
+DISPLAY_NAME=Portfólio [back-end]
 DESCRIPTION=Back-end do meu portfólio/blog
 MAIN=dist/src/main.js
 MEMORY=1000
-SUBDOMAIN=portfolio
-START=npm i && npm run squarecloud
+SUBDOMAIN=portfolio-backend
+START=chmod u+x ./run.sh ; ./run.sh
 VERSION=recommended
 AUTORESTART=true
