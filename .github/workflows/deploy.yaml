@@ -38,4 +38,4 @@ jobs:
             - name: Commit the application
               run: |
                 cd __package
-                square commit --restart ${{ secrets.SQUARE_APPLICATION_ID }}
+                squarecloud commit --restart ${{ secrets.SQUARE_APPLICATION_ID }}
