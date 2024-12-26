@@ -57,6 +57,6 @@ $ npm run start:prod
 $ npm run test
 
 # e2e tests
-$ docker compose --env-file .env.test -f docker-compose-ci.yaml up -d
+$ npm run test:e2e:setup
 $ npm run test:e2e
 ```
