@@ -1,18 +1,24 @@
 /* eslint-disable camelcase */
 import { config } from 'dotenv';
-import { PrismaClient } from '@prisma/client';
+import { expand } from 'dotenv-expand';
 import { execSync } from 'child_process';
-import { randomUUID } from 'crypto';
+import { PrismaClient } from '@prisma/client';
 
-config({
-  path: '.env',
-  override: true,
-});
+expand(
+  config({
+    path: '.env',
+    override: true,
+  }),
+);
 
-config({
-  path: '.env.test',
-  override: true,
-});
+expand(
+  config({
+    path: '.env.test',
+    override: true,
+  }),
+);
+
+console.log(process.env.DATABASE_URL);
 
 const prisma = new PrismaClient();
 
@@ -38,9 +44,13 @@ function generate_postgresql_unique_database_url(databaseId: string) {
   return url.toString();
 }
 
-const databaseId = `testDb${randomUUID()}`;
+let counter = 0;
+let databaseId: string;
+const databaseSchemas = new Array<string>();
 
-beforeEach(async () => {
+beforeEach(async (context) => {
+  databaseId = `test-db${context.task.id}-${counter++}`;
+
   const databaseUrl = generate_postgresql_unique_database_url(databaseId);
   process.env.DATABASE_URL = databaseUrl;
   process.env.DIRECT_URL = databaseUrl;
@@ -49,8 +59,14 @@ beforeEach(async () => {
 });
 
 afterEach(async () => {
-  await prisma.$executeRawUnsafe(
-    `DROP SCHEMA IF EXISTS "${databaseId}" CASCADE;`,
-  );
+  databaseSchemas.push(databaseId);
   await prisma.$disconnect();
+});
+
+afterAll(async () => {
+  for (const schema of databaseSchemas) {
+    await prisma.$executeRawUnsafe(
+      `DROP SCHEMA IF EXISTS "${schema}" CASCADE;`,
+    );
+  }
 });
