@@ -13,6 +13,7 @@ import { QUANTITY_PER_PAGE } from '@/core/pagination-consts';
 import { Prisma } from '@prisma/client';
 import { PaginationResponse } from '@/core/types/pagination-responses';
 import { IPostTagsRepository } from '@/domain/posts/repositories/post-tags-repository';
+import { PrismaPostTagMapper } from '../mappers/prisma-post-tag-mapper';
 
 @Injectable()
 export class PrismaPostsRepository implements IPostsRepository {
@@ -22,11 +23,14 @@ export class PrismaPostsRepository implements IPostsRepository {
   ) {}
 
   async create(post: Post): Promise<void> {
-    await Promise.all([
+    await this.prisma.$transaction([
       this.prisma.post.create({
         data: PrismaPostMapper.toPrisma(post),
       }),
-      this.postTagsRepository.createMany(post.tags.getItems()),
+
+      this.prisma.tagsOnPostsOrProjects.createMany(
+        PrismaPostTagMapper.toPrismaCreateMany(post.tags.getItems()),
+      ),
     ]);
 
     DomainEvents.dispatchEventsForAggregate(post.id);
