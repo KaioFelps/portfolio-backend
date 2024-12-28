@@ -42,6 +42,8 @@ export class JwtEncryptor implements IEncryptor {
       return ok(payload);
     } catch (err: unknown) {
       if (err instanceof JsonWebTokenError) {
+        // TODO: remove this debugging console.log
+        console.log(err);
         return fail(new UnauthorizedError('Invalid signature.'));
       }
       if (err instanceof TokenExpiredError) {
