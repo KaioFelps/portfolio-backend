@@ -12,7 +12,7 @@ export const envSchema = z
     ROOTUSER_EMAIL: z.string().email(),
     ROOTUSER_NAME: z.string(),
     NODE_ENV: z
-      .enum(['development', 'production'])
+      .enum(['development', 'production', 'test'])
       .optional()
       .default('development'),
     RUN_DB_SEED: z.enum(['true', 'false']).optional().default('false'),
