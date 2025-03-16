@@ -11,6 +11,7 @@ import { ITagsRepository } from '@/domain/tags/repositories/tag-repository';
 
 interface CreateLogServiceRequest {
   title: string;
+  description: string;
   content: string;
   authorId: EntityUniqueId;
   topstory: string;
@@ -31,6 +32,7 @@ export class CreatePostService {
   async exec({
     authorId,
     content,
+    description,
     tags,
     title,
     topstory,
@@ -43,6 +45,7 @@ export class CreatePostService {
 
     const post = Post.create({
       authorId,
+      description,
       content,
       title,
       topstory,

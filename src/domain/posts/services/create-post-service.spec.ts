@@ -30,6 +30,7 @@ describe('Create Post Service', () => {
     const result = await sut.exec({
       authorId: user.id,
       title: 'Primeiro post!',
+      description: 'Uma preview do conteúdo desse post!',
       content: 'Conteúdo falso para o meu primeiro post!',
       topstory: '',
       tags: ['back-end', 'nodejs'],
@@ -47,6 +48,7 @@ describe('Create Post Service', () => {
     const result = await sut.exec({
       authorId: new EntityUniqueId('id-falso'),
       title: 'Primeiro post!',
+      description: 'Uma preview do conteúdo desse post!',
       content: 'Conteúdo falso para o meu primeiro post!',
       topstory: '',
       tags: ['back-end', 'nodejs'],
