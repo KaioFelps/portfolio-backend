@@ -28,7 +28,7 @@ jobs:
                 cache: npm
             
             - name: Raise Docker Services
-              run: docker compose --env-file .env.test -f docker-compose-ci.yaml up -d
+              run: docker compose --env-file .env.sample -f docker-compose-ci.yaml up -d
             
             - name: Check Docker Running Containers
               run: docker ps -a
