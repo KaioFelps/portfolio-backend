@@ -57,6 +57,7 @@ describe('Edit Post Service', () => {
       authorId: user.id.toValue(),
       postId: post.id.toValue(),
       title: 'Edited title',
+      description: 'Edited preview of the post.',
       content: 'Edited content of my previous created post.',
       tags: [tag.id.toValue()],
     });
@@ -65,6 +66,7 @@ describe('Edit Post Service', () => {
 
     expect(postsRepository.items[0]).toMatchObject({
       title: 'Edited title',
+      description: 'Edited preview of the post.',
       content: 'Edited content of my previous created post.',
     });
 
