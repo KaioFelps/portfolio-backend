@@ -23,6 +23,10 @@ export class CreatePostDto {
 
   @IsNotEmpty()
   @IsString()
+  description!: string;
+
+  @IsNotEmpty()
+  @IsString()
   @IsUrl()
   topstory!: string;
 

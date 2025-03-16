@@ -64,6 +64,7 @@ describe('PostController', () => {
       .send({
         title: 'Noticia 1',
         content: 'conteúdo',
+        description: 'descrição',
         topstory: 'https://i.imgur.com/Q0GsNvP.png',
         tags: [tag.id.toValue()],
       })
@@ -82,8 +83,8 @@ describe('PostController', () => {
       createdAt: expect.any(String),
       slug: expect.any(String),
       title: 'Noticia 1',
-      preview: expect.any(String),
       publishedAt: null,
+      description: 'descrição',
     } as PostPresented);
   });
 

@@ -16,6 +16,7 @@ export class PostFactory {
       PostProps,
       | 'createdAt'
       | 'content'
+      | 'description'
       | 'slug'
       | 'tags'
       | 'title'
@@ -32,6 +33,7 @@ export class PostFactory {
         topstory: faker.image.url(),
         authorId: new EntityUniqueId(),
         content: faker.lorem.paragraphs(),
+        description: faker.lorem.paragraph(),
         createdAt: new Date(),
         ...override,
       },
@@ -47,6 +49,7 @@ export class PostFactory {
     override?: Optional<
       PostProps,
       | 'createdAt'
+      | 'description'
       | 'content'
       | 'slug'
       | 'tags'

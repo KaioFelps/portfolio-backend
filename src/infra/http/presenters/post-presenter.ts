@@ -7,7 +7,7 @@ export type PostPresented = {
   slug: string;
   topstory: string;
   tags: { id: string; value: string }[];
-  preview: string;
+  description: string;
   createdAt: string | Date;
   publishedAt: string | Date | null | undefined;
 };
@@ -20,11 +20,7 @@ export class PostPresenter {
       slug: post.slug,
       topstory: post.topstory,
       tags: post.tags.getItems().map(ProjectAndPostTagPresenter.toHTTP),
-      preview: post.content
-        .substring(0, 100)
-        .trimStart()
-        .trimEnd()
-        .concat('...'),
+      description: post.description,
       createdAt: post.createdAt,
       publishedAt: post.publishedAt,
     } satisfies PostPresented;
