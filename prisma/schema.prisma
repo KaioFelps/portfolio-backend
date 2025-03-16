@@ -30,12 +30,13 @@ enum UserRole {
 }
 
 model Post {
-  id       String                  @id @default(uuid())
-  title    String                  @db.VarChar(255)
-  slug     String                  @unique @db.VarChar(255)
-  content  String                  @db.Text
-  topstory String
-  tags     TagsOnPostsOrProjects[]
+  id          String                  @id @default(uuid())
+  title       String                  @db.VarChar(255)
+  slug        String                  @unique @db.VarChar(255)
+  description String                  @default("") @db.VarChar(255)
+  content     String                  @db.Text
+  topstory    String
+  tags        TagsOnPostsOrProjects[]
 
   createdAt   DateTime  @default(now()) @map("created_at")
   publishedAt DateTime? @default(dbgenerated("null"))
