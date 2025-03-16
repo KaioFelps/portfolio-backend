@@ -52,6 +52,7 @@ describe('On Post Created Event handler', () => {
       .post('/post/new')
       .set({ Authorization: `Bearer ${token}` })
       .send({
+        description: 'Descrição do post fictício.',
         content: 'Conteúdo do meu primeiro post fictício!',
         tags: [tagEventos.id.toValue(), tagDominios.id.toValue()],
         title: postTitle,
