@@ -10,6 +10,7 @@ import { PostDeletedEvent } from '../events/post-deleted-event';
 export interface PostProps {
   authorId: EntityUniqueId;
   title: string;
+  description: string;
   slug: Slug;
   content: string;
   topstory: string;
@@ -56,6 +57,14 @@ export class Post extends Aggregate<PostProps> {
     this.props.title = value;
     this.props.slug = Slug.fromTitle(value, this.id.toValue());
     this.touch();
+  }
+
+  get description() {
+    return this.props.description;
+  }
+
+  set description(value: string) {
+    this.props.description = value;
   }
 
   get slug() {
