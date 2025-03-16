@@ -318,6 +318,7 @@ describe('PostController', () => {
       })
       .send({
         title: 'Edited title',
+        description: 'Edited description!!',
         tags: [
           tags[3].id.toValue() /** free-fire */,
           tags[2].id.toValue() /** artigo */,
@@ -327,6 +328,7 @@ describe('PostController', () => {
       .expect(200);
 
     expect(response.body.post.title).not.toEqual(post.title);
+    expect(response.body.post.description).toEqual('Edited description!!');
 
     const postOnDb = await prisma.post.findUnique({
       where: { id: post.id.toValue() },

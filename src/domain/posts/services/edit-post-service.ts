@@ -16,6 +16,7 @@ interface EditPostServiceRequest {
   postId: string;
   title?: string;
   content?: string;
+  description?: string;
   topstory?: string;
   tags?: string[];
 }
@@ -36,6 +37,7 @@ export class EditPostService {
 
   async exec({
     authorId,
+    description,
     content,
     postId,
     tags = [],
@@ -73,6 +75,7 @@ export class EditPostService {
     post.content = content ?? post.content;
     post.topstory = topstory ?? post.topstory;
     post.tags = currentTagsList;
+    post.description = description ?? post.description;
 
     post.addEditedEventToDispatch();
 
