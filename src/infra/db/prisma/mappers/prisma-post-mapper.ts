@@ -6,7 +6,7 @@ import { PostTagList } from '@/domain/posts/entities/post-tag-list';
 import { PrismaPostTagMapper } from './prisma-post-tag-mapper';
 import { PrismaComposedTag } from '../types/composed-tag';
 
-type toDomainParams = PrismaPost & {
+type ToDomainParams = PrismaPost & {
   tags: Array<PrismaComposedTag>;
 };
 
@@ -14,6 +14,7 @@ export class PrismaPostMapper {
   static toPrisma(post: Post): Prisma.PostUncheckedCreateInput {
     return {
       authorId: post.authorId.toValue(),
+      description: post.description,
       content: post.content,
       slug: post.slug,
       title: post.title,
@@ -33,10 +34,11 @@ export class PrismaPostMapper {
     topstory,
     authorId,
     content,
+    description,
     slug,
     updatedAt,
     publishedAt,
-  }: toDomainParams) {
+  }: ToDomainParams) {
     return Post.create(
       {
         title,
@@ -44,6 +46,7 @@ export class PrismaPostMapper {
         createdAt,
         tags: new PostTagList(tags.map(PrismaPostTagMapper.toDomain)),
         authorId: new EntityUniqueId(authorId),
+        description,
         content,
         slug: Slug.create(slug),
         updatedAt,
