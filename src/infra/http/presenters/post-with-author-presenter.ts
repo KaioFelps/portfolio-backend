@@ -12,6 +12,7 @@ export type PostWithAuthorPresented = {
   updatedAt: string | Date | null | undefined;
   publishedAt: string | Date | null | undefined;
   createdAt: string | Date;
+  description: string;
 };
 
 export class PostWithAuthorPresenter {
@@ -27,6 +28,7 @@ export class PostWithAuthorPresenter {
       updatedAt: post.updatedAt,
       publishedAt: post.publishedAt,
       createdAt: post.createdAt,
+      description: post.description,
     } satisfies PostWithAuthorPresented;
   }
 }
