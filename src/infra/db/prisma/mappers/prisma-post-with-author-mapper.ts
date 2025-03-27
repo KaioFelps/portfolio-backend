@@ -27,6 +27,7 @@ export class PrismaPostWithAuthorMapper {
     slug,
     updatedAt,
     publishedAt,
+    description,
   }: toDomainParams): PostWithAuthor {
     return PostWithAuthor.create({
       title,
@@ -39,6 +40,7 @@ export class PrismaPostWithAuthorMapper {
       author: author.name,
       id: new EntityUniqueId(id),
       publishedAt,
+      description,
     });
   }
 }

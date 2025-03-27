@@ -14,6 +14,7 @@ export interface PostWithAuthorProps {
   createdAt: Date;
   publishedAt?: Date | null;
   updatedAt?: Date | null;
+  description: string;
 }
 
 export class PostWithAuthor extends ValueObject<PostWithAuthorProps> {
@@ -63,5 +64,9 @@ export class PostWithAuthor extends ValueObject<PostWithAuthorProps> {
 
   get updatedAt() {
     return this.props.updatedAt;
+  }
+
+  get description() {
+    return this.props.description;
   }
 }
