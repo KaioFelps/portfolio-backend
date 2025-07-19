@@ -29,4 +29,4 @@ RUN chmod +x /app/run.sh
 
 USER server
 
-ENTRYPOINT [ "./run.sh" ]
+ENTRYPOINT [ "sh", "./run.sh" ]
