@@ -18,14 +18,13 @@ let inMemoryLogsRepository: InMemoryLogsRepository;
 let createLogService: CreateLogService;
 
 let registerCreatedTagSpy: MockInstance<
-  [CreateLogServiceRequest],
-  Promise<CreateLogServiceResponse>
+  (_: CreateLogServiceRequest) => Promise<CreateLogServiceResponse>
 >;
 
 describe('On tag created subscriber', async () => {
   beforeEach(() => {
+    inMemoryUserRepository = new InMemoryUsersRepository();
     inMemoryTagsRepository = new InMemoryTagsRepository();
-
     inMemoryLogsRepository = new InMemoryLogsRepository(inMemoryUserRepository);
 
     createLogService = new CreateLogService(

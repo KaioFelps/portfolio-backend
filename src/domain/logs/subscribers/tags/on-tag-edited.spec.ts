@@ -18,8 +18,7 @@ let inMemoryLogsRepository: InMemoryLogsRepository;
 let createLogService: CreateLogService;
 
 let registerEditedUserSpy: MockInstance<
-  [CreateLogServiceRequest],
-  Promise<CreateLogServiceResponse>
+  (_: CreateLogServiceRequest) => Promise<CreateLogServiceResponse>
 >;
 
 describe('On user edited subscriber', async () => {

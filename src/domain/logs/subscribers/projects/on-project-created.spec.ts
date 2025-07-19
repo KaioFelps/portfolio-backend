@@ -22,8 +22,7 @@ let inMemoryProjectLinksRepository: InMemoryProjectLinksRepository;
 let createLogService: CreateLogService;
 
 let registerCreatedProjectSpy: MockInstance<
-  [CreateLogServiceRequest],
-  Promise<CreateLogServiceResponse>
+  (_: CreateLogServiceRequest) => Promise<CreateLogServiceResponse>
 >;
 
 describe('On project created subscriber', async () => {

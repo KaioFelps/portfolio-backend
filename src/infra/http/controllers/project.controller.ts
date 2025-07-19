@@ -30,24 +30,6 @@ import { PublicRoute } from '@/infra/auth/decorators/public-route';
 import { GetProjectByIdService } from '@/domain/projects/services/get-project-by-id-service';
 import { TitleAndTagPaginatedQueryDto } from '../dtos/title-and-query-paginated-query';
 
-/*
-import { ZodValidatorPipe } from '@/infra/lib/zod-validator-pipe';
-import { z } from 'zod';
-
-  // VALIDATION USING ZOD
-  const createProjectBody = z.object({
-    title: z.string(),
-    topstory: z.string(),
-    tags: z.string().array(),
-    links: z.string().array(),
-  });
-  const createProjectBodyPipe = new ZodValidatorPipe(createProjectBody);
-  type CreateProjectBody = z.infer<typeof createProjectBody>;
-
-  @Post("/")
-  async createProject(@Body(createProjectBodyPipe) body: CreateProjectBody) {}
-  */
-
 @Controller('project')
 export class ProjectController {
   constructor(
