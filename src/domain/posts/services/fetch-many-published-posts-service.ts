@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { IPostsRepository, PostQuery } from '../repositories/posts-repository';
-import { Either, fail, ok } from '@/core/types/either';
+import { Either, ok } from '@/core/types/either';
 import { QUANTITY_PER_PAGE } from '@/core/pagination-consts';
 import { Post } from '../entities/post';
 import { PaginationParams } from '@/core/types/pagination-params';
@@ -38,7 +38,7 @@ export class FetchManyPublishedPostsService {
     } else if (tag) {
       const tagFromDb = await this.tagsRepository.findByValue(tag);
 
-      if (!tagFromDb) return fail(new ResourceNotFoundError());
+      if (!tagFromDb) return ok({ posts: [], count: 0 });
 
       query = new PostQuery('tag', tagFromDb.id.toValue());
     }
