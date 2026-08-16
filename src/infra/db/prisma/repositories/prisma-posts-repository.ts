@@ -135,9 +135,6 @@ export class PrismaPostsRepository implements IPostsRepository {
       }),
       this.prisma.post.count({
         where,
-        orderBy: {
-          createdAt: 'desc',
-        },
       }),
     ]);
 
@@ -159,7 +156,7 @@ export class PrismaPostsRepository implements IPostsRepository {
     switch (query?.type) {
       case 'tag':
         where.tags = {
-          some: { id: { equals: query.value } },
+          some: { tagId: { equals: query.value } },
         };
         break;
       case 'title':
@@ -183,9 +180,6 @@ export class PrismaPostsRepository implements IPostsRepository {
       }),
       this.prisma.post.count({
         where,
-        orderBy: {
-          publishedAt: 'desc',
-        },
       }),
     ]);
 
