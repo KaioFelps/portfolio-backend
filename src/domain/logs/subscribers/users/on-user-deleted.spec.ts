@@ -16,8 +16,7 @@ let inMemoryLogsRepository: InMemoryLogsRepository;
 let createLogService: CreateLogService;
 
 let registerDeletedUserSpy: MockInstance<
-  [CreateLogServiceRequest],
-  Promise<CreateLogServiceResponse>
+  (_: CreateLogServiceRequest) => Promise<CreateLogServiceResponse>
 >;
 
 describe('On user deleted subscriber', async () => {
