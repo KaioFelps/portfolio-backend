@@ -12,11 +12,15 @@ async function bootstrap() {
   expand(config());
   const app = await NestFactory.create(AppModule);
   app.use(cookieParser());
-  app.enableCors({ credentials: true });
   app.enableShutdownHooks();
 
   const env = app.get(EnvService);
   const port = env.get('PORT');
+
+  app.enableCors({
+    credentials: true,
+    origin: env.get('CORS_ALLOWED_ORIGINS'),
+  });
 
   // seed the database
   if (env.get('NODE_ENV') === 'development' && env.get('RUN_DB_SEED')) {
