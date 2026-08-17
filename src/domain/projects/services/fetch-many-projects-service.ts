@@ -9,8 +9,10 @@ import { QUANTITY_PER_PAGE } from '@/core/pagination-consts';
 import { Project } from '../entities/project';
 import { ITagsRepository } from '@/domain/tags/repositories/tag-repository';
 
-interface FetchManyProjectsServiceRequest
-  extends Omit<PaginationParams, 'query'> {
+interface FetchManyProjectsServiceRequest extends Omit<
+  PaginationParams,
+  'query'
+> {
   title?: string;
   tag?: string;
 }

@@ -7,8 +7,10 @@ import { PaginationParams } from '@/core/types/pagination-params';
 import { ITagsRepository } from '@/domain/tags/repositories/tag-repository';
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error';
 
-interface FetchManyPublishedPostsServiceRequest
-  extends Omit<PaginationParams, keyof { query?: string }> {
+interface FetchManyPublishedPostsServiceRequest extends Omit<
+  PaginationParams,
+  keyof { query?: string }
+> {
   title?: string;
   tag?: string;
 }

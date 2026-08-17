@@ -6,8 +6,10 @@ import { Post } from '../entities/post';
 import { PaginationParams } from '@/core/types/pagination-params';
 import { ITagsRepository } from '@/domain/tags/repositories/tag-repository';
 
-interface FetchManyPostsServiceRequest
-  extends Omit<PaginationParams, keyof { query?: string }> {
+interface FetchManyPostsServiceRequest extends Omit<
+  PaginationParams,
+  keyof { query?: string }
+> {
   title?: string;
   tag?: string;
 }
