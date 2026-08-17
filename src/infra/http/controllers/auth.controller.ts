@@ -32,7 +32,7 @@ export class AuthController {
   ) {
     this.refreshTokenOptions = {
       path: '/',
-      sameSite: 'none',
+      sameSite: 'lax',
       httpOnly: true,
       domain:
         this.envService.get('NODE_ENV') === 'production'
