@@ -68,6 +68,7 @@ export class AuthController {
     return { accessToken, user };
   }
 
+  @PublicRoute()
   @Post('logout')
   @HttpCode(204)
   @Header('Access-Control-Allow-Credentials', 'true')
