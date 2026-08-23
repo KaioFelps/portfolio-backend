@@ -64,9 +64,9 @@ model TagsOnPostsOrProjects {
   projectId String? @map("project_id")
   tagId     String
 
-  Post    Post?    @relation(fields: [postId], references: [id])
-  Project Project? @relation(fields: [projectId], references: [id])
-  Tag     Tag      @relation(fields: [tagId], references: [id])
+  Post    Post?    @relation(fields: [postId], references: [id], onDelete: Cascade)
+  Project Project? @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  Tag     Tag      @relation(fields: [tagId], references: [id], onDelete: Cascade)
 
   @@map("tags_on_posts_or_projects")
 }
