@@ -150,11 +150,11 @@ export class ProjectController {
     if (result.isFail()) {
       switch (result.value.constructor) {
         case ResourceNotFoundError:
-          throw new NotFoundException();
+          throw new NotFoundException(result.value.message);
         case UnauthorizedError:
-          throw new UnauthorizedException();
+          throw new UnauthorizedException(result.value.message);
         case BadRequestError:
-          throw new BadRequestError();
+          throw new BadRequestException(result.value.message);
         default:
           throw new InternalServerErrorException();
       }
