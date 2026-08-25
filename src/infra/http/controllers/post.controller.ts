@@ -5,6 +5,7 @@ import {
   Body,
   Controller,
   Delete,
+  ForbiddenException,
   Get,
   HttpCode,
   InternalServerErrorException,
@@ -32,6 +33,7 @@ import { BadRequestError } from '@/core/errors/bad-request-error';
 import { DeletePostService } from '@/domain/posts/services/delete-post-service';
 import { TogglePostVisibilityService } from '@/domain/posts/services/toggle-post-visibility-service';
 import { FetchManyPublishedPostsService } from '@/domain/posts/services/fetch-many-published-posts-service';
+import { ForbiddenError } from '@/core/errors/forbidden-error';
 
 @Controller('post')
 export class PostController {
@@ -206,8 +208,8 @@ export class PostController {
 
     if (response.isFail()) {
       switch (response.value.constructor) {
-        case BadRequestError:
-          throw new BadRequestException(response.value.message);
+        case ForbiddenError:
+          throw new ForbiddenException(response.value.message);
         case UnauthorizedError:
           throw new UnauthorizedException(response.value.message);
         default:
@@ -215,6 +217,6 @@ export class PostController {
       }
     }
 
-    return { post: PostPresenter.toHTTP(response.value.post) };
+    return;
   }
 }
