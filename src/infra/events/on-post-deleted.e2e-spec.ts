@@ -7,7 +7,6 @@ import { UserFactory } from 'test/factories/user-factory';
 import { TokenPayload } from '../auth/jwt-strategy';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from '../db/prisma/prisma-service';
-import { waitFor } from 'test/utlils/wait-for';
 import { PostFactory } from 'test/factories/post-factory';
 import { LogAction } from '@/domain/logs/entities/log';
 
@@ -48,13 +47,13 @@ describe('On Post Edited Event handler', () => {
       .send()
       .expect(200);
 
-    await waitFor(async () => {
+    await vi.waitFor(async () => {
       const logsOnDb = await prisma.log.findMany({
         where: { action: LogAction.deleted, target: post.title },
       });
 
       expect(logsOnDb.length).toBe(1);
-    });
+    }, {timeout: 10000, interval: 100});
 
     expect(response.ok).toBe(true);
   });
