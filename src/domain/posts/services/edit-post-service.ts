@@ -47,13 +47,15 @@ export class EditPostService {
     const post = await this.postsRepository.findById(postId);
 
     if (!post) {
-      return fail(new BadRequestError("O post informado não existe no sistema."));
+      return fail(
+        new BadRequestError('O post informado não existe no sistema.'),
+      );
     }
 
     const user = await this.usersRepository.findById(authorId);
 
     if (!user || !post.authorId.equals(new EntityUniqueId(authorId))) {
-      return fail(new UnauthorizedError("Você não pode editar esse post."));
+      return fail(new UnauthorizedError('Você não pode editar esse post.'));
     }
 
     const currentTags = await this.postTagsRepository.findManyByPostId(post.id);

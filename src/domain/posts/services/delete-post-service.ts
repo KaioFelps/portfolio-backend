@@ -5,7 +5,6 @@ import { UnauthorizedError } from '@/core/errors/unauthorized-error';
 import { IUsersRepository } from '@/domain/users/repositories/users-repository';
 import { BadRequestError } from '@/core/errors/bad-request-error';
 import { UserRole } from '@/domain/users/entities/user';
-import { Post } from '../entities/post';
 import { ForbiddenError } from '@/core/errors/forbidden-error';
 
 interface DeletePostServiceRequest {
@@ -15,7 +14,7 @@ interface DeletePostServiceRequest {
 
 type DeletePostServiceResponse = Either<
   UnauthorizedError | ForbiddenError,
-  { }
+  object
 >;
 
 @Injectable()
@@ -32,7 +31,7 @@ export class DeletePostService {
     const user = await this.usersRepository.findById(authorId);
 
     if (!user) {
-      return fail(new BadRequestError("Você precisa estar logado para isso."));
+      return fail(new BadRequestError('Você precisa estar logado para isso.'));
     }
 
     const post = await this.postsRepository.findById(postId);
@@ -42,7 +41,11 @@ export class DeletePostService {
     }
 
     if (!post.authorId.equals(user.id) && user.role !== UserRole.admin) {
-      return fail(new ForbiddenError("Você não está autorizado a remover essa publicação."));
+      return fail(
+        new ForbiddenError(
+          'Você não está autorizado a remover essa publicação.',
+        ),
+      );
     }
 
     post.addDeletedEventToDispatch();

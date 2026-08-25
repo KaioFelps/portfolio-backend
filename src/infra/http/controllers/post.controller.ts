@@ -164,7 +164,7 @@ export class PostController {
         case UnauthorizedError:
           throw new UnauthorizedException(response.value.message);
         default:
-          console.error(response.value)
+          console.error(response.value);
           throw new InternalServerErrorException();
       }
     }
@@ -216,7 +216,5 @@ export class PostController {
           throw new InternalServerErrorException();
       }
     }
-
-    return;
   }
 }
