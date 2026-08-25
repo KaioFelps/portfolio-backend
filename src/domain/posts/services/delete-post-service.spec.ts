@@ -4,6 +4,7 @@ import { InMemoryPostsRepository } from 'test/repositories/in-memory-posts-repos
 import { UnauthorizedError } from '@/core/errors/unauthorized-error';
 import { PostFactory } from 'test/factories/post-factory';
 import { DeletePostService } from './delete-post-service';
+import { ForbiddenError } from '@/core/errors/forbidden-error';
 
 describe('Delete Post Service', () => {
   let sut: DeletePostService;
@@ -47,7 +48,7 @@ describe('Delete Post Service', () => {
 
     expect(result.isFail()).toBe(true);
 
-    expect(result.value).toBeInstanceOf(UnauthorizedError);
+    expect(result.value).toBeInstanceOf(ForbiddenError);
   });
 
   it("shouldn't let an admin delete any post", async () => {
