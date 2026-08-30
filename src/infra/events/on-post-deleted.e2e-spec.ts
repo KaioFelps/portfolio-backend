@@ -47,13 +47,16 @@ describe('On Post Edited Event handler', () => {
       .send()
       .expect(200);
 
-    await vi.waitFor(async () => {
-      const logsOnDb = await prisma.log.findMany({
-        where: { action: LogAction.deleted, target: post.title },
-      });
+    await vi.waitFor(
+      async () => {
+        const logsOnDb = await prisma.log.findMany({
+          where: { action: LogAction.deleted, target: post.title },
+        });
 
-      expect(logsOnDb.length).toBe(1);
-    }, {timeout: 10000, interval: 100});
+        expect(logsOnDb.length).toBe(1);
+      },
+      { timeout: 10000, interval: 100 },
+    );
 
     expect(response.ok).toBe(true);
   });
