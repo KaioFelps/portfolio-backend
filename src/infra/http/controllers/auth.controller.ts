@@ -30,15 +30,14 @@ export class AuthController {
     private refreshAuthenticationService: RefreshAuthenticationService,
     private envService: EnvService,
   ) {
+    const isProduction = envService.get("NODE_ENV") === "production";
+    const cookieAudience = this.envService.get("COOKIE_DOMAIN") ?? this.envService.get("DOMAIN");
     this.refreshTokenOptions = {
       path: "/",
-      sameSite: "none",
+      sameSite: isProduction ? "none" : "lax",
       httpOnly: true,
-      secure: envService.get("NODE_ENV") === "production",
-      domain:
-        this.envService.get("NODE_ENV") === "production"
-          ? (this.envService.get("COOKIE_DOMAIN") ?? this.envService.get("DOMAIN"))
-          : "localhost",
+      secure: isProduction,
+      domain: cookieAudience,
     };
   }
 
