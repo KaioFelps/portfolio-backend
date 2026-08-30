@@ -40,7 +40,7 @@ export class EditPostService {
     description,
     content,
     postId,
-    tags = [],
+    tags,
     title,
     topstory,
   }: EditPostServiceRequest): Promise<EditPostServiceResponse> {
@@ -62,12 +62,14 @@ export class EditPostService {
 
     const currentTagsList = new PostTagList(currentTags);
 
-    const newTags = await this.tagsRepository.findManyByIds(tags);
-    const newPostTags = newTags.map((tag) =>
-      PostTag.create({ postId: post.id, tag }),
-    );
+    if (tags) {
+      const newTags = await this.tagsRepository.findManyByIds(tags);
+      const newPostTags = newTags.map((tag) =>
+        PostTag.create({ postId: post.id, tag }),
+      );
 
-    currentTagsList.update(newPostTags);
+      currentTagsList.update(newPostTags);
+    }
 
     post.title = title ?? post.title;
     post.content = content ?? post.content;

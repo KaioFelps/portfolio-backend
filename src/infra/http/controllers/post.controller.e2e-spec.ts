@@ -340,7 +340,7 @@ describe('PostController', () => {
       });
 
       expect(postOnDb?.title).toEqual(response.body.post.title);
-      const tagsFromDb = postOnDb?.tags.map((tag) => tag.tagId)
+      const tagsFromDb = postOnDb?.tags.map((tag) => tag.tagId);
 
       expect(tagsFromDb?.length).toBe(2);
       expect(tagsFromDb).toEqual(
@@ -354,6 +354,51 @@ describe('PostController', () => {
           { id: tags[2].id.toValue(), value: 'artigo' },
         ]),
       );
+    });
+
+    it('should not reset tags when no tags are sent to update', async () => {
+      const post = await postFactory.createAndPersist({
+        authorId: user.id,
+      });
+
+      const tags = await Promise.all([
+        tagFactory.createAndPersist({ value: 'habbo' }),
+        tagFactory.createAndPersist({ value: 'noticia' }),
+        tagFactory.createAndPersist({ value: 'artigo' }),
+      ]);
+
+      const postTags = [
+        PostTag.create({ tag: tags[0], postId: post.id }),
+        PostTag.create({ tag: tags[1], postId: post.id }),
+        PostTag.create({ tag: tags[2], postId: post.id }),
+      ];
+
+      await prisma.tagsOnPostsOrProjects.createMany({
+        data: postTags.map(({ id, postId, tag }) => ({
+          tagId: tag.id.toValue(),
+          postId: postId.toValue(),
+          id: id.toValue(),
+        })),
+      });
+
+      const response = await supertest(app.getHttpServer())
+        .put(`/post/${post.id.toValue()}/edit`)
+        .set({ Authorization: `Bearer ${token}` })
+        .send({ title: 'Edited title' })
+        .expect(200);
+
+      const postOnDb = await prisma.post.findUnique({
+        where: { id: post.id.toValue() },
+        include: { tags: true },
+      });
+
+      const tagsFromDb = postOnDb?.tags.map((tag) => tag.tagId);
+
+      expect(
+        response.body.post.tags.length,
+        'returned tags should not be empty',
+      ).not.toBe(0);
+      expect(tagsFromDb?.length).toBe(3);
     });
   });
 
