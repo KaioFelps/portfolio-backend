@@ -1,5 +1,5 @@
 import { UserRole } from '@/domain/users/entities/user';
-import { $Enums } from '@prisma/client';
+import { $Enums } from 'prisma/generated/client';
 
 export class PrismaRoleMapper {
   static prismaToDomain(role: $Enums.UserRole) {

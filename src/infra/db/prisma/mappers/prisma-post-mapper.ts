@@ -1,6 +1,6 @@
 import { EntityUniqueId } from '@/core/entities/entity-unique-id';
 import { Post } from '@/domain/posts/entities/post';
-import { Prisma, Post as PrismaPost } from '@prisma/client';
+import { Prisma, Post as PrismaPost } from 'prisma/generated/client';
 import { Slug } from '@/domain/posts/entities/value-objects/slug';
 import { PostTagList } from '@/domain/posts/entities/post-tag-list';
 import { PrismaPostTagMapper } from './prisma-post-tag-mapper';

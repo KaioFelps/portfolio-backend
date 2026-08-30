@@ -1,7 +1,7 @@
 import { EntityUniqueId } from '@/core/entities/entity-unique-id';
 import { ValueObject } from '@/core/entities/value-objects';
 import { User } from '@/domain/users/entities/user';
-import { LogAction, LogTargetType } from '@prisma/client';
+import { LogAction, LogTargetType } from 'prisma/generated/client';
 
 export interface LogWithAuthorProps {
   id: EntityUniqueId;

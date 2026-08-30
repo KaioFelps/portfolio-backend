@@ -3,7 +3,7 @@ import { ProjectTag } from '@/domain/projects/entities/project-tag';
 import {
   Prisma,
   TagsOnPostsOrProjects as PrismaTag,
-} from 'prisma/prisma-client';
+} from 'prisma/generated/client';
 import { PrismaTagMapper } from './prisma-tag-mapper';
 import type { PrismaComposedTag } from '../types/composed-tag';
 

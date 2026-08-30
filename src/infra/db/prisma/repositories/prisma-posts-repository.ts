@@ -10,7 +10,7 @@ import { PrismaPostMapper } from '../mappers/prisma-post-mapper';
 import { DomainEvents } from '@/core/events/domain-events';
 import { PrismaPostWithAuthorMapper } from '../mappers/prisma-post-with-author-mapper';
 import { QUANTITY_PER_PAGE } from '@/core/pagination-consts';
-import { Prisma } from '@prisma/client';
+import { Prisma } from 'prisma/generated/client';
 import { PaginationResponse } from '@/core/types/pagination-responses';
 import { IPostTagsRepository } from '@/domain/posts/repositories/post-tags-repository';
 import { PrismaPostTagMapper } from '../mappers/prisma-post-tag-mapper';

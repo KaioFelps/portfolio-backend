@@ -9,7 +9,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma-service';
 import { PrismaLogMapper } from '../mappers/prisma-log-mapper';
 import { QUANTITY_PER_PAGE } from '@/core/pagination-consts';
-import { Prisma } from '@prisma/client';
+import { Prisma } from 'prisma/generated/client';
 
 @Injectable()
 export class PrismaLogsRepository implements ILogsRepository {

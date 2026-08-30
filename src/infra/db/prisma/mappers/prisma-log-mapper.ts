@@ -1,9 +1,9 @@
 import { Log } from '@/domain/logs/entities/log';
 import { LogWithAuthor } from '@/domain/logs/entities/value-objects/log-with-author';
-import { Prisma, Log as PrismaLog, User as PrismaUser } from '@prisma/client';
 import { PrismaUserMapper } from './prisma-user-mapper';
 import { PrismaLogEnumsMappers } from './enums/prisma-log-enums-mapper';
 import { EntityUniqueId } from '@/core/entities/entity-unique-id';
+import { Log as PrismaLog, Prisma, User as PrismaUser } from 'prisma/generated/client';
 
 type PrismaLogWithAuthor = PrismaLog & { Dispatcher: PrismaUser | null };
 

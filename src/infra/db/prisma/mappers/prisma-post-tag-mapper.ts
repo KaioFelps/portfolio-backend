@@ -3,7 +3,7 @@ import { PostTag } from '@/domain/posts/entities/post-tag';
 import {
   Prisma,
   TagsOnPostsOrProjects as PrismaTagsOnPostsOrProjects,
-} from 'prisma/prisma-client';
+} from 'prisma/generated/client';
 import { PrismaTagMapper } from './prisma-tag-mapper';
 import type { PrismaComposedTag } from '../types/composed-tag';
 

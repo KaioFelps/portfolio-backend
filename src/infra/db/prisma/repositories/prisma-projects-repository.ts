@@ -10,7 +10,7 @@ import { DomainEvents } from '@/core/events/domain-events';
 import { IProjectLinksRepository } from '@/domain/projects/repositories/project-links-repository';
 import { IProjectTagsRepository } from '@/domain/projects/repositories/project-tags-repository';
 import { PaginationResponse } from '@/core/types/pagination-responses';
-import { Prisma } from '@prisma/client';
+import { Prisma } from 'prisma/generated/client';
 
 @Injectable()
 export class PrismaProjectsRepository implements IProjectsRepository {

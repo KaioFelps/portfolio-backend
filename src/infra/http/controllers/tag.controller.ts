@@ -13,7 +13,6 @@ import {
   Param,
   UnauthorizedException,
 } from '@nestjs/common';
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { TagPresenter } from '../presenters/tag-presenter';
 import { CreateTagDto } from '../dtos/create-tag';
 import { FetchManyTagsService } from '@/domain/tags/services/fetch-many-tags-service';
@@ -27,6 +26,7 @@ import { EditTagService } from '@/domain/tags/services/edit-tag-service';
 import { DeleteTagService } from '@/domain/tags/services/delete-tag-service';
 import { UnauthorizedError } from '@/core/errors/unauthorized-error';
 import { BadRequestError } from '@/core/errors/bad-request-error';
+import { Prisma } from 'prisma/generated/client';
 
 @Controller('/tag')
 export class TagsController {
@@ -49,7 +49,7 @@ export class TagsController {
 
       return { tag: TagPresenter.toHTTP(result.value.tag) };
     } catch (e) {
-      if (e instanceof PrismaClientKnownRequestError && e.code === 'P2002') {
+      if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === 'P2002') {
         throw new BadRequestException(e.message);
       }
 
