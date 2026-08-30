@@ -1,12 +1,11 @@
 import { config } from "dotenv";
 import { expand } from "dotenv-expand";
-import { defineConfig } from "prisma/config";
+import { defineConfig, env } from "prisma/config";
 
-const env = config({ override: false });
-expand(env);
+expand(config({ override: false }));
 
 export default defineConfig({
   schema: "prisma/schema.prisma",
   migrations: { path: "prisma/migrations" },
-  datasource: { url: process.env["DIRECT_URL"] },
+  datasource: { url: env("DIRECT_URL") },
 });
