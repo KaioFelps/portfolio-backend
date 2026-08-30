@@ -4,7 +4,7 @@ import { expand } from 'dotenv-expand';
 import { execSync } from 'child_process';
 import { PrismaClient } from 'prisma/generated/client';
 import { PrismaPg } from '@prisma/adapter-pg';
-import { Pool } from 'pg';
+
 import { createPgAdapter } from '@/infra/db/prisma/create-adapter';
 
 expand(config({ path: '.env', override: true }));

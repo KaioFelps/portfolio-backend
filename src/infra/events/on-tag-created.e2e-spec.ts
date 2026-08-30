@@ -1,7 +1,4 @@
-import { Test } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
-import { AppModule } from '@/app.module';
-import { DatabaseModule } from '../db/database.module';
 import supertest from 'supertest';
 import { UserFactory } from 'test/factories/user-factory';
 import { TokenPayload } from '../auth/jwt-strategy';
@@ -9,7 +6,6 @@ import { JwtService } from '@nestjs/jwt';
 import { CreateTagDto } from '../http/dtos/create-tag';
 import { PrismaService } from '../db/prisma/prisma-service';
 import { waitFor } from 'test/utlils/wait-for';
-import { TagFactory } from 'test/factories/tag-factory';
 import { provisionTestApp } from 'test/get-testing-app';
 
 describe('On Tag Created Event handler', () => {

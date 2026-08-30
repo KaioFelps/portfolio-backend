@@ -1,7 +1,4 @@
-import { Test } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
-import { AppModule } from '@/app.module';
-import { DatabaseModule } from '../db/database.module';
 import supertest from 'supertest';
 import { UserFactory } from 'test/factories/user-factory';
 import { TokenPayload } from '../auth/jwt-strategy';

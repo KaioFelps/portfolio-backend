@@ -1,7 +1,6 @@
 import { AppModule } from '@/app.module';
 import { PrismaService } from '@/infra/db/prisma/prisma-service';
 import {Test, type TestingModule } from '@nestjs/testing';
-import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient } from 'prisma/generated/client';
 import { UserFactory } from './factories/user-factory';
 import { PostFactory } from './factories/post-factory';
