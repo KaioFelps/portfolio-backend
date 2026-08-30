@@ -10,7 +10,6 @@
     "target": "es2021",
     "sourceMap": true,
     "outDir": "./dist",
-    "baseUrl": "./",
     "incremental": true,
     "skipLibCheck": true,
     "strictNullChecks": true,
@@ -20,6 +19,8 @@
     "noFallthroughCasesInSwitch": false,
     "noEmitOnError": true,
     "paths": {
+      "test/*": ["./test/*"],
+      "prisma/*": ["./prisma/*"],
       "@/*": ["./src/*"]
     },
     "types": ["vitest/globals"],
