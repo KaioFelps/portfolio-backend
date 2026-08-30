@@ -30,7 +30,7 @@ export class PrismaPostTagsRepository implements IPostTagsRepository {
   async findManyByPostId(postId: EntityUniqueId): Promise<PostTag[]> {
     const prismaTags = await this.prisma.tagsOnPostsOrProjects.findMany({
       where: {
-        projectId: postId.toValue(),
+        postId: postId.toValue(),
       },
       include: {
         Tag: true,

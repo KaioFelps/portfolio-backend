@@ -17,6 +17,7 @@ import { TagFactory } from 'test/factories/tag-factory';
 import { UserFactory } from 'test/factories/user-factory';
 import { PostPresented } from '../presenters/post-presenter';
 import { DomainEvents } from '@/core/events/domain-events';
+import { User } from '@/domain/users/entities/user';
 
 describe('PostController', () => {
   let app: INestApplication;
@@ -277,76 +278,83 @@ describe('PostController', () => {
     expect(response.body.totalCount).toBe(3);
   });
 
-  test('[PUT] /post/:id/edit', async () => {
-    const user = await userFactory.createAndPersist('editor');
+  describe('[PUT] /post/:id/edit', async () => {
+    let user: User;
+    let token: string;
 
-    const post = await postFactory.createAndPersist({
-      authorId: user.id,
+    beforeEach(async () => {
+      user = await userFactory.createAndPersist('editor');
+      token = await jwt.signAsync({
+        name: user.name,
+        role: user.role,
+        sub: user.id.toValue(),
+      } as TokenPayload);
     });
 
-    const tags = await Promise.all([
-      tagFactory.createAndPersist({ value: 'habbo' }),
-      tagFactory.createAndPersist({ value: 'noticia' }),
-      tagFactory.createAndPersist({ value: 'artigo' }),
-      tagFactory.createAndPersist({ value: 'free fire' }),
-    ]);
+    it('should update a post', async () => {
+      const post = await postFactory.createAndPersist({
+        authorId: user.id,
+      });
 
-    const postTags = [
-      PostTag.create({ tag: tags[0], postId: post.id }),
-      PostTag.create({ tag: tags[1], postId: post.id }),
-      PostTag.create({ tag: tags[2], postId: post.id }),
-    ];
+      const tags = await Promise.all([
+        tagFactory.createAndPersist({ value: 'habbo' }),
+        tagFactory.createAndPersist({ value: 'noticia' }),
+        tagFactory.createAndPersist({ value: 'artigo' }),
+        tagFactory.createAndPersist({ value: 'free fire' }),
+      ]);
 
-    await prisma.tagsOnPostsOrProjects.createMany({
-      data: postTags.map(({ id, postId, tag }) => ({
-        tagId: tag.id.toValue(),
-        postId: postId.toValue(),
-        id: id.toValue(),
-      })),
+      const postTags = [
+        PostTag.create({ tag: tags[0], postId: post.id }),
+        PostTag.create({ tag: tags[1], postId: post.id }),
+        PostTag.create({ tag: tags[2], postId: post.id }),
+      ];
+
+      await prisma.tagsOnPostsOrProjects.createMany({
+        data: postTags.map(({ id, postId, tag }) => ({
+          tagId: tag.id.toValue(),
+          postId: postId.toValue(),
+          id: id.toValue(),
+        })),
+      });
+
+      const response = await supertest(app.getHttpServer())
+        .put(`/post/${post.id.toValue()}/edit`)
+        .set({ Authorization: `Bearer ${token}` })
+        .send({
+          title: 'Edited title',
+          description: 'Edited description!!',
+          tags: [
+            tags[3].id.toValue() /** free-fire */,
+            tags[2].id.toValue() /** artigo */,
+          ],
+          // not any field are mandatory at all
+        })
+        .expect(200);
+
+      expect(response.body.post.title).not.toEqual(post.title);
+      expect(response.body.post.description).toEqual('Edited description!!');
+
+      const postOnDb = await prisma.post.findUnique({
+        where: { id: post.id.toValue() },
+        include: { tags: true },
+      });
+
+      expect(postOnDb?.title).toEqual(response.body.post.title);
+      const tagsFromDb = postOnDb?.tags.map((tag) => tag.tagId)
+
+      expect(tagsFromDb?.length).toBe(2);
+      expect(tagsFromDb).toEqual(
+        expect.arrayContaining([tags[3].id.toValue(), tags[2].id.toValue()]),
+      );
+
+      expect(response.body.post.tags.length).toBe(2);
+      expect(response.body.post.tags).toEqual(
+        expect.arrayContaining([
+          { id: tags[3].id.toValue(), value: 'free fire' },
+          { id: tags[2].id.toValue(), value: 'artigo' },
+        ]),
+      );
     });
-
-    const token = await jwt.signAsync({
-      name: user.name,
-      role: user.role,
-      sub: user.id.toValue(),
-    } as TokenPayload);
-
-    const response = await supertest(app.getHttpServer())
-      .put(`/post/${post.id.toValue()}/edit`)
-      .set({
-        Authorization: `Bearer ${token}`,
-      })
-      .send({
-        title: 'Edited title',
-        description: 'Edited description!!',
-        tags: [
-          tags[3].id.toValue() /** free-fire */,
-          tags[2].id.toValue() /** artigo */,
-        ],
-        // not any field are mandatory at all
-      })
-      .expect(200);
-
-    expect(response.body.post.title).not.toEqual(post.title);
-    expect(response.body.post.description).toEqual('Edited description!!');
-
-    const postOnDb = await prisma.post.findUnique({
-      where: { id: post.id.toValue() },
-      include: { tags: true },
-    });
-
-    expect(postOnDb?.title).toEqual(response.body.post.title);
-
-    expect(postOnDb?.tags.map((tag) => tag.tagId)).toEqual(
-      expect.arrayContaining([tags[3].id.toValue(), tags[2].id.toValue()]),
-    );
-
-    expect(response.body.post.tags).toEqual(
-      expect.arrayContaining([
-        { id: tags[3].id.toValue(), value: 'free fire' },
-        { id: tags[2].id.toValue(), value: 'artigo' },
-      ]),
-    );
   });
 
   test('[DELETE] /post/:id/delete', async () => {
