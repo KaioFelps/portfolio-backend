@@ -10,6 +10,7 @@ import { CreateTagDto } from '../http/dtos/create-tag';
 import { PrismaService } from '../db/prisma/prisma-service';
 import { waitFor } from 'test/utlils/wait-for';
 import { TagFactory } from 'test/factories/tag-factory';
+import { provisionTestApp } from 'test/get-testing-app';
 
 describe('On Tag Created Event handler', () => {
   let app: INestApplication;
@@ -18,15 +19,12 @@ describe('On Tag Created Event handler', () => {
   let userFactory: UserFactory;
 
   beforeEach(async () => {
-    const module = await Test.createTestingModule({
-      imports: [AppModule, DatabaseModule],
-      providers: [UserFactory, TagFactory],
-    }).compile();
+    
 
-    app = module.createNestApplication();
-    jwt = module.get(JwtService);
-    prisma = module.get(PrismaService);
-    userFactory = module.get(UserFactory);
+    app = await provisionTestApp();
+    jwt = app.get(JwtService);
+    prisma = app.get(PrismaService);
+    userFactory = app.get(UserFactory);
 
     await app.init();
   });

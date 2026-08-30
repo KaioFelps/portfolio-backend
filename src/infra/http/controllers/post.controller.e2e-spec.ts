@@ -1,25 +1,24 @@
-import { AppModule } from '@/app.module';
 import { EntityUniqueId } from '@/core/entities/entity-unique-id';
 import { QUANTITY_PER_PAGE } from '@/core/pagination-consts';
 import { PostTag } from '@/domain/posts/entities/post-tag';
 import { PostTagList } from '@/domain/posts/entities/post-tag-list';
 import { TokenPayload } from '@/infra/auth/jwt-strategy';
-import { DatabaseModule } from '@/infra/db/database.module';
-import { PrismaService } from '@/infra/db/prisma/prisma-service';
 import { INestApplication } from '@nestjs/common';
-import { JwtModule, JwtService } from '@nestjs/jwt';
-import { Test, TestingModule } from '@nestjs/testing';
+import { JwtService } from '@nestjs/jwt';
 import { randomUUID } from 'crypto';
 import supertest from 'supertest';
-import { PostFactory } from 'test/factories/post-factory';
-import { PostTagFactory } from 'test/factories/post-tag-factory';
-import { TagFactory } from 'test/factories/tag-factory';
-import { UserFactory } from 'test/factories/user-factory';
 import { PostPresented } from '../presenters/post-presenter';
 import { DomainEvents } from '@/core/events/domain-events';
 import { User } from '@/domain/users/entities/user';
+import { PrismaService } from '@/infra/db/prisma/prisma-service';
+import { UserFactory } from 'test/factories/user-factory';
+import { PostFactory } from 'test/factories/post-factory';
+import { TagFactory } from 'test/factories/tag-factory';
+import { provisionTestApp } from 'test/get-testing-app';
+import { PostTagFactory } from 'test/factories/post-tag-factory';
 
-describe('PostController', () => {
+describe('PostController',async () => {
+
   let app: INestApplication;
   let userFactory: UserFactory;
   let postFactory: PostFactory;
@@ -28,17 +27,12 @@ describe('PostController', () => {
   let prisma: PrismaService;
 
   beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      imports: [AppModule, DatabaseModule],
-      providers: [UserFactory, PostFactory, JwtModule, TagFactory],
-    }).compile();
-
-    app = module.createNestApplication();
-    tagFactory = module.get(TagFactory);
-    userFactory = module.get(UserFactory);
-    postFactory = module.get(PostFactory);
-    jwt = module.get(JwtService);
-    prisma = module.get(PrismaService);
+    app = await provisionTestApp();
+    tagFactory = app.get(TagFactory);
+    userFactory = app.get(UserFactory);
+    postFactory = app.get(PostFactory);
+    jwt = app.get(JwtService);
+    prisma = app.get(PrismaService);
 
     await app.init();
   });

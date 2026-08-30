@@ -9,7 +9,8 @@ import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from '../db/prisma/prisma-service';
 import { waitFor } from 'test/utlils/wait-for';
 import { UpdateUserDto } from '../http/dtos/update-user';
-import { LogAction, LogTargetType } from '@prisma/client';
+import { LogAction, LogTargetType } from 'prisma/generated/client';
+import { provisionTestApp } from 'test/get-testing-app';
 
 describe('On User Edited Event handler', () => {
   let app: INestApplication;
@@ -18,16 +19,13 @@ describe('On User Edited Event handler', () => {
   let userFactory: UserFactory;
 
   beforeEach(async () => {
-    const module = await Test.createTestingModule({
-      imports: [AppModule, DatabaseModule],
-      providers: [UserFactory, UserFactory],
-    }).compile();
+    
 
-    app = module.createNestApplication();
-    jwt = module.get(JwtService);
-    prisma = module.get(PrismaService);
-    userFactory = module.get(UserFactory);
-    userFactory = module.get(UserFactory);
+    app = await provisionTestApp();
+    jwt = app.get(JwtService);
+    prisma = app.get(PrismaService);
+    userFactory = app.get(UserFactory);
+    userFactory = app.get(UserFactory);
     await app.init();
   });
 

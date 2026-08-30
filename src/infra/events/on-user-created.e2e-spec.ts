@@ -9,6 +9,7 @@ import { JwtService } from '@nestjs/jwt';
 import { CreateUserDto } from '../http/dtos/create-user';
 import { PrismaService } from '../db/prisma/prisma-service';
 import { waitFor } from 'test/utlils/wait-for';
+import { provisionTestApp } from 'test/get-testing-app';
 
 describe('On User Created Event handler', () => {
   let app: INestApplication;
@@ -17,15 +18,12 @@ describe('On User Created Event handler', () => {
   let userFactory: UserFactory;
 
   beforeEach(async () => {
-    const module = await Test.createTestingModule({
-      imports: [AppModule, DatabaseModule],
-      providers: [UserFactory],
-    }).compile();
+    
 
-    app = module.createNestApplication();
-    jwt = module.get(JwtService);
-    prisma = module.get(PrismaService);
-    userFactory = module.get(UserFactory);
+    app = await provisionTestApp();
+    jwt = app.get(JwtService);
+    prisma = app.get(PrismaService);
+    userFactory = app.get(UserFactory);
 
     await app.init();
   });

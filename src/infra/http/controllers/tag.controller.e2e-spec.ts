@@ -1,15 +1,13 @@
 import supertest from 'supertest';
-import { AppModule } from '@/app.module';
 import { TokenPayload } from '@/infra/auth/jwt-strategy';
-import { DatabaseModule } from '@/infra/db/database.module';
 import { INestApplication } from '@nestjs/common';
-import { JwtModule, JwtService } from '@nestjs/jwt';
-import { Test, TestingModule } from '@nestjs/testing';
+import {  JwtService } from '@nestjs/jwt';
 import { UserFactory } from 'test/factories/user-factory';
 import { TagFactory } from 'test/factories/tag-factory';
 import { QUANTITY_PER_PAGE } from '@/core/pagination-consts';
 import { PrismaService } from '@/infra/db/prisma/prisma-service';
 import { DomainEvents } from '@/core/events/domain-events';
+import { provisionTestApp } from 'test/get-testing-app';
 
 describe('TagController', () => {
   let app: INestApplication;
@@ -19,16 +17,13 @@ describe('TagController', () => {
   let jwt: JwtService;
 
   beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      imports: [AppModule, DatabaseModule],
-      providers: [UserFactory, JwtModule, TagFactory, PrismaService],
-    }).compile();
 
-    app = module.createNestApplication();
-    userFactory = module.get(UserFactory);
-    tagFactory = module.get(TagFactory);
-    prisma = module.get(PrismaService);
-    jwt = module.get(JwtService);
+
+    app = await provisionTestApp();
+    userFactory = app.get(UserFactory);
+    tagFactory = app.get(TagFactory);
+    prisma = app.get(PrismaService);
+    jwt = app.get(JwtService);
 
     await app.init();
   });

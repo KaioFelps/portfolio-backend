@@ -10,7 +10,8 @@ import { CreateProjectDto } from '../http/dtos/create-project';
 import { PrismaService } from '../db/prisma/prisma-service';
 import { waitFor } from 'test/utlils/wait-for';
 import { ProjectFactory } from 'test/factories/project-factory';
-import { LogAction, LogTargetType } from '@prisma/client';
+import { LogAction, LogTargetType } from 'prisma/generated/client';
+import { provisionTestApp } from 'test/get-testing-app';
 
 describe('On Project Edited Event handler', () => {
   let app: INestApplication;
@@ -20,16 +21,13 @@ describe('On Project Edited Event handler', () => {
   let projectFactory: ProjectFactory;
 
   beforeEach(async () => {
-    const module = await Test.createTestingModule({
-      imports: [AppModule, DatabaseModule],
-      providers: [UserFactory, ProjectFactory],
-    }).compile();
+    
 
-    app = module.createNestApplication();
-    jwt = module.get(JwtService);
-    prisma = module.get(PrismaService);
-    userFactory = module.get(UserFactory);
-    projectFactory = module.get(ProjectFactory);
+    app = await provisionTestApp();
+    jwt = app.get(JwtService);
+    prisma = app.get(PrismaService);
+    userFactory = app.get(UserFactory);
+    projectFactory = app.get(ProjectFactory);
     await app.init();
   });
 

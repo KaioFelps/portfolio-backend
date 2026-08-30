@@ -1,7 +1,4 @@
-import { Test } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
-import { AppModule } from '@/app.module';
-import { DatabaseModule } from '../db/database.module';
 import supertest from 'supertest';
 import { UserFactory } from 'test/factories/user-factory';
 import { TokenPayload } from '../auth/jwt-strategy';
@@ -9,6 +6,7 @@ import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from '../db/prisma/prisma-service';
 import { PostFactory } from 'test/factories/post-factory';
 import { LogAction } from '@/domain/logs/entities/log';
+import { provisionTestApp } from 'test/get-testing-app';
 
 describe('On Post Edited Event handler', () => {
   let app: INestApplication;
@@ -18,16 +16,11 @@ describe('On Post Edited Event handler', () => {
   let postFactory: PostFactory;
 
   beforeEach(async () => {
-    const module = await Test.createTestingModule({
-      imports: [AppModule, DatabaseModule],
-      providers: [UserFactory, PostFactory],
-    }).compile();
-
-    app = module.createNestApplication();
-    jwt = module.get(JwtService);
-    prisma = module.get(PrismaService);
-    userFactory = module.get(UserFactory);
-    postFactory = module.get(PostFactory);
+       app = await provisionTestApp();
+    jwt = app.get(JwtService);
+    prisma = app.get(PrismaService);
+    userFactory = app.get(UserFactory);
+    postFactory = app.get(PostFactory);
     await app.init();
   });
 

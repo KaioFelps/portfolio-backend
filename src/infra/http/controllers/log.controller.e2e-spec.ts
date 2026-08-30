@@ -9,6 +9,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import supertest from 'supertest';
 import { LogFactory } from 'test/factories/log-factory';
 import { UserFactory } from 'test/factories/user-factory';
+import { provisionTestApp } from 'test/get-testing-app';
 
 describe('LogController', () => {
   let app: INestApplication;
@@ -22,10 +23,10 @@ describe('LogController', () => {
       providers: [UserFactory, LogFactory, JwtModule],
     }).compile();
 
-    app = module.createNestApplication();
-    userFactory = module.get(UserFactory);
-    logFactory = module.get(LogFactory);
-    jwt = module.get(JwtService);
+    app = await provisionTestApp();
+    userFactory = app.get(UserFactory);
+    logFactory = app.get(LogFactory);
+    jwt = app.get(JwtService);
 
     await app.init();
   });

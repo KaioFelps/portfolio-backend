@@ -9,6 +9,7 @@ import { JwtModule, JwtService } from '@nestjs/jwt';
 import { TokenPayload } from '@/infra/auth/jwt-strategy';
 import cookieParser from 'cookie-parser';
 import { DomainEvents } from '@/core/events/domain-events';
+import { provisionTestApp } from 'test/get-testing-app';
 
 describe('AuthController', () => {
   let app: INestApplication;
@@ -25,11 +26,11 @@ describe('AuthController', () => {
       imports: [AppModule, DatabaseModule],
     }).compile();
 
-    app = module.createNestApplication();
+    app = await provisionTestApp();
     app.use(cookieParser());
     app.enableCors({ credentials: true });
-    userFactory = module.get(UserFactory);
-    jwt = module.get(JwtService);
+    userFactory = app.get(UserFactory);
+    jwt = app.get(JwtService);
 
     await app.init();
   });
