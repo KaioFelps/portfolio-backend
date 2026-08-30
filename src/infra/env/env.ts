@@ -12,8 +12,9 @@ export const envSchema = z
     JWT_PRIVATE_KEY: z.string(),
     JWT_PUBLIC_KEY: z.string(),
     DOMAIN: z.string(),
+    COOKIE_DOMAIN: z.string().optional(),
     ROOTUSER_PASSWORD: z.string(),
-    ROOTUSER_EMAIL: z.string().email(),
+    ROOTUSER_EMAIL: z.email(),
     ROOTUSER_NAME: z.string(),
     NODE_ENV: z
       .enum(['development', 'production', 'test'])
