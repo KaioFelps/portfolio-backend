@@ -1,7 +1,6 @@
 import { TagFactory } from "test/factories/tag-factory";
 import { InMemoryLogsRepository } from "test/repositories/in-memory-logs-repository";
 import { InMemoryTagsRepository } from "test/repositories/in-memory-tags-repository";
-import { waitFor } from "test/utlils/wait-for";
 import { MockInstance } from "vitest";
 import {
   CreateLogService,
@@ -43,7 +42,7 @@ describe("On tag created subscriber", async () => {
     tag.addCreatedEventToDispatch();
     inMemoryTagsRepository.create(tag);
 
-    await waitFor(() => {
+    await vi.waitFor(() => {
       expect(registerCreatedTagSpy).toHaveBeenCalled();
     });
   });

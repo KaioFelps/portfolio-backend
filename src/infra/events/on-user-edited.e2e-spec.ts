@@ -5,7 +5,6 @@ import { UserFactory } from "test/factories/user-factory";
 import { TokenPayload } from "../auth/jwt-strategy";
 import { JwtService } from "@nestjs/jwt";
 import { PrismaService } from "../db/prisma/prisma-service";
-import { waitFor } from "test/utlils/wait-for";
 import { UpdateUserDto } from "../http/dtos/update-user";
 import { LogAction, LogTargetType } from "prisma/generated/client";
 import { provisionTestApp } from "test/get-testing-app";
@@ -45,7 +44,7 @@ describe("On User Edited Event handler", () => {
       } as UpdateUserDto)
       .expect(204);
 
-    await waitFor(async () => {
+    await vi.waitFor(async () => {
       const logsOnDb = await prisma.log.findMany({
         where: {
           action: LogAction.UPDATED,

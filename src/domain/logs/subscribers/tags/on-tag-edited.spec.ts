@@ -1,6 +1,5 @@
 import { InMemoryLogsRepository } from "test/repositories/in-memory-logs-repository";
 import { InMemoryUsersRepository } from "test/repositories/in-memory-users-repository";
-import { waitFor } from "test/utlils/wait-for";
 import { MockInstance } from "vitest";
 import {
   CreateLogService,
@@ -44,7 +43,7 @@ describe("On user edited subscriber", async () => {
 
     inMemoryTagsRepository.save(tag);
 
-    await waitFor(() => {
+    await vi.waitFor(() => {
       expect(registerEditedUserSpy).toHaveBeenCalled();
     });
   });

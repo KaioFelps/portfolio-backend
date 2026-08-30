@@ -4,7 +4,6 @@ import { UserFactory } from "test/factories/user-factory";
 import { TokenPayload } from "../auth/jwt-strategy";
 import { JwtService } from "@nestjs/jwt";
 import { PrismaService } from "../db/prisma/prisma-service";
-import { waitFor } from "test/utlils/wait-for";
 import { ProjectFactory } from "test/factories/project-factory";
 import { LogAction } from "@/domain/logs/entities/log";
 import { provisionTestApp } from "test/get-testing-app";
@@ -41,7 +40,7 @@ describe("On Project Edited Event handler", () => {
       .send()
       .expect(204);
 
-    await waitFor(async () => {
+    await vi.waitFor(async () => {
       const logsOnDb = await prisma.log.findMany({
         where: { action: LogAction.deleted, target: project.title },
       });

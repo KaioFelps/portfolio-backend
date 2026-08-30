@@ -5,7 +5,6 @@ import { TokenPayload } from "../auth/jwt-strategy";
 import { JwtService } from "@nestjs/jwt";
 import { CreatePostDto } from "../http/dtos/create-post";
 import { PrismaService } from "../db/prisma/prisma-service";
-import { waitFor } from "test/utlils/wait-for";
 import { PostFactory } from "test/factories/post-factory";
 import { TagFactory } from "test/factories/tag-factory";
 import { LogAction, LogTargetType } from "@/domain/logs/entities/log";
@@ -51,7 +50,7 @@ describe("On Post Edited Event handler", () => {
         title: newPostTitle,
       } as CreatePostDto);
 
-    await waitFor(async () => {
+    await vi.waitFor(async () => {
       const logsOnDb = await prisma.log.findMany({
         where: {
           action: LogAction.updated,

@@ -6,7 +6,6 @@ import { TokenPayload } from "../auth/jwt-strategy";
 import { JwtService } from "@nestjs/jwt";
 import { CreateUserDto } from "../http/dtos/create-user";
 import { PrismaService } from "../db/prisma/prisma-service";
-import { waitFor } from "test/utlils/wait-for";
 import { provisionTestApp } from "test/get-testing-app";
 
 describe("On User Created Event handler", () => {
@@ -44,7 +43,7 @@ describe("On User Created Event handler", () => {
         password: "fakepassword",
       } as CreateUserDto);
 
-    await waitFor(async () => {
+    await vi.waitFor(async () => {
       const logsOnDb = await prisma.log.findMany();
 
       expect(logsOnDb.length).toBe(1);

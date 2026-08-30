@@ -1,7 +1,6 @@
 import { UserFactory } from "test/factories/user-factory";
 import { InMemoryLogsRepository } from "test/repositories/in-memory-logs-repository";
 import { InMemoryUsersRepository } from "test/repositories/in-memory-users-repository";
-import { waitFor } from "test/utlils/wait-for";
 import { MockInstance } from "vitest";
 import {
   CreateLogService,
@@ -43,7 +42,7 @@ describe("On user edited subscriber", async () => {
 
     inMemoryUsersRepository.save(user);
 
-    await waitFor(() => {
+    await vi.waitFor(() => {
       expect(registerEditedUserSpy).toHaveBeenCalled();
     });
   });

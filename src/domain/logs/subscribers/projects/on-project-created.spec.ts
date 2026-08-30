@@ -1,7 +1,6 @@
 import { ProjectFactory } from "test/factories/project-factory";
 import { InMemoryLogsRepository } from "test/repositories/in-memory-logs-repository";
 import { InMemoryProjectsRepository } from "test/repositories/in-memory-projects-repository";
-import { waitFor } from "test/utlils/wait-for";
 import { MockInstance } from "vitest";
 import {
   CreateLogService,
@@ -53,7 +52,7 @@ describe("On project created subscriber", async () => {
     project.addCreatedEventToDispatch();
     inMemoryProjectsRepository.create(project);
 
-    await waitFor(() => {
+    await vi.waitFor(() => {
       expect(registerCreatedProjectSpy).toHaveBeenCalled();
     });
   });

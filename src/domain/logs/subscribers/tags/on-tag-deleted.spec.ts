@@ -1,6 +1,5 @@
 import { InMemoryLogsRepository } from "test/repositories/in-memory-logs-repository";
 import { InMemoryUsersRepository } from "test/repositories/in-memory-users-repository";
-import { waitFor } from "test/utlils/wait-for";
 import { MockInstance } from "vitest";
 import {
   CreateLogService,
@@ -42,7 +41,7 @@ describe("On tag deleted subscriber", async () => {
     tag.addDeletedEventToDispatch();
     inMemoryTagsRepository.delete(tag.id);
 
-    await waitFor(() => {
+    await vi.waitFor(() => {
       expect(registerDeletedUserSpy).toHaveBeenCalled();
     });
   });

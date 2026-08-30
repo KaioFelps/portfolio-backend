@@ -1,7 +1,6 @@
 import { ProjectFactory } from "test/factories/project-factory";
 import { InMemoryLogsRepository } from "test/repositories/in-memory-logs-repository";
 import { InMemoryProjectsRepository } from "test/repositories/in-memory-projects-repository";
-import { waitFor } from "test/utlils/wait-for";
 import { MockInstance } from "vitest";
 import {
   CreateLogService,
@@ -56,7 +55,7 @@ describe("On project edited subscriber", async () => {
     project.addEditedEventToDispatch();
     inMemoryProjectsRepository.save(project);
 
-    await waitFor(() => {
+    await vi.waitFor(() => {
       expect(registerEditedProjectSpy).toHaveBeenCalled();
     });
   });

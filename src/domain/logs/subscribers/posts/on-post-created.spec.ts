@@ -1,7 +1,6 @@
 import { PostFactory } from "test/factories/post-factory";
 import { InMemoryLogsRepository } from "test/repositories/in-memory-logs-repository";
 import { InMemoryPostsRepository } from "test/repositories/in-memory-posts-repository";
-import { waitFor } from "test/utlils/wait-for";
 import { MockInstance } from "vitest";
 import {
   CreateLogService,
@@ -42,7 +41,7 @@ describe("On post created subscriber", async () => {
     post.addCreatedEventToDispatch();
     inMemoryPostsRepository.create(post);
 
-    await waitFor(() => {
+    await vi.waitFor(() => {
       expect(registerCreatedPostSpy).toHaveBeenCalled();
     });
   });

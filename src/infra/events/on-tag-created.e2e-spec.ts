@@ -5,7 +5,6 @@ import { TokenPayload } from "../auth/jwt-strategy";
 import { JwtService } from "@nestjs/jwt";
 import { CreateTagDto } from "../http/dtos/create-tag";
 import { PrismaService } from "../db/prisma/prisma-service";
-import { waitFor } from "test/utlils/wait-for";
 import { provisionTestApp } from "test/get-testing-app";
 
 describe("On Tag Created Event handler", () => {
@@ -40,7 +39,7 @@ describe("On Tag Created Event handler", () => {
       } as CreateTagDto)
       .expect(201);
 
-    await waitFor(async () => {
+    await vi.waitFor(async () => {
       const logsOnDb = await prisma.log.findMany();
 
       expect(logsOnDb.length).toBe(1);
