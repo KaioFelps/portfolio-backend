@@ -4,7 +4,7 @@ import {
   Tag as PrismaTag,
   TagsOnPostsOrProjects as PrismaTagsOnPostsOrProjects,
   User as PrismaUser,
-} from '@prisma/client';
+} from 'prisma/generated/client';
 import { Slug } from '@/domain/posts/entities/value-objects/slug';
 import { PostWithAuthor } from '@/domain/posts/entities/value-objects/post-with-author';
 import { PostTagList } from '@/domain/posts/entities/post-tag-list';

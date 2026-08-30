@@ -1,6 +1,6 @@
 import { EntityUniqueId } from '@/core/entities/entity-unique-id';
 import { User } from '@/domain/users/entities/user';
-import { $Enums, Prisma } from '@prisma/client';
+import { $Enums, Prisma } from 'prisma/generated/client';
 import { PrismaRoleMapper } from './prisma-role-mapper';
 
 type toDomainParams = {

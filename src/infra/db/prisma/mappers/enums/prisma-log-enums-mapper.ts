@@ -3,7 +3,7 @@ import { LogAction, LogTargetType } from '@/domain/logs/entities/log';
 import {
   LogTargetType as prismaLogTargetType,
   LogAction as prismaLogAction,
-} from '@prisma/client';
+} from 'prisma/generated/client';
 
 export namespace PrismaLogEnumsMappers {
   export class Action {

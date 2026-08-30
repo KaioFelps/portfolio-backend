@@ -1,14 +1,12 @@
-import { AppModule } from '@/app.module';
 import { DomainEvents } from '@/core/events/domain-events';
 import { TokenPayload } from '@/infra/auth/jwt-strategy';
-import { DatabaseModule } from '@/infra/db/database.module';
 import { INestApplication } from '@nestjs/common';
-import { JwtModule, JwtService } from '@nestjs/jwt';
-import { Test, TestingModule } from '@nestjs/testing';
+import {  JwtService } from '@nestjs/jwt';
 import supertest from 'supertest';
 import { PostFactory } from 'test/factories/post-factory';
 import { ProjectFactory } from 'test/factories/project-factory';
 import { UserFactory } from 'test/factories/user-factory';
+import { provisionTestApp } from 'test/get-testing-app';
 
 describe('StatisticController', () => {
   let app: INestApplication;
@@ -18,16 +16,13 @@ describe('StatisticController', () => {
   let jwt: JwtService;
 
   beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      imports: [AppModule, DatabaseModule],
-      providers: [UserFactory, ProjectFactory, PostFactory, JwtModule],
-    }).compile();
 
-    app = module.createNestApplication();
-    userFactory = module.get(UserFactory);
-    projectFactory = module.get(ProjectFactory);
-    postFactory = module.get(PostFactory);
-    jwt = module.get(JwtService);
+
+    app = await provisionTestApp();
+    userFactory = app.get(UserFactory);
+    projectFactory = app.get(ProjectFactory);
+    postFactory = app.get(PostFactory);
+    jwt = app.get(JwtService);
 
     await app.init();
   });

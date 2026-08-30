@@ -1,14 +1,12 @@
-import { AppModule } from '@/app.module';
 import { DomainEvents } from '@/core/events/domain-events';
 import { TokenPayload } from '@/infra/auth/jwt-strategy';
-import { DatabaseModule } from '@/infra/db/database.module';
 import { PrismaService } from '@/infra/db/prisma/prisma-service';
 import { INestApplication } from '@nestjs/common';
-import { JwtModule, JwtService } from '@nestjs/jwt';
-import { Test, TestingModule } from '@nestjs/testing';
+import {  JwtService } from '@nestjs/jwt';
 import { hash } from 'bcryptjs';
 import supertest from 'supertest';
 import { UserFactory } from 'test/factories/user-factory';
+import { provisionTestApp } from 'test/get-testing-app';
 
 describe('UserController', () => {
   let app: INestApplication;
@@ -17,15 +15,12 @@ describe('UserController', () => {
   let prisma: PrismaService;
 
   beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [UserFactory, JwtModule],
-      imports: [AppModule, DatabaseModule],
-    }).compile();
+   
 
-    app = module.createNestApplication();
-    userFactory = module.get(UserFactory);
-    jwt = module.get(JwtService);
-    prisma = module.get(PrismaService);
+    app = await provisionTestApp();
+    userFactory = app.get(UserFactory);
+    jwt = app.get(JwtService);
+    prisma = app.get(PrismaService);
 
     await app.init();
   });

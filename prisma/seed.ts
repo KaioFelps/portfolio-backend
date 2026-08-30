@@ -1,6 +1,6 @@
-import { EntityUniqueId } from '../src/core/entities/entity-unique-id';
-import { ProjectFactory } from '../test/factories/project-factory';
-import { PrismaService } from '../src/infra/db/prisma/prisma-service';
+import { EntityUniqueId } from '@/core/entities/entity-unique-id';
+import { ProjectFactory } from 'test/factories/project-factory';
+import { PrismaService } from '@/infra/db/prisma/prisma-service';
 import { PostFactory } from 'test/factories/post-factory';
 import { IHashGenerator } from '@/core/crypt/hash-generator';
 import { DomainEvents } from '@/core/events/domain-events';

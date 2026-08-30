@@ -5,7 +5,7 @@ import {
   Prisma,
   Project as PrismaProject,
   Link as PrismaLink,
-} from '@prisma/client';
+} from 'prisma/generated/client';
 import { PrismaProjectLinkMapper } from './prisma-project-link-mapper';
 import { ProjectTagList } from '@/domain/projects/entities/project-tag-list';
 import { PrismaProjectTagMapper } from './prisma-project-tag-mapper';

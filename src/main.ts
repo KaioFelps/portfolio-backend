@@ -1,15 +1,12 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import * as cookieParser from 'cookie-parser';
+import cookieParser from 'cookie-parser';
 import { EnvService } from './infra/env/env-service';
 import { IHashGenerator } from './core/crypt/hash-generator';
 import { PrismaService } from './infra/db/prisma/prisma-service';
 import { run } from 'prisma/seed';
-import { expand } from 'dotenv-expand';
-import { config } from 'dotenv';
 
 async function bootstrap() {
-  expand(config());
   const app = await NestFactory.create(AppModule);
   app.use(cookieParser());
   app.enableShutdownHooks();

@@ -1,7 +1,7 @@
 import {
   Tag as PrismaTag,
   TagsOnPostsOrProjects as PrismaTagsOnPostsOrProjects,
-} from 'prisma/prisma-client';
+} from 'prisma/generated/client';
 
 export type PrismaComposedTag = PrismaTagsOnPostsOrProjects & {
   Tag: PrismaTag;

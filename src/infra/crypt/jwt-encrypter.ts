@@ -1,6 +1,6 @@
 import { IEncryptor } from '@/core/crypt/encrypter';
 import { Injectable } from '@nestjs/common';
-import { JsonWebTokenError, JwtService, TokenExpiredError } from '@nestjs/jwt';
+import { JsonWebTokenError, JwtService, JwtSignOptions, TokenExpiredError } from '@nestjs/jwt';
 import { TokenPayload } from '../auth/jwt-strategy';
 import { EnvService } from '../env/env-service';
 import { UnauthorizedError } from '@/core/errors/unauthorized-error';
@@ -15,7 +15,7 @@ export class JwtEncryptor implements IEncryptor {
 
   async encrypt(
     payload: Record<string, unknown>,
-    expiresIn?: number | string,
+    expiresIn?: JwtSignOptions["expiresIn"],
   ): Promise<string> {
     return await this.jwtService.signAsync(
       payload,

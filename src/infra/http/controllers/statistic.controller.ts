@@ -15,8 +15,8 @@ export class StatisticController {
 
     const [response]: [{ total_posts: number; total_projects: number }] =
       await this.prisma.$queryRaw`
-        SELECT (SELECT COUNT(*) FROM posts) as total_posts,
-        (SELECT COUNT(*) FROM projects) as total_projects;`;
+        SELECT (SELECT COUNT(id) FROM posts) as total_posts,
+        (SELECT COUNT(id) FROM projects) as total_projects;`;
 
     return {
       totalProjects: response.total_projects,

@@ -1,14 +1,15 @@
-import { AppModule } from '@/app.module';
+
 import { DomainEvents } from '@/core/events/domain-events';
 import { Log, LogAction, LogTargetType } from '@/domain/logs/entities/log';
 import { TokenPayload } from '@/infra/auth/jwt-strategy';
-import { DatabaseModule } from '@/infra/db/database.module';
+
 import { INestApplication } from '@nestjs/common';
-import { JwtModule, JwtService } from '@nestjs/jwt';
-import { Test, TestingModule } from '@nestjs/testing';
+import { JwtService } from '@nestjs/jwt';
+
 import supertest from 'supertest';
 import { LogFactory } from 'test/factories/log-factory';
 import { UserFactory } from 'test/factories/user-factory';
+import { provisionTestApp } from 'test/get-testing-app';
 
 describe('LogController', () => {
   let app: INestApplication;
@@ -17,15 +18,10 @@ describe('LogController', () => {
   let jwt: JwtService;
 
   beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      imports: [AppModule, DatabaseModule],
-      providers: [UserFactory, LogFactory, JwtModule],
-    }).compile();
-
-    app = module.createNestApplication();
-    userFactory = module.get(UserFactory);
-    logFactory = module.get(LogFactory);
-    jwt = module.get(JwtService);
+    app = await provisionTestApp();
+    userFactory = app.get(UserFactory);
+    logFactory = app.get(LogFactory);
+    jwt = app.get(JwtService);
 
     await app.init();
   });

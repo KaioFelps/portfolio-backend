@@ -1,14 +1,15 @@
-import { Test, TestingModule } from '@nestjs/testing';
+
 import { INestApplication } from '@nestjs/common';
 import { UserFactory } from 'test/factories/user-factory';
-import { AppModule } from '@/app.module';
-import { DatabaseModule } from '@/infra/db/database.module';
+
+
 import request from 'supertest';
 import { hash } from 'bcryptjs';
-import { JwtModule, JwtService } from '@nestjs/jwt';
+import { JwtService } from '@nestjs/jwt';
 import { TokenPayload } from '@/infra/auth/jwt-strategy';
 import cookieParser from 'cookie-parser';
 import { DomainEvents } from '@/core/events/domain-events';
+import { provisionTestApp } from 'test/get-testing-app';
 
 describe('AuthController', () => {
   let app: INestApplication;
@@ -20,16 +21,11 @@ describe('AuthController', () => {
   });
 
   beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [UserFactory, JwtModule],
-      imports: [AppModule, DatabaseModule],
-    }).compile();
-
-    app = module.createNestApplication();
+    app = await provisionTestApp();
     app.use(cookieParser());
     app.enableCors({ credentials: true });
-    userFactory = module.get(UserFactory);
-    jwt = module.get(JwtService);
+    userFactory = app.get(UserFactory);
+    jwt = app.get(JwtService);
 
     await app.init();
   });

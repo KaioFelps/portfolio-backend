@@ -7,7 +7,7 @@ import { PrismaTagMapper } from '../mappers/prisma-tag-mapper';
 import { PrismaService } from '../prisma-service';
 import { DomainEvents } from '@/core/events/domain-events';
 import { QUANTITY_PER_PAGE } from '@/core/pagination-consts';
-import { Prisma } from '@prisma/client';
+import { Prisma } from 'prisma/generated/client';
 import { EntityUniqueId } from '@/core/entities/entity-unique-id';
 
 @Injectable()
