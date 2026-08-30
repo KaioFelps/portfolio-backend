@@ -17,6 +17,7 @@ jobs:
       - name: Build the application
         run: |
           npm ci
+          npx prisma generate
           npm run build
 
       - name: Prepare the package
