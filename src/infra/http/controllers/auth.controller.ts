@@ -34,10 +34,11 @@ export class AuthController {
       path: '/',
       sameSite: 'none',
       httpOnly: true,
-      secure: envService.get("NODE_ENV") === "production",
+      secure: envService.get('NODE_ENV') === 'production',
       domain:
         this.envService.get('NODE_ENV') === 'production'
-          ? this.envService.get('DOMAIN')
+          ? (this.envService.get('COOKIE_DOMAIN') ??
+            this.envService.get('DOMAIN'))
           : 'localhost',
     };
   }
