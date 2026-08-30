@@ -18,8 +18,8 @@
     "test:cov": "vitest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e:setup": "docker compose --env-file .env.test up -d",
-    "test:e2e": "vitest --config ./vitest.config.e2e.ts",
-    "test:e2e:watch": "vitest --config ./vitest.config.e2e.ts --watch"
+    "test:e2e": "vitest --config ./vitest.config.e2e.mts",
+    "test:e2e:watch": "vitest --config ./vitest.config.e2e.mts --watch"
   },
   "dependencies": {
     "@faker-js/faker": "^10.6.0",
@@ -65,10 +65,8 @@
     "supertest": "^7.2.2",
     "ts-loader": "^9.6.2",
     "ts-node": "^10.9.2",
-    "tsconfig-paths": "^4.2.0",
     "typescript": "6.0.3",
     "unplugin-swc": "^1.5.11",
-    "vite-tsconfig-paths": "6.1.1",
     "vitest": "4.1.11"
   }
 }
