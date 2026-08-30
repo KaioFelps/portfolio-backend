@@ -1,11 +1,11 @@
-import { EntityUniqueId } from '@/core/entities/entity-unique-id';
-import { Optional } from '@/core/types/optional';
-import { Slug } from './value-objects/slug';
-import { Aggregate } from '@/core/entities/aggregate';
-import { PostCreatedEvent } from '../events/post-created-event';
-import { PostEditedEvent } from '../events/post-edited-event';
-import { PostTagList } from './post-tag-list';
-import { PostDeletedEvent } from '../events/post-deleted-event';
+import { EntityUniqueId } from "@/core/entities/entity-unique-id";
+import { Optional } from "@/core/types/optional";
+import { Slug } from "./value-objects/slug";
+import { Aggregate } from "@/core/entities/aggregate";
+import { PostCreatedEvent } from "../events/post-created-event";
+import { PostEditedEvent } from "../events/post-edited-event";
+import { PostTagList } from "./post-tag-list";
+import { PostDeletedEvent } from "../events/post-deleted-event";
 
 export interface PostProps {
   authorId: EntityUniqueId;
@@ -25,10 +25,7 @@ export class Post extends Aggregate<PostProps> {
     super({ ...props }, id);
   }
 
-  static create(
-    props: Optional<PostProps, 'createdAt' | 'slug'>,
-    _id?: EntityUniqueId,
-  ) {
+  static create(props: Optional<PostProps, "createdAt" | "slug">, _id?: EntityUniqueId) {
     const id = _id ?? new EntityUniqueId();
     const post = new Post(
       {

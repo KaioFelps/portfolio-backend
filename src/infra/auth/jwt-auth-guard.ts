@@ -1,17 +1,13 @@
-import {
-  ExecutionContext,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
-import { Reflector } from '@nestjs/core';
-import { AuthGuard } from '@nestjs/passport';
-import { IS_PUBLIC } from './decorators/public-route';
-import { JwtService } from '@nestjs/jwt';
-import { EnvService } from '../env/env-service';
-import { TokenPayload } from './jwt-strategy';
+import { ExecutionContext, Injectable, UnauthorizedException } from "@nestjs/common";
+import { Reflector } from "@nestjs/core";
+import { AuthGuard } from "@nestjs/passport";
+import { IS_PUBLIC } from "./decorators/public-route";
+import { JwtService } from "@nestjs/jwt";
+import { EnvService } from "../env/env-service";
+import { TokenPayload } from "./jwt-strategy";
 
 @Injectable()
-export class JwtAuthGuard extends AuthGuard('jwt') {
+export class JwtAuthGuard extends AuthGuard("jwt") {
   constructor(
     private reflector: Reflector,
     private jwtService: JwtService,
@@ -32,12 +28,12 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     let payload: TokenPayload | null = null;
 
     try {
-      const privateKey = this.envService.get('JWT_PRIVATE_KEY');
-      const publicKey = this.envService.get('JWT_PUBLIC_KEY');
+      const privateKey = this.envService.get("JWT_PRIVATE_KEY");
+      const publicKey = this.envService.get("JWT_PUBLIC_KEY");
 
       payload = (await this.jwtService.verifyAsync(token!, {
-        secret: Buffer.from(privateKey, 'base64'),
-        publicKey: Buffer.from(publicKey, 'base64'),
+        secret: Buffer.from(privateKey, "base64"),
+        publicKey: Buffer.from(publicKey, "base64"),
       })) as TokenPayload;
     } catch {
       if (isPublic) {
@@ -52,8 +48,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
   }
 
   private extractTokenFromHeader(request: Request): string | undefined {
-    const [type, token] =
-      (request.headers as any).authorization?.split(' ') ?? [];
-    return type === 'Bearer' ? token : undefined;
+    const [type, token] = (request.headers as any).authorization?.split(" ") ?? [];
+    return type === "Bearer" ? token : undefined;
   }
 }

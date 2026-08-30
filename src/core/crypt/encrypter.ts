@@ -1,6 +1,6 @@
-import { TokenPayload } from '@/infra/auth/jwt-strategy';
-import { UnauthorizedError } from '../errors/unauthorized-error';
-import { Either } from '../types/either';
+import { TokenPayload } from "@/infra/auth/jwt-strategy";
+import { UnauthorizedError } from "../errors/unauthorized-error";
+import { Either } from "../types/either";
 
 export abstract class IEncryptor {
   abstract encrypt(
@@ -11,7 +11,5 @@ export abstract class IEncryptor {
     expiresIn?: number | string,
   ): Promise<string>;
 
-  abstract decrypt(
-    token: string,
-  ): Promise<Either<UnauthorizedError, TokenPayload>>;
+  abstract decrypt(token: string): Promise<Either<UnauthorizedError, TokenPayload>>;
 }

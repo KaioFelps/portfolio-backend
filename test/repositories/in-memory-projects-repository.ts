@@ -1,12 +1,12 @@
-import { DomainEvents } from '@/core/events/domain-events';
-import { Project } from '@/domain/projects/entities/project';
+import { DomainEvents } from "@/core/events/domain-events";
+import { Project } from "@/domain/projects/entities/project";
 import {
   IProjectsRepository,
   ProjectListPaginationParams,
-} from '@/domain/projects/repositories/projects-repository';
-import { InMemoryProjectLinksRepository } from './in-memory-project-links-repository';
-import { InMemoryProjectTagsRepository } from './in-memory-project-tags-repository';
-import { PaginationResponse } from '@/core/types/pagination-responses';
+} from "@/domain/projects/repositories/projects-repository";
+import { InMemoryProjectLinksRepository } from "./in-memory-project-links-repository";
+import { InMemoryProjectTagsRepository } from "./in-memory-project-tags-repository";
+import { PaginationResponse } from "@/core/types/pagination-responses";
 
 export class InMemoryProjectsRepository implements IProjectsRepository {
   public items: Project[] = [];
@@ -38,14 +38,12 @@ export class InMemoryProjectsRepository implements IProjectsRepository {
 
     if (query) {
       switch (query.type) {
-        case 'tag':
+        case "tag":
           projects = this.items.filter((item) =>
-            item.tags
-              .getItems()
-              .find((tag) => tag.tag.id.toValue() === query.value),
+            item.tags.getItems().find((tag) => tag.tag.id.toValue() === query.value),
           );
           break;
-        case 'title':
+        case "title":
           projects = this.items.filter((item) =>
             item.title.toLowerCase().includes(query.value.toLowerCase()),
           );
@@ -63,9 +61,7 @@ export class InMemoryProjectsRepository implements IProjectsRepository {
   }
 
   async save(project: Project): Promise<void> {
-    const itemIndex = this.items.findIndex((item) =>
-      item.id.equals(project.id),
-    );
+    const itemIndex = this.items.findIndex((item) => item.id.equals(project.id));
 
     this.items[itemIndex] = project;
 

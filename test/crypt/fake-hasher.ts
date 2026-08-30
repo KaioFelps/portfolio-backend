@@ -1,5 +1,5 @@
-import { IHashComparor } from '@/core/crypt/hash-comparor';
-import { IHashGenerator } from '@/core/crypt/hash-generator';
+import { IHashComparor } from "@/core/crypt/hash-comparor";
+import { IHashGenerator } from "@/core/crypt/hash-generator";
 
 export class FakeHasher implements IHashComparor, IHashGenerator {
   private readonly HASH_SALT = 6;
@@ -9,6 +9,6 @@ export class FakeHasher implements IHashComparor, IHashGenerator {
   }
 
   async compare(plain: string, hash: string): Promise<boolean> {
-    return hash.replace('---hashed', '') === plain;
+    return hash.replace("---hashed", "") === plain;
   }
 }

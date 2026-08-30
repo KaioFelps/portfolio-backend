@@ -1,8 +1,8 @@
-import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository';
-import { DeleteUserService } from './delete-user-service';
-import { UserFactory } from 'test/factories/user-factory';
+import { InMemoryUsersRepository } from "test/repositories/in-memory-users-repository";
+import { DeleteUserService } from "./delete-user-service";
+import { UserFactory } from "test/factories/user-factory";
 
-describe('Delete User Service', () => {
+describe("Delete User Service", () => {
   let sut: DeleteUserService;
   let usersRepository: InMemoryUsersRepository;
 
@@ -11,10 +11,10 @@ describe('Delete User Service', () => {
     sut = new DeleteUserService(usersRepository);
   });
 
-  it('should delete a user if exists', async () => {
-    const user = UserFactory.exec('admin');
+  it("should delete a user if exists", async () => {
+    const user = UserFactory.exec("admin");
 
-    const userToBeDeleted = UserFactory.exec('editor');
+    const userToBeDeleted = UserFactory.exec("editor");
 
     usersRepository.items.push(user, userToBeDeleted);
 
@@ -28,9 +28,9 @@ describe('Delete User Service', () => {
   });
 
   it("shouldn't delete a admin user", async () => {
-    const user = UserFactory.exec('admin');
+    const user = UserFactory.exec("admin");
 
-    const userToBeDeleted = UserFactory.exec('admin');
+    const userToBeDeleted = UserFactory.exec("admin");
 
     usersRepository.items.push(user, userToBeDeleted);
 
@@ -44,9 +44,9 @@ describe('Delete User Service', () => {
   });
 
   it("shouldn't let an editor delete any user", async () => {
-    const user = UserFactory.exec('editor');
+    const user = UserFactory.exec("editor");
 
-    const userToBeDeleted = UserFactory.exec('editor');
+    const userToBeDeleted = UserFactory.exec("editor");
 
     usersRepository.items.push(user, userToBeDeleted);
 

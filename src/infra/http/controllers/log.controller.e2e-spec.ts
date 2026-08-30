@@ -1,17 +1,16 @@
+import { DomainEvents } from "@/core/events/domain-events";
+import { Log, LogAction, LogTargetType } from "@/domain/logs/entities/log";
+import { TokenPayload } from "@/infra/auth/jwt-strategy";
 
-import { DomainEvents } from '@/core/events/domain-events';
-import { Log, LogAction, LogTargetType } from '@/domain/logs/entities/log';
-import { TokenPayload } from '@/infra/auth/jwt-strategy';
+import { INestApplication } from "@nestjs/common";
+import { JwtService } from "@nestjs/jwt";
 
-import { INestApplication } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
+import supertest from "supertest";
+import { LogFactory } from "test/factories/log-factory";
+import { UserFactory } from "test/factories/user-factory";
+import { provisionTestApp } from "test/get-testing-app";
 
-import supertest from 'supertest';
-import { LogFactory } from 'test/factories/log-factory';
-import { UserFactory } from 'test/factories/user-factory';
-import { provisionTestApp } from 'test/get-testing-app';
-
-describe('LogController', () => {
+describe("LogController", () => {
   let app: INestApplication;
   let userFactory: UserFactory;
   let logFactory: LogFactory;
@@ -27,11 +26,11 @@ describe('LogController', () => {
   });
 
   afterEach(() => {
-    DomainEvents.AggregateEvent['clearEveryAggregateEvent!']();
+    DomainEvents.AggregateEvent["clearEveryAggregateEvent!"]();
   });
 
-  test('[GET] /log/list', async () => {
-    const user = await userFactory.createAndPersist('admin');
+  test("[GET] /log/list", async () => {
+    const user = await userFactory.createAndPersist("admin");
 
     const token = await jwt.signAsync({
       name: user.name,
@@ -60,7 +59,7 @@ describe('LogController', () => {
             dispatcherId: user.id,
             targetType: LogTargetType.post,
             action: LogAction.deleted,
-            target: 'New version comes out with logs working',
+            target: "New version comes out with logs working",
           }),
         );
       }, 500);

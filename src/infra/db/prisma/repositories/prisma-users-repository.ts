@@ -1,13 +1,13 @@
-import { PaginationParams } from '@/core/types/pagination-params';
-import { User } from '@/domain/users/entities/user';
-import { IUsersRepository } from '@/domain/users/repositories/users-repository';
-import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../prisma-service';
-import { PrismaUserMapper } from '../mappers/prisma-user-mapper';
-import { PrismaRoleMapper } from '../mappers/prisma-role-mapper';
-import { PaginationResponse } from '@/core/types/pagination-responses';
-import { QUANTITY_PER_PAGE } from '@/core/pagination-consts';
-import { DomainEvents } from '@/core/events/domain-events';
+import { PaginationParams } from "@/core/types/pagination-params";
+import { User } from "@/domain/users/entities/user";
+import { IUsersRepository } from "@/domain/users/repositories/users-repository";
+import { Injectable } from "@nestjs/common";
+import { PrismaService } from "../prisma-service";
+import { PrismaUserMapper } from "../mappers/prisma-user-mapper";
+import { PrismaRoleMapper } from "../mappers/prisma-role-mapper";
+import { PaginationResponse } from "@/core/types/pagination-responses";
+import { QUANTITY_PER_PAGE } from "@/core/pagination-consts";
+import { DomainEvents } from "@/core/events/domain-events";
 
 @Injectable()
 export class PrismaUsersRepository implements IUsersRepository {
@@ -54,7 +54,7 @@ export class PrismaUsersRepository implements IUsersRepository {
   async findMany({
     amount,
     page = 1,
-    query = '',
+    query = "",
   }: PaginationParams): Promise<PaginationResponse<User>> {
     const PER_PAGE = amount ?? QUANTITY_PER_PAGE;
 
@@ -67,7 +67,7 @@ export class PrismaUsersRepository implements IUsersRepository {
         take: PER_PAGE,
         skip: offset,
         orderBy: {
-          createdAt: 'desc',
+          createdAt: "desc",
         },
         where: {
           OR: [
@@ -90,7 +90,7 @@ export class PrismaUsersRepository implements IUsersRepository {
           ],
         },
         orderBy: {
-          createdAt: 'desc',
+          createdAt: "desc",
         },
       }),
     ]);

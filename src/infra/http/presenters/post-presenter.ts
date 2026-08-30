@@ -1,5 +1,5 @@
-import { Post } from '@/domain/posts/entities/post';
-import { ProjectAndPostTagPresenter } from './project-and-post-tag-presenter';
+import { Post } from "@/domain/posts/entities/post";
+import { ProjectAndPostTagPresenter } from "./project-and-post-tag-presenter";
 
 export type PostPresented = {
   id: string;

@@ -1,9 +1,9 @@
-import { IEncryptor } from '@/core/crypt/encrypter';
-import { Module } from '@nestjs/common';
-import { BcryptHasher } from './bcrypt-hasher';
-import { IHashGenerator } from '@/core/crypt/hash-generator';
-import { JwtEncryptor } from './jwt-encrypter';
-import { IHashComparor } from '@/core/crypt/hash-comparor';
+import { IEncryptor } from "@/core/crypt/encrypter";
+import { Module } from "@nestjs/common";
+import { BcryptHasher } from "./bcrypt-hasher";
+import { IHashGenerator } from "@/core/crypt/hash-generator";
+import { JwtEncryptor } from "./jwt-encrypter";
+import { IHashComparor } from "@/core/crypt/hash-comparor";
 
 @Module({
   providers: [

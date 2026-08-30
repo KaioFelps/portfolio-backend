@@ -1,4 +1,4 @@
-import { AuthenticateService } from '@/domain/users/services/authenticate-service';
+import { AuthenticateService } from "@/domain/users/services/authenticate-service";
 import {
   Body,
   Controller,
@@ -12,16 +12,16 @@ import {
   Req,
   InternalServerErrorException,
   Patch,
-} from '@nestjs/common';
-import { LoginDto } from '../dtos/login';
-import { WrongCredentialError } from '@/core/errors/wrong-credentials-error';
-import { PublicRoute } from '@/infra/auth/decorators/public-route';
-import type { CookieOptions, Request, Response } from 'express';
-import { EnvService } from '@/infra/env/env-service';
-import { RefreshAuthenticationService } from '@/domain/users/services/refresh-authentication-service';
-import { UnauthorizedError } from '@/core/errors/unauthorized-error';
+} from "@nestjs/common";
+import { LoginDto } from "../dtos/login";
+import { WrongCredentialError } from "@/core/errors/wrong-credentials-error";
+import { PublicRoute } from "@/infra/auth/decorators/public-route";
+import type { CookieOptions, Request, Response } from "express";
+import { EnvService } from "@/infra/env/env-service";
+import { RefreshAuthenticationService } from "@/domain/users/services/refresh-authentication-service";
+import { UnauthorizedError } from "@/core/errors/unauthorized-error";
 
-@Controller('auth')
+@Controller("auth")
 export class AuthController {
   private refreshTokenOptions: CookieOptions;
 
@@ -31,26 +31,22 @@ export class AuthController {
     private envService: EnvService,
   ) {
     this.refreshTokenOptions = {
-      path: '/',
-      sameSite: 'none',
+      path: "/",
+      sameSite: "none",
       httpOnly: true,
-      secure: envService.get('NODE_ENV') === 'production',
+      secure: envService.get("NODE_ENV") === "production",
       domain:
-        this.envService.get('NODE_ENV') === 'production'
-          ? (this.envService.get('COOKIE_DOMAIN') ??
-            this.envService.get('DOMAIN'))
-          : 'localhost',
+        this.envService.get("NODE_ENV") === "production"
+          ? (this.envService.get("COOKIE_DOMAIN") ?? this.envService.get("DOMAIN"))
+          : "localhost",
     };
   }
 
-  @Post('login')
+  @Post("login")
   @HttpCode(HttpStatus.OK)
-  @Header('Access-Control-Allow-Credentials', 'true')
+  @Header("Access-Control-Allow-Credentials", "true")
   @PublicRoute()
-  async login(
-    @Body() body: LoginDto,
-    @Res({ passthrough: true }) response: Response,
-  ) {
+  async login(@Body() body: LoginDto, @Res({ passthrough: true }) response: Response) {
     const result = await this.authenticateService.exec(body);
 
     if (result.isFail()) {
@@ -65,27 +61,24 @@ export class AuthController {
     }
     const { accessToken, refreshToken, user } = result.value;
 
-    response.cookie('refresh_token', refreshToken, this.refreshTokenOptions);
+    response.cookie("refresh_token", refreshToken, this.refreshTokenOptions);
 
     return { accessToken, user };
   }
 
   @PublicRoute()
-  @Post('logout')
+  @Post("logout")
   @HttpCode(204)
-  @Header('Access-Control-Allow-Credentials', 'true')
+  @Header("Access-Control-Allow-Credentials", "true")
   async logout(@Res({ passthrough: true }) response: Response) {
     this.cleanRefreshToken(response);
   }
 
-  @Patch('refresh')
+  @Patch("refresh")
   @HttpCode(200)
   @PublicRoute()
-  @Header('Access-Control-Allow-Credentials', 'true')
-  async refresh(
-    @Req() request: Request,
-    @Res({ passthrough: true }) response: Response,
-  ) {
+  @Header("Access-Control-Allow-Credentials", "true")
+  async refresh(@Req() request: Request, @Res({ passthrough: true }) response: Response) {
     const { refresh_token: refreshTokenCookie } = request.cookies;
 
     const result = await this.refreshAuthenticationService.exec({
@@ -107,12 +100,12 @@ export class AuthController {
 
     const { accessToken, refreshToken, user } = result.value;
 
-    response.cookie('refresh_token', refreshToken, this.refreshTokenOptions);
+    response.cookie("refresh_token", refreshToken, this.refreshTokenOptions);
 
     return { accessToken, refreshToken, user };
   }
 
   private cleanRefreshToken(response: Response) {
-    response.cookie('refresh_token', '', this.refreshTokenOptions);
+    response.cookie("refresh_token", "", this.refreshTokenOptions);
   }
 }

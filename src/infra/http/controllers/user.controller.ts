@@ -11,23 +11,23 @@ import {
   Put,
   Query,
   UnauthorizedException,
-} from '@nestjs/common';
-import { CreateUserDto } from '../dtos/create-user';
-import { CreateUserService } from '@/domain/users/services/create-user-service';
-import { UserRole } from '@/domain/users/entities/user';
-import { CurrentUser } from '@/infra/auth/decorators/current-user';
-import { TokenPayload } from '@/infra/auth/jwt-strategy';
-import { UpdateUserDto } from '../dtos/update-user';
-import { EditUserService } from '@/domain/users/services/edit-user-service';
-import { UnauthorizedError } from '@/core/errors/unauthorized-error';
-import { BadRequestError } from '@/core/errors/bad-request-error';
-import { DeleteUserService } from '@/domain/users/services/delete-user-service';
-import { UserPresenter } from '../presenters/user-presenter';
-import { FetchManyUsersService } from '@/domain/users/services/fetch-many-users-service';
-import { PaginatedQueryDto } from '../dtos/paginated-query';
-import { QUANTITY_PER_PAGE } from '@/core/pagination-consts';
+} from "@nestjs/common";
+import { CreateUserDto } from "../dtos/create-user";
+import { CreateUserService } from "@/domain/users/services/create-user-service";
+import { UserRole } from "@/domain/users/entities/user";
+import { CurrentUser } from "@/infra/auth/decorators/current-user";
+import { TokenPayload } from "@/infra/auth/jwt-strategy";
+import { UpdateUserDto } from "../dtos/update-user";
+import { EditUserService } from "@/domain/users/services/edit-user-service";
+import { UnauthorizedError } from "@/core/errors/unauthorized-error";
+import { BadRequestError } from "@/core/errors/bad-request-error";
+import { DeleteUserService } from "@/domain/users/services/delete-user-service";
+import { UserPresenter } from "../presenters/user-presenter";
+import { FetchManyUsersService } from "@/domain/users/services/fetch-many-users-service";
+import { PaginatedQueryDto } from "../dtos/paginated-query";
+import { QUANTITY_PER_PAGE } from "@/core/pagination-consts";
 
-@Controller('user')
+@Controller("user")
 export class UserController {
   constructor(
     private createUserService: CreateUserService,
@@ -36,7 +36,7 @@ export class UserController {
     private fetchManyUsersService: FetchManyUsersService,
   ) {}
 
-  @Get('list')
+  @Get("list")
   @HttpCode(200)
   async getMany(
     @Query()
@@ -58,7 +58,7 @@ export class UserController {
     };
   }
 
-  @Post('new')
+  @Post("new")
   @HttpCode(201)
   async create(@Body() body: CreateUserDto, @CurrentUser() user: TokenPayload) {
     const result = await this.createUserService.exec({
@@ -78,12 +78,12 @@ export class UserController {
     };
   }
 
-  @Put('/:id/edit')
+  @Put("/:id/edit")
   @HttpCode(204)
   async update(
     @Body() body: UpdateUserDto,
     @CurrentUser() user: TokenPayload,
-    @Param('id') beingEditedUserId: string,
+    @Param("id") beingEditedUserId: string,
   ) {
     const result = await this.editUserService.exec({
       ...body,
@@ -103,12 +103,9 @@ export class UserController {
     }
   }
 
-  @Delete('/:id/delete')
+  @Delete("/:id/delete")
   @HttpCode(204)
-  async delete(
-    @CurrentUser() user: TokenPayload,
-    @Param('id') beingDeletedUserId: string,
-  ) {
+  async delete(@CurrentUser() user: TokenPayload, @Param("id") beingDeletedUserId: string) {
     const result = await this.deleteUserService.exec({
       adminId: user.sub,
       userId: beingDeletedUserId,

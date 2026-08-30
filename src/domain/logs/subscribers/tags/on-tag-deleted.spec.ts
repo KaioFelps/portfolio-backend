@@ -1,15 +1,15 @@
-import { InMemoryLogsRepository } from 'test/repositories/in-memory-logs-repository';
-import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository';
-import { waitFor } from 'test/utlils/wait-for';
-import { MockInstance } from 'vitest';
+import { InMemoryLogsRepository } from "test/repositories/in-memory-logs-repository";
+import { InMemoryUsersRepository } from "test/repositories/in-memory-users-repository";
+import { waitFor } from "test/utlils/wait-for";
+import { MockInstance } from "vitest";
 import {
   CreateLogService,
   CreateLogServiceRequest,
   CreateLogServiceResponse,
-} from '../../services/create-log-service';
-import { OnTagDeleted } from './on-tag-deleted';
-import { TagFactory } from 'test/factories/tag-factory';
-import { InMemoryTagsRepository } from 'test/repositories/in-memory-tags-repository';
+} from "../../services/create-log-service";
+import { OnTagDeleted } from "./on-tag-deleted";
+import { TagFactory } from "test/factories/tag-factory";
+import { InMemoryTagsRepository } from "test/repositories/in-memory-tags-repository";
 
 let inMemoryUsersRepository: InMemoryUsersRepository;
 let inMemoryTagsRepository: InMemoryTagsRepository;
@@ -21,27 +21,22 @@ let registerDeletedUserSpy: MockInstance<
   (_: CreateLogServiceRequest) => Promise<CreateLogServiceResponse>
 >;
 
-describe('On tag deleted subscriber', async () => {
+describe("On tag deleted subscriber", async () => {
   beforeEach(() => {
     inMemoryUsersRepository = new InMemoryUsersRepository();
     inMemoryTagsRepository = new InMemoryTagsRepository();
 
-    inMemoryLogsRepository = new InMemoryLogsRepository(
-      inMemoryUsersRepository,
-    );
+    inMemoryLogsRepository = new InMemoryLogsRepository(inMemoryUsersRepository);
 
-    createLogService = new CreateLogService(
-      inMemoryLogsRepository,
-      inMemoryUsersRepository,
-    );
+    createLogService = new CreateLogService(inMemoryLogsRepository, inMemoryUsersRepository);
 
-    registerDeletedUserSpy = vi.spyOn(createLogService, 'exec');
+    registerDeletedUserSpy = vi.spyOn(createLogService, "exec");
 
     new OnTagDeleted(createLogService);
   });
 
-  it('should register a log when a tag is deleted', async () => {
-    const tag = TagFactory.exec('editor');
+  it("should register a log when a tag is deleted", async () => {
+    const tag = TagFactory.exec("editor");
     inMemoryTagsRepository.items.push(tag);
 
     tag.addDeletedEventToDispatch();

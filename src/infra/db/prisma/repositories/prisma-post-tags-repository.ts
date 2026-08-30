@@ -1,9 +1,9 @@
-import { EntityUniqueId } from '@/core/entities/entity-unique-id';
-import { PostTag } from '@/domain/posts/entities/post-tag';
-import { IPostTagsRepository } from '@/domain/posts/repositories/post-tags-repository';
-import { Injectable } from '@nestjs/common';
-import { PrismaPostTagMapper } from '../mappers/prisma-post-tag-mapper';
-import { PrismaService } from '../prisma-service';
+import { EntityUniqueId } from "@/core/entities/entity-unique-id";
+import { PostTag } from "@/domain/posts/entities/post-tag";
+import { IPostTagsRepository } from "@/domain/posts/repositories/post-tags-repository";
+import { Injectable } from "@nestjs/common";
+import { PrismaPostTagMapper } from "../mappers/prisma-post-tag-mapper";
+import { PrismaService } from "../prisma-service";
 
 @Injectable()
 export class PrismaPostTagsRepository implements IPostTagsRepository {

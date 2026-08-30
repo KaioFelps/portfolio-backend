@@ -1,10 +1,10 @@
-import { Injectable } from '@nestjs/common';
-import { IUsersRepository } from '../repositories/users-repository';
-import { User, UserRole } from '../entities/user';
-import { Either, fail, ok } from '@/core/types/either';
-import { BadRequestError } from '@/core/errors/bad-request-error';
-import { IHashGenerator } from '@/core/crypt/hash-generator';
-import { UnauthorizedError } from '@/core/errors/unauthorized-error';
+import { Injectable } from "@nestjs/common";
+import { IUsersRepository } from "../repositories/users-repository";
+import { User, UserRole } from "../entities/user";
+import { Either, fail, ok } from "@/core/types/either";
+import { BadRequestError } from "@/core/errors/bad-request-error";
+import { IHashGenerator } from "@/core/crypt/hash-generator";
+import { UnauthorizedError } from "@/core/errors/unauthorized-error";
 
 interface EditUserServiceRequest {
   adminId: string;
@@ -15,10 +15,7 @@ interface EditUserServiceRequest {
   role?: UserRole;
 }
 
-type EditUserServiceResponse = Either<
-  BadRequestError | UnauthorizedError,
-  { user: User }
->;
+type EditUserServiceResponse = Either<BadRequestError | UnauthorizedError, { user: User }>;
 
 @Injectable()
 export class EditUserService {

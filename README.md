@@ -1,8 +1,11 @@
 # Kaio Felps :: site pessoal
+
 Meu site pessoal, com exposição de projetos realizados e área de blogposts. Neste repositório, há o código fonte da API (back-end), feito em NestJs.
 
 ## Requisitos funcionais
+
 ### Editores e administradores
+
 - [x] Fazer login;
 - [x] Fazer logout;
 - [x] Reautenticar;
@@ -19,11 +22,13 @@ Meu site pessoal, com exposição de projetos realizados e área de blogposts. N
 - [x] Visualizar uma lista paginada de logs;
 
 ### Usuários não-autenticados
+
 - [x] Obter uma lista paginada dos posts existentes e ativos com paginação;
 - [x] Visualizar um post;
 - [x] Obter uma lista paginada dos projetos criados com paginação;
 
 ### Eventos e background tasks
+
 - [x] Registrar um log ao criar; editar; deletar um post;
 - [x] Registrar um log ao criar; editar; deletar um projeto;
 - [x] Registrar um log ao criar; editar; deletar um usuário;

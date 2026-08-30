@@ -1,19 +1,19 @@
-import { InMemoryProjectsRepository } from 'test/repositories/in-memory-projects-repository';
-import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error';
-import { DeleteProjectService } from './delete-project-service';
-import { InMemoryProjectLinksRepository } from 'test/repositories/in-memory-project-links-repository';
-import { InMemoryProjectTagsRepository } from 'test/repositories/in-memory-project-tags-repository';
-import { ProjectLinkList } from '../entities/project-link-list';
-import { ProjectTagList } from '../entities/project-tag-list';
-import { ProjectTagFactory } from 'test/factories/project-tag-factory';
-import { ProjectFactory } from 'test/factories/project-factory';
-import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository';
-import { UserFactory } from 'test/factories/user-factory';
-import { UnauthorizedError } from '@/core/errors/unauthorized-error';
-import { InMemoryTagsRepository } from 'test/repositories/in-memory-tags-repository';
-import { TagFactory } from 'test/factories/tag-factory';
+import { InMemoryProjectsRepository } from "test/repositories/in-memory-projects-repository";
+import { ResourceNotFoundError } from "@/core/errors/resource-not-found-error";
+import { DeleteProjectService } from "./delete-project-service";
+import { InMemoryProjectLinksRepository } from "test/repositories/in-memory-project-links-repository";
+import { InMemoryProjectTagsRepository } from "test/repositories/in-memory-project-tags-repository";
+import { ProjectLinkList } from "../entities/project-link-list";
+import { ProjectTagList } from "../entities/project-tag-list";
+import { ProjectTagFactory } from "test/factories/project-tag-factory";
+import { ProjectFactory } from "test/factories/project-factory";
+import { InMemoryUsersRepository } from "test/repositories/in-memory-users-repository";
+import { UserFactory } from "test/factories/user-factory";
+import { UnauthorizedError } from "@/core/errors/unauthorized-error";
+import { InMemoryTagsRepository } from "test/repositories/in-memory-tags-repository";
+import { TagFactory } from "test/factories/tag-factory";
 
-describe('Delete Project Service', () => {
+describe("Delete Project Service", () => {
   let sut: DeleteProjectService;
   let projectsRepository: InMemoryProjectsRepository;
   let tagsRepository: InMemoryTagsRepository;
@@ -34,11 +34,11 @@ describe('Delete Project Service', () => {
     sut = new DeleteProjectService(projectsRepository, usersRepository);
   });
 
-  it('should delete a project if exists', async () => {
+  it("should delete a project if exists", async () => {
     const project = ProjectFactory.exec({
-      title: 'testing project',
+      title: "testing project",
       links: new ProjectLinkList(),
-      topstory: '',
+      topstory: "",
     });
 
     const tag = TagFactory.exec();
@@ -53,7 +53,7 @@ describe('Delete Project Service', () => {
 
     projectsRepository.items.push(project);
 
-    const user = UserFactory.exec('admin');
+    const user = UserFactory.exec("admin");
     usersRepository.items.push(user);
 
     const result = await sut.exec({
@@ -67,11 +67,11 @@ describe('Delete Project Service', () => {
   });
 
   it("shouldn't delete a project that doesn't exist", async () => {
-    const user = UserFactory.exec('admin');
+    const user = UserFactory.exec("admin");
     usersRepository.items.push(user);
 
     const result = await sut.exec({
-      projectId: 'vsd',
+      projectId: "vsd",
       userId: user.id.toValue(),
     });
 
@@ -82,21 +82,19 @@ describe('Delete Project Service', () => {
 
   it("shouldn't let a non-admin user deledte a project.", async () => {
     const project = ProjectFactory.exec({
-      title: 'testing project',
+      title: "testing project",
       links: new ProjectLinkList(),
-      topstory: '',
+      topstory: "",
     });
 
-    const tag = TagFactory.exec({ value: 'back-end' });
+    const tag = TagFactory.exec({ value: "back-end" });
     tagsRepository.items.push(tag);
 
-    project.tags = new ProjectTagList([
-      ProjectTagFactory.exec({ tag, projectId: project.id }),
-    ]);
+    project.tags = new ProjectTagList([ProjectTagFactory.exec({ tag, projectId: project.id })]);
 
     projectsRepository.items.push(project);
 
-    const user = UserFactory.exec('editor');
+    const user = UserFactory.exec("editor");
     usersRepository.items.push(user);
 
     const result = await sut.exec({

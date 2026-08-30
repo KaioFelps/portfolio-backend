@@ -1,10 +1,7 @@
-import { Project } from '@/domain/projects/entities/project';
-import { ProjectAndPostTagPresenter } from './project-and-post-tag-presenter';
-import {
-  ProjectLinkPresented,
-  ProjectLinkPresenter,
-} from './project-link-presenter';
-import { TagPresented } from './tag-presenter';
+import { Project } from "@/domain/projects/entities/project";
+import { ProjectAndPostTagPresenter } from "./project-and-post-tag-presenter";
+import { ProjectLinkPresented, ProjectLinkPresenter } from "./project-link-presenter";
+import { TagPresented } from "./tag-presenter";
 
 export type ProjectPresented = {
   id: string;

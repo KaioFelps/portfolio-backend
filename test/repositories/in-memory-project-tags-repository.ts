@@ -1,6 +1,6 @@
-import { EntityUniqueId } from '@/core/entities/entity-unique-id';
-import { ProjectTag } from '@/domain/projects/entities/project-tag';
-import { IProjectTagsRepository } from '@/domain/projects/repositories/project-tags-repository';
+import { EntityUniqueId } from "@/core/entities/entity-unique-id";
+import { ProjectTag } from "@/domain/projects/entities/project-tag";
+import { IProjectTagsRepository } from "@/domain/projects/repositories/project-tags-repository";
 
 export class InMemoryProjectTagsRepository implements IProjectTagsRepository {
   public items: ProjectTag[] = [];
@@ -18,9 +18,7 @@ export class InMemoryProjectTagsRepository implements IProjectTagsRepository {
   }
 
   async findManyByProjectId(projectId: EntityUniqueId): Promise<ProjectTag[]> {
-    const foundItems = this.items.filter((item) =>
-      item.projectId.equals(projectId),
-    );
+    const foundItems = this.items.filter((item) => item.projectId.equals(projectId));
 
     return foundItems;
   }

@@ -1,4 +1,4 @@
-import { ProjectLink } from '@/domain/projects/entities/project-link';
+import { ProjectLink } from "@/domain/projects/entities/project-link";
 
 export type ProjectLinkPresented = {
   title: string;

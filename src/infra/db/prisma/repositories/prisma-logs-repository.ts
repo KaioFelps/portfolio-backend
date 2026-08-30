@@ -1,15 +1,12 @@
-import { PaginationResponse } from '@/core/types/pagination-responses';
-import { Log } from '@/domain/logs/entities/log';
-import { LogWithAuthor } from '@/domain/logs/entities/value-objects/log-with-author';
-import {
-  ILogsRepository,
-  LogsPaginationParams,
-} from '@/domain/logs/repositories/logs-repository';
-import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../prisma-service';
-import { PrismaLogMapper } from '../mappers/prisma-log-mapper';
-import { QUANTITY_PER_PAGE } from '@/core/pagination-consts';
-import { Prisma } from 'prisma/generated/client';
+import { PaginationResponse } from "@/core/types/pagination-responses";
+import { Log } from "@/domain/logs/entities/log";
+import { LogWithAuthor } from "@/domain/logs/entities/value-objects/log-with-author";
+import { ILogsRepository, LogsPaginationParams } from "@/domain/logs/repositories/logs-repository";
+import { Injectable } from "@nestjs/common";
+import { PrismaService } from "../prisma-service";
+import { PrismaLogMapper } from "../mappers/prisma-log-mapper";
+import { QUANTITY_PER_PAGE } from "@/core/pagination-consts";
+import { Prisma } from "prisma/generated/client";
 
 @Injectable()
 export class PrismaLogsRepository implements ILogsRepository {
@@ -31,10 +28,7 @@ export class PrismaLogsRepository implements ILogsRepository {
     const where: Prisma.LogWhereInput = {};
 
     if (query) {
-      where.OR = [
-        { target: { contains: query } },
-        { Dispatcher: { name: { contains: query } } },
-      ];
+      where.OR = [{ target: { contains: query } }, { Dispatcher: { name: { contains: query } } }];
     }
 
     if (queryAction) where.action = { equals: queryAction };
@@ -44,7 +38,7 @@ export class PrismaLogsRepository implements ILogsRepository {
       take: PER_PAGE,
       skip: offset,
       orderBy: {
-        createdAt: 'desc',
+        createdAt: "desc",
       },
       where,
     });
@@ -71,10 +65,7 @@ export class PrismaLogsRepository implements ILogsRepository {
     const where: Prisma.LogWhereInput = {};
 
     if (query) {
-      where.OR = [
-        { target: { contains: query } },
-        { Dispatcher: { name: { contains: query } } },
-      ];
+      where.OR = [{ target: { contains: query } }, { Dispatcher: { name: { contains: query } } }];
     }
 
     if (queryAction) where.action = { equals: queryAction };
@@ -85,7 +76,7 @@ export class PrismaLogsRepository implements ILogsRepository {
         take: PER_PAGE,
         skip: offset,
         orderBy: {
-          createdAt: 'desc',
+          createdAt: "desc",
         },
         where,
         include: {
@@ -96,7 +87,7 @@ export class PrismaLogsRepository implements ILogsRepository {
       this.prisma.log.count({
         where,
         orderBy: {
-          createdAt: 'desc',
+          createdAt: "desc",
         },
       }),
     ]);

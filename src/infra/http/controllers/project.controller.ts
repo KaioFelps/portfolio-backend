@@ -1,4 +1,4 @@
-import { CreateProjectService } from '@/domain/projects/services/create-project-service';
+import { CreateProjectService } from "@/domain/projects/services/create-project-service";
 import {
   BadRequestException,
   Body,
@@ -13,24 +13,24 @@ import {
   Put,
   Query,
   UnauthorizedException,
-} from '@nestjs/common';
-import { CreateProjectDto } from '../dtos/create-project';
-import { CurrentUser } from '@/infra/auth/decorators/current-user';
-import { TokenPayload } from '@/infra/auth/jwt-strategy';
-import { UnauthorizedError } from '@/core/errors/unauthorized-error';
-import { UpdateProjectDto } from '../dtos/update-project';
-import { EditProjectService } from '@/domain/projects/services/edit-project-service';
-import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error';
-import { DeleteProjectService } from '@/domain/projects/services/delete-project-service';
-import { BadRequestError } from '@/core/errors/bad-request-error';
-import { ProjectPresenter } from '../presenters/project-presenter';
-import { FetchManyProjectsService } from '@/domain/projects/services/fetch-many-projects-service';
-import { QUANTITY_PER_PAGE } from '@/core/pagination-consts';
-import { PublicRoute } from '@/infra/auth/decorators/public-route';
-import { GetProjectByIdService } from '@/domain/projects/services/get-project-by-id-service';
-import { TitleAndTagPaginatedQueryDto } from '../dtos/title-and-query-paginated-query';
+} from "@nestjs/common";
+import { CreateProjectDto } from "../dtos/create-project";
+import { CurrentUser } from "@/infra/auth/decorators/current-user";
+import { TokenPayload } from "@/infra/auth/jwt-strategy";
+import { UnauthorizedError } from "@/core/errors/unauthorized-error";
+import { UpdateProjectDto } from "../dtos/update-project";
+import { EditProjectService } from "@/domain/projects/services/edit-project-service";
+import { ResourceNotFoundError } from "@/core/errors/resource-not-found-error";
+import { DeleteProjectService } from "@/domain/projects/services/delete-project-service";
+import { BadRequestError } from "@/core/errors/bad-request-error";
+import { ProjectPresenter } from "../presenters/project-presenter";
+import { FetchManyProjectsService } from "@/domain/projects/services/fetch-many-projects-service";
+import { QUANTITY_PER_PAGE } from "@/core/pagination-consts";
+import { PublicRoute } from "@/infra/auth/decorators/public-route";
+import { GetProjectByIdService } from "@/domain/projects/services/get-project-by-id-service";
+import { TitleAndTagPaginatedQueryDto } from "../dtos/title-and-query-paginated-query";
 
-@Controller('project')
+@Controller("project")
 export class ProjectController {
   constructor(
     private createProjectService: CreateProjectService,
@@ -40,7 +40,7 @@ export class ProjectController {
     private getProjectByIdService: GetProjectByIdService,
   ) {}
 
-  @Get('list')
+  @Get("list")
   @PublicRoute()
   @HttpCode(200)
   async getMany(
@@ -65,12 +65,9 @@ export class ProjectController {
     };
   }
 
-  @Post('new')
+  @Post("new")
   @HttpCode(201)
-  async create(
-    @Body() createProjectDto: CreateProjectDto,
-    @CurrentUser() user: TokenPayload,
-  ) {
+  async create(@Body() createProjectDto: CreateProjectDto, @CurrentUser() user: TokenPayload) {
     const { links, tags, title, topstory } = createProjectDto;
 
     const result = await this.createProjectService.exec({
@@ -95,9 +92,9 @@ export class ProjectController {
     };
   }
 
-  @Get('/:id')
+  @Get("/:id")
   @HttpCode(200)
-  async get(@Param('id') projectId: string) {
+  async get(@Param("id") projectId: string) {
     const result = await this.getProjectByIdService.exec({ id: projectId });
 
     if (result.isFail()) {
@@ -111,12 +108,12 @@ export class ProjectController {
     };
   }
 
-  @Put('/:id/edit')
+  @Put("/:id/edit")
   @HttpCode(200)
   async update(
     @Body() updateProjectDto: UpdateProjectDto,
     @CurrentUser() user: TokenPayload,
-    @Param('id') projectId: string,
+    @Param("id") projectId: string,
   ) {
     const result = await this.editProjectService.exec({
       userId: user.sub,
@@ -136,12 +133,9 @@ export class ProjectController {
     return { project: ProjectPresenter.toHTTP(result.value.project) };
   }
 
-  @Delete('/:id/delete')
+  @Delete("/:id/delete")
   @HttpCode(204)
-  async delete(
-    @Param('id') projectId: string,
-    @CurrentUser() user: TokenPayload,
-  ) {
+  async delete(@Param("id") projectId: string, @CurrentUser() user: TokenPayload) {
     const result = await this.deleteProjectService.exec({
       projectId,
       userId: user.sub,

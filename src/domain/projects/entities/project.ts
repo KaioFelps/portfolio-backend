@@ -1,11 +1,11 @@
-import { Aggregate } from '@/core/entities/aggregate';
-import { EntityUniqueId } from '@/core/entities/entity-unique-id';
-import { Optional } from '@/core/types/optional';
-import { ProjectCreatedEvent } from '../events/project-created-event';
-import { ProjectLinkList } from './project-link-list';
-import { ProjectTagList } from './project-tag-list';
-import { ProjectDeletedEvent } from '../events/project-deleted-event';
-import { ProjectEditedEvent } from '../events/project-edited-event';
+import { Aggregate } from "@/core/entities/aggregate";
+import { EntityUniqueId } from "@/core/entities/entity-unique-id";
+import { Optional } from "@/core/types/optional";
+import { ProjectCreatedEvent } from "../events/project-created-event";
+import { ProjectLinkList } from "./project-link-list";
+import { ProjectTagList } from "./project-tag-list";
+import { ProjectDeletedEvent } from "../events/project-deleted-event";
+import { ProjectEditedEvent } from "../events/project-edited-event";
 
 export interface ProjectProps {
   title: string;
@@ -21,7 +21,7 @@ export class Project extends Aggregate<ProjectProps> {
   }
 
   static create(
-    props: Optional<ProjectProps, 'createdAt' | 'links' | 'tags'>,
+    props: Optional<ProjectProps, "createdAt" | "links" | "tags">,
     id?: EntityUniqueId,
   ) {
     const project = new Project(

@@ -1,6 +1,6 @@
-import { EntityUniqueId } from '@/core/entities/entity-unique-id';
-import { Tag } from '@/domain/tags/entities/tag';
-import { Prisma, Tag as PrismaTag } from 'prisma/generated/client';
+import { EntityUniqueId } from "@/core/entities/entity-unique-id";
+import { Tag } from "@/domain/tags/entities/tag";
+import { Prisma, Tag as PrismaTag } from "prisma/generated/client";
 
 export class PrismaTagMapper {
   static toDomain(tag: PrismaTag) {

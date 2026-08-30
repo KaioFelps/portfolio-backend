@@ -1,14 +1,14 @@
-import { Injectable } from '@nestjs/common';
-import { IProjectsRepository } from '../repositories/projects-repository';
-import { Project } from '../entities/project';
-import { Either, fail, ok } from '@/core/types/either';
-import { IUsersRepository } from '@/domain/users/repositories/users-repository';
-import { UnauthorizedError } from '@/core/errors/unauthorized-error';
-import { ProjectLinkList } from '../entities/project-link-list';
-import { ProjectLink } from '../entities/project-link';
-import { ProjectTagList } from '../entities/project-tag-list';
-import { ProjectTagFactory } from 'test/factories/project-tag-factory';
-import { ITagsRepository } from '@/domain/tags/repositories/tag-repository';
+import { Injectable } from "@nestjs/common";
+import { IProjectsRepository } from "../repositories/projects-repository";
+import { Project } from "../entities/project";
+import { Either, fail, ok } from "@/core/types/either";
+import { IUsersRepository } from "@/domain/users/repositories/users-repository";
+import { UnauthorizedError } from "@/core/errors/unauthorized-error";
+import { ProjectLinkList } from "../entities/project-link-list";
+import { ProjectLink } from "../entities/project-link";
+import { ProjectTagList } from "../entities/project-tag-list";
+import { ProjectTagFactory } from "test/factories/project-tag-factory";
+import { ITagsRepository } from "@/domain/tags/repositories/tag-repository";
 
 interface CreateProjectServiceRequest {
   userId: string;
@@ -19,10 +19,7 @@ interface CreateProjectServiceRequest {
   links: Array<{ title: string; value: string }>;
 }
 
-type CreateProjectServiceResponse = Either<
-  UnauthorizedError,
-  { project: Project }
->;
+type CreateProjectServiceResponse = Either<UnauthorizedError, { project: Project }>;
 
 @Injectable()
 export class CreateProjectService {
@@ -62,9 +59,7 @@ export class CreateProjectService {
     );
 
     const projectLinksList = new ProjectLinkList(
-      links.map(({ title, value }) =>
-        ProjectLink.create({ projectId: project.id, value, title }),
-      ),
+      links.map(({ title, value }) => ProjectLink.create({ projectId: project.id, value, title })),
     );
 
     project.tags = projectTagsList;

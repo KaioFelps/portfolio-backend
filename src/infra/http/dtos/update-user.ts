@@ -1,5 +1,5 @@
-import { UserRole } from '@/domain/users/entities/user';
-import { IsEmail, IsEnum, IsOptional, IsString } from 'class-validator';
+import { UserRole } from "@/domain/users/entities/user";
+import { IsEmail, IsEnum, IsOptional, IsString } from "class-validator";
 
 export class UpdateUserDto {
   @IsString()

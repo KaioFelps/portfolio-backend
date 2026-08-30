@@ -1,5 +1,5 @@
-import { LogWithAuthor } from '@/domain/logs/entities/value-objects/log-with-author';
-import { UserPresenter } from './user-presenter';
+import { LogWithAuthor } from "@/domain/logs/entities/value-objects/log-with-author";
+import { UserPresenter } from "./user-presenter";
 
 export class LogPresenter {
   static toHTTP(log: LogWithAuthor) {

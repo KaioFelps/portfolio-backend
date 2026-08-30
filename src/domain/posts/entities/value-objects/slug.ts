@@ -6,24 +6,24 @@ export class Slug {
   }
 
   static fromTitle(title: string, id: string) {
-    const firstSliceFromId = id.trim().split('-')[0];
+    const firstSliceFromId = id.trim().split("-")[0];
 
     const formattedTitle = title
-      .normalize('NFKD')
+      .normalize("NFKD")
       .toLowerCase()
       .trim()
-      .replace(/\s+/g, '-')
+      .replace(/\s+/g, "-")
       // \s significa whitespace
       // g significa global
-      .replace(/[^\w-]+/g, '')
+      .replace(/[^\w-]+/g, "")
       // \w pega todas as palavras
       // ^ diz o oposto, ou seja, pega tudo que NÃO são palavras
       // isso remove os símbolos
-      .replace(/_/g, '-')
-      .replace(/--+/g, '-')
-      .replace(/-$/, '');
+      .replace(/_/g, "-")
+      .replace(/--+/g, "-")
+      .replace(/-$/, "");
 
-    return new Slug(firstSliceFromId + '-' + formattedTitle);
+    return new Slug(firstSliceFromId + "-" + formattedTitle);
   }
 
   static create(slug: string) {

@@ -1,18 +1,18 @@
-import { Injectable } from '@nestjs/common';
-import { IProjectsRepository } from '../repositories/projects-repository';
-import { Project } from '../entities/project';
-import { Either, fail, ok } from '@/core/types/either';
-import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error';
-import { ProjectLinkList } from '../entities/project-link-list';
-import { ProjectLink } from '../entities/project-link';
-import { IUsersRepository } from '@/domain/users/repositories/users-repository';
-import { UnauthorizedError } from '@/core/errors/unauthorized-error';
-import { IProjectLinksRepository } from '../repositories/project-links-repository';
-import { EntityUniqueId } from '@/core/entities/entity-unique-id';
-import { IProjectTagsRepository } from '../repositories/project-tags-repository';
-import { ProjectTagList } from '../entities/project-tag-list';
-import { ProjectTag } from '../entities/project-tag';
-import { ITagsRepository } from '@/domain/tags/repositories/tag-repository';
+import { Injectable } from "@nestjs/common";
+import { IProjectsRepository } from "../repositories/projects-repository";
+import { Project } from "../entities/project";
+import { Either, fail, ok } from "@/core/types/either";
+import { ResourceNotFoundError } from "@/core/errors/resource-not-found-error";
+import { ProjectLinkList } from "../entities/project-link-list";
+import { ProjectLink } from "../entities/project-link";
+import { IUsersRepository } from "@/domain/users/repositories/users-repository";
+import { UnauthorizedError } from "@/core/errors/unauthorized-error";
+import { IProjectLinksRepository } from "../repositories/project-links-repository";
+import { EntityUniqueId } from "@/core/entities/entity-unique-id";
+import { IProjectTagsRepository } from "../repositories/project-tags-repository";
+import { ProjectTagList } from "../entities/project-tag-list";
+import { ProjectTag } from "../entities/project-tag";
+import { ITagsRepository } from "@/domain/tags/repositories/tag-repository";
 
 interface EditProjectServiceRequest {
   userId: string;
@@ -23,10 +23,7 @@ interface EditProjectServiceRequest {
   links?: Array<{ title: string; value: string }> | null;
 }
 
-type EditProjectServiceResponse = Either<
-  ResourceNotFoundError,
-  { project: Project }
->;
+type EditProjectServiceResponse = Either<ResourceNotFoundError, { project: Project }>;
 
 @Injectable()
 export class EditProjectService {
@@ -59,8 +56,7 @@ export class EditProjectService {
       return fail(new ResourceNotFoundError());
     }
 
-    const currentLinks =
-      await this.projectLinksRepository.findManyByProjectId(entityProjectId);
+    const currentLinks = await this.projectLinksRepository.findManyByProjectId(entityProjectId);
     const currentLinksList = new ProjectLinkList(currentLinks);
 
     const newLinks = links
@@ -75,8 +71,7 @@ export class EditProjectService {
 
     currentLinksList.update(newLinks);
 
-    const currentTags =
-      await this.projectTagsRepository.findManyByProjectId(entityProjectId);
+    const currentTags = await this.projectTagsRepository.findManyByProjectId(entityProjectId);
 
     const currentTagsList = new ProjectTagList(currentTags);
 

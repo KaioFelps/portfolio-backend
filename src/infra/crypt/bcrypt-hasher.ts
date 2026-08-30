@@ -1,6 +1,6 @@
-import { IHashComparor } from '@/core/crypt/hash-comparor';
-import { IHashGenerator } from '@/core/crypt/hash-generator';
-import { hash, compare } from 'bcryptjs';
+import { IHashComparor } from "@/core/crypt/hash-comparor";
+import { IHashGenerator } from "@/core/crypt/hash-generator";
+import { hash, compare } from "bcryptjs";
 
 export class BcryptHasher implements IHashComparor, IHashGenerator {
   private readonly HASH_SALT = 6;

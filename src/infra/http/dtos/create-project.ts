@@ -5,9 +5,9 @@ import {
   IsUrl,
   IsString,
   ValidateNested,
-} from 'class-validator';
-import { LinkDto } from './link';
-import { Type } from 'class-transformer';
+} from "class-validator";
+import { LinkDto } from "./link";
+import { Type } from "class-transformer";
 
 export class CreateProjectDto {
   @IsNotEmpty()

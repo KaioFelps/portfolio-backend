@@ -1,8 +1,8 @@
-import { Injectable } from '@nestjs/common';
-import { IUsersRepository } from '../repositories/users-repository';
-import { UserRole } from '../entities/user';
-import { Either, fail, ok } from '@/core/types/either';
-import { UnauthorizedError } from '@/core/errors/unauthorized-error';
+import { Injectable } from "@nestjs/common";
+import { IUsersRepository } from "../repositories/users-repository";
+import { UserRole } from "../entities/user";
+import { Either, fail, ok } from "@/core/types/either";
+import { UnauthorizedError } from "@/core/errors/unauthorized-error";
 
 interface DeleteUserServiceRequest {
   adminId: string;
@@ -15,10 +15,7 @@ type DeleteUserServiceResponse = Either<UnauthorizedError, unknown>;
 export class DeleteUserService {
   constructor(private usersRepository: IUsersRepository) {}
 
-  async exec({
-    adminId,
-    userId,
-  }: DeleteUserServiceRequest): Promise<DeleteUserServiceResponse> {
+  async exec({ adminId, userId }: DeleteUserServiceRequest): Promise<DeleteUserServiceResponse> {
     if (adminId === userId) {
       return fail(new UnauthorizedError());
     }

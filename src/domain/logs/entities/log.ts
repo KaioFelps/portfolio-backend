@@ -1,18 +1,18 @@
-import { Entity } from '@/core/entities/entity';
-import { EntityUniqueId } from '@/core/entities/entity-unique-id';
-import { Optional } from '@/core/types/optional';
+import { Entity } from "@/core/entities/entity";
+import { EntityUniqueId } from "@/core/entities/entity-unique-id";
+import { Optional } from "@/core/types/optional";
 
 export enum LogAction {
-  created = 'CREATED',
-  updated = 'UPDATED',
-  deleted = 'DELETED',
+  created = "CREATED",
+  updated = "UPDATED",
+  deleted = "DELETED",
 }
 
 export enum LogTargetType {
-  post = 'POST',
-  project = 'PROJECT',
-  user = 'USER',
-  tag = 'TAG',
+  post = "POST",
+  project = "PROJECT",
+  user = "USER",
+  tag = "TAG",
 }
 
 export interface LogProps {
@@ -28,10 +28,7 @@ export class Log extends Entity<LogProps> {
     super(props, id);
   }
 
-  static create(
-    props: Optional<LogProps, 'createdAt' | 'dispatcherId'>,
-    id?: EntityUniqueId,
-  ) {
+  static create(props: Optional<LogProps, "createdAt" | "dispatcherId">, id?: EntityUniqueId) {
     const log = new Log(
       {
         ...props,

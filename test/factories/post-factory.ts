@@ -1,11 +1,11 @@
-import { EntityUniqueId } from '@/core/entities/entity-unique-id';
-import { Optional } from '@/core/types/optional';
-import { Post, PostProps } from '@/domain/posts/entities/post';
-import { PostTagList } from '@/domain/posts/entities/post-tag-list';
-import { PrismaPostMapper } from '@/infra/db/prisma/mappers/prisma-post-mapper';
-import { PrismaService } from '@/infra/db/prisma/prisma-service';
-import { faker } from '@faker-js/faker';
-import { Injectable } from '@nestjs/common';
+import { EntityUniqueId } from "@/core/entities/entity-unique-id";
+import { Optional } from "@/core/types/optional";
+import { Post, PostProps } from "@/domain/posts/entities/post";
+import { PostTagList } from "@/domain/posts/entities/post-tag-list";
+import { PrismaPostMapper } from "@/infra/db/prisma/mappers/prisma-post-mapper";
+import { PrismaService } from "@/infra/db/prisma/prisma-service";
+import { faker } from "@faker-js/faker";
+import { Injectable } from "@nestjs/common";
 
 @Injectable()
 export class PostFactory {
@@ -14,15 +14,15 @@ export class PostFactory {
   static exec(
     override?: Optional<
       PostProps,
-      | 'createdAt'
-      | 'content'
-      | 'description'
-      | 'slug'
-      | 'tags'
-      | 'title'
-      | 'topstory'
-      | 'updatedAt'
-      | 'authorId'
+      | "createdAt"
+      | "content"
+      | "description"
+      | "slug"
+      | "tags"
+      | "title"
+      | "topstory"
+      | "updatedAt"
+      | "authorId"
     >,
     id?: EntityUniqueId,
   ) {
@@ -48,15 +48,15 @@ export class PostFactory {
   async createAndPersist(
     override?: Optional<
       PostProps,
-      | 'createdAt'
-      | 'description'
-      | 'content'
-      | 'slug'
-      | 'tags'
-      | 'title'
-      | 'topstory'
-      | 'updatedAt'
-      | 'authorId'
+      | "createdAt"
+      | "description"
+      | "content"
+      | "slug"
+      | "tags"
+      | "title"
+      | "topstory"
+      | "updatedAt"
+      | "authorId"
     >,
     id?: EntityUniqueId,
   ) {

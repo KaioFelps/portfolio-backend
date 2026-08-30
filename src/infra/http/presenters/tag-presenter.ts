@@ -1,4 +1,4 @@
-import { Tag } from '@/domain/tags/entities/tag';
+import { Tag } from "@/domain/tags/entities/tag";
 
 export type TagPresented = {
   id: string;

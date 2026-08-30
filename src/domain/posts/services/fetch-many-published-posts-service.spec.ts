@@ -1,13 +1,13 @@
-import { InMemoryPostsRepository } from 'test/repositories/in-memory-posts-repository';
-import { PostFactory } from 'test/factories/post-factory';
-import { FetchManyPublishedPostsService } from './fetch-many-published-posts-service';
-import { PostTagList } from '../entities/post-tag-list';
-import { PostTagFactory } from 'test/factories/post-tag-factory';
-import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository';
-import { InMemoryTagsRepository } from 'test/repositories/in-memory-tags-repository';
-import { TagFactory } from 'test/factories/tag-factory';
+import { InMemoryPostsRepository } from "test/repositories/in-memory-posts-repository";
+import { PostFactory } from "test/factories/post-factory";
+import { FetchManyPublishedPostsService } from "./fetch-many-published-posts-service";
+import { PostTagList } from "../entities/post-tag-list";
+import { PostTagFactory } from "test/factories/post-tag-factory";
+import { InMemoryUsersRepository } from "test/repositories/in-memory-users-repository";
+import { InMemoryTagsRepository } from "test/repositories/in-memory-tags-repository";
+import { TagFactory } from "test/factories/tag-factory";
 
-describe('Fetch Many Posts Service', () => {
+describe("Fetch Many Posts Service", () => {
   let sut: FetchManyPublishedPostsService;
   let tagsRepository: InMemoryTagsRepository;
   let usersRepository: InMemoryUsersRepository;
@@ -20,7 +20,7 @@ describe('Fetch Many Posts Service', () => {
     sut = new FetchManyPublishedPostsService(postsRepository, tagsRepository);
   });
 
-  it('should only fetch published posts', async () => {
+  it("should only fetch published posts", async () => {
     postsRepository.items.push(PostFactory.exec());
     postsRepository.items.push(PostFactory.exec({ publishedAt: new Date() }));
 
@@ -30,12 +30,12 @@ describe('Fetch Many Posts Service', () => {
     if (result.isOk()) expect(result.value?.posts).toHaveLength(1);
   });
 
-  it('should fetch posts that corresponds to the params', async () => {
-    const tag1 = TagFactory.exec({ value: 'design' });
+  it("should fetch posts that corresponds to the params", async () => {
+    const tag1 = TagFactory.exec({ value: "design" });
     tagsRepository.items.push(tag1);
 
     const postToBePushed = PostFactory.exec({
-      title: 'teste 1',
+      title: "teste 1",
       publishedAt: new Date(),
     });
     postToBePushed.tags = new PostTagList([
@@ -47,9 +47,9 @@ describe('Fetch Many Posts Service', () => {
 
     postsRepository.items.push(
       postToBePushed,
-      PostFactory.exec({ title: 'design de fs', publishedAt: new Date() }),
-      PostFactory.exec({ title: 'teste 3', publishedAt: new Date() }),
-      PostFactory.exec({ title: 'teste 4', publishedAt: new Date() }),
+      PostFactory.exec({ title: "design de fs", publishedAt: new Date() }),
+      PostFactory.exec({ title: "teste 3", publishedAt: new Date() }),
+      PostFactory.exec({ title: "teste 4", publishedAt: new Date() }),
     );
 
     let result = await sut.exec({
@@ -77,7 +77,7 @@ describe('Fetch Many Posts Service', () => {
     result = await sut.exec({
       page: 1,
       amount: 3,
-      tag: 'design',
+      tag: "design",
     });
 
     expect(result.isOk()).toBe(true);

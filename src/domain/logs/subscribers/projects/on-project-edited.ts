@@ -1,9 +1,9 @@
-import { EventHandler } from '@/core/events/event-handler';
-import { CreateLogService } from '../../services/create-log-service';
-import { LogAction, LogTargetType } from '../../entities/log';
-import { DomainEvents } from '@/core/events/domain-events';
-import { ProjectEditedEvent } from '@/domain/projects/events/project-edited-event';
-import { Injectable } from '@nestjs/common';
+import { EventHandler } from "@/core/events/event-handler";
+import { CreateLogService } from "../../services/create-log-service";
+import { LogAction, LogTargetType } from "../../entities/log";
+import { DomainEvents } from "@/core/events/domain-events";
+import { ProjectEditedEvent } from "@/domain/projects/events/project-edited-event";
+import { Injectable } from "@nestjs/common";
 
 @Injectable()
 export class OnProjectEdited implements EventHandler {
@@ -12,10 +12,7 @@ export class OnProjectEdited implements EventHandler {
   }
 
   public setupSubscriptions(): void {
-    DomainEvents.registerAggregateEvent(
-      this.createLog.bind(this),
-      ProjectEditedEvent.name,
-    );
+    DomainEvents.registerAggregateEvent(this.createLog.bind(this), ProjectEditedEvent.name);
   }
 
   private async createLog({ occurredAt, project }: ProjectEditedEvent) {

@@ -1,12 +1,9 @@
-import { PaginationResponse } from '@/core/types/pagination-responses';
-import { Log } from '@/domain/logs/entities/log';
-import { LogWithAuthor } from '@/domain/logs/entities/value-objects/log-with-author';
-import {
-  ILogsRepository,
-  LogsPaginationParams,
-} from '@/domain/logs/repositories/logs-repository';
-import { InMemoryUsersRepository } from './in-memory-users-repository';
-import { QUANTITY_PER_PAGE } from '@/core/pagination-consts';
+import { PaginationResponse } from "@/core/types/pagination-responses";
+import { Log } from "@/domain/logs/entities/log";
+import { LogWithAuthor } from "@/domain/logs/entities/value-objects/log-with-author";
+import { ILogsRepository, LogsPaginationParams } from "@/domain/logs/repositories/logs-repository";
+import { InMemoryUsersRepository } from "./in-memory-users-repository";
+import { QUANTITY_PER_PAGE } from "@/core/pagination-consts";
 
 export class InMemoryLogsRepository implements ILogsRepository {
   public items: Log[] = [];
@@ -26,17 +23,10 @@ export class InMemoryLogsRepository implements ILogsRepository {
   }: LogsPaginationParams): Promise<Log[]> {
     let logs: Log[] = this.items.filter((item) => {
       const author = item.dispatcherId
-        ? this.inMemoryUsersRepository.items.find((user) =>
-            user.id.equals(item.dispatcherId!),
-          )
+        ? this.inMemoryUsersRepository.items.find((user) => user.id.equals(item.dispatcherId!))
         : null;
 
-      if (
-        query &&
-        !item.target.includes(query) &&
-        !author?.name.includes(query)
-      )
-        return null;
+      if (query && !item.target.includes(query) && !author?.name.includes(query)) return null;
 
       if (action && item.action !== action) return null;
 
@@ -59,17 +49,10 @@ export class InMemoryLogsRepository implements ILogsRepository {
   }: LogsPaginationParams): Promise<PaginationResponse<LogWithAuthor>> {
     let logs: Log[] = this.items.filter((item) => {
       const author = item.dispatcherId
-        ? this.inMemoryUsersRepository.items.find((user) =>
-            user.id.equals(item.dispatcherId!),
-          )
+        ? this.inMemoryUsersRepository.items.find((user) => user.id.equals(item.dispatcherId!))
         : null;
 
-      if (
-        query &&
-        !item.target.includes(query) &&
-        !author?.name.includes(query)
-      )
-        return null;
+      if (query && !item.target.includes(query) && !author?.name.includes(query)) return null;
 
       if (action && item.action !== action) return null;
 
@@ -91,9 +74,7 @@ export class InMemoryLogsRepository implements ILogsRepository {
           target: log.target,
           targetType: log.targetType,
           dispatcher: log.dispatcherId
-            ? await this.inMemoryUsersRepository.findById(
-                log.dispatcherId.toValue(),
-              )
+            ? await this.inMemoryUsersRepository.findById(log.dispatcherId.toValue())
             : null,
         }),
       );

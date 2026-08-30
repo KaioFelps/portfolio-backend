@@ -1,12 +1,12 @@
-import { CreateLogService } from './create-log-service';
-import { LogAction, LogTargetType } from '../entities/log';
-import { UserFactory } from 'test/factories/user-factory';
-import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository';
-import { InMemoryLogsRepository } from 'test/repositories/in-memory-logs-repository';
-import { EntityUniqueId } from '@/core/entities/entity-unique-id';
-import { BadRequestError } from '@/core/errors/bad-request-error';
+import { CreateLogService } from "./create-log-service";
+import { LogAction, LogTargetType } from "../entities/log";
+import { UserFactory } from "test/factories/user-factory";
+import { InMemoryUsersRepository } from "test/repositories/in-memory-users-repository";
+import { InMemoryLogsRepository } from "test/repositories/in-memory-logs-repository";
+import { EntityUniqueId } from "@/core/entities/entity-unique-id";
+import { BadRequestError } from "@/core/errors/bad-request-error";
 
-describe('Create Log Service', () => {
+describe("Create Log Service", () => {
   let sut: CreateLogService;
   let logsRepository: InMemoryLogsRepository;
   let usersRepository: InMemoryUsersRepository;
@@ -17,8 +17,8 @@ describe('Create Log Service', () => {
     sut = new CreateLogService(logsRepository, usersRepository);
   });
 
-  it('should create a log', async () => {
-    const user = UserFactory.exec('editor');
+  it("should create a log", async () => {
+    const user = UserFactory.exec("editor");
 
     usersRepository.items.push(user);
 
@@ -44,8 +44,8 @@ describe('Create Log Service', () => {
     const result = await sut.exec({
       action: LogAction.created,
       targetType: LogTargetType.post,
-      target: '',
-      dispatcherId: new EntityUniqueId('pseudo-id'),
+      target: "",
+      dispatcherId: new EntityUniqueId("pseudo-id"),
     });
 
     expect(result.isFail()).toBe(true);

@@ -1,14 +1,14 @@
-import { PaginationParams } from '@/core/types/pagination-params';
-import { PaginationResponse } from '@/core/types/pagination-responses';
-import { Tag } from '@/domain/tags/entities/tag';
-import { ITagsRepository } from '@/domain/tags/repositories/tag-repository';
-import { Injectable } from '@nestjs/common';
-import { PrismaTagMapper } from '../mappers/prisma-tag-mapper';
-import { PrismaService } from '../prisma-service';
-import { DomainEvents } from '@/core/events/domain-events';
-import { QUANTITY_PER_PAGE } from '@/core/pagination-consts';
-import { Prisma } from 'prisma/generated/client';
-import { EntityUniqueId } from '@/core/entities/entity-unique-id';
+import { PaginationParams } from "@/core/types/pagination-params";
+import { PaginationResponse } from "@/core/types/pagination-responses";
+import { Tag } from "@/domain/tags/entities/tag";
+import { ITagsRepository } from "@/domain/tags/repositories/tag-repository";
+import { Injectable } from "@nestjs/common";
+import { PrismaTagMapper } from "../mappers/prisma-tag-mapper";
+import { PrismaService } from "../prisma-service";
+import { DomainEvents } from "@/core/events/domain-events";
+import { QUANTITY_PER_PAGE } from "@/core/pagination-consts";
+import { Prisma } from "prisma/generated/client";
+import { EntityUniqueId } from "@/core/entities/entity-unique-id";
 
 @Injectable()
 export class PrismaTagsRepository implements ITagsRepository {
@@ -59,7 +59,7 @@ export class PrismaTagsRepository implements ITagsRepository {
 
   async findByValue(value: string): Promise<Tag | null> {
     const tag = await this.prisma.tag.findFirst({
-      where: { value: { equals: value, mode: 'insensitive' } },
+      where: { value: { equals: value, mode: "insensitive" } },
     });
 
     if (!tag) return null;
@@ -84,14 +84,14 @@ export class PrismaTagsRepository implements ITagsRepository {
         take: amount,
         skip: offset,
         orderBy: {
-          value: 'asc',
+          value: "asc",
         },
         where,
       }),
       this.prisma.tag.count({
         where,
         orderBy: {
-          value: 'asc',
+          value: "asc",
         },
       }),
     ]);

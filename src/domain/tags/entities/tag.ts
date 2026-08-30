@@ -1,8 +1,8 @@
-import { Aggregate } from '@/core/entities/aggregate';
-import { EntityUniqueId } from '@/core/entities/entity-unique-id';
-import { TagCreatedEvent } from '../events/tag-created-event';
-import { TagDeletedEvent } from '../events/tag-deleted-event';
-import { TagEditedEvent } from '../events/tag-edited-event';
+import { Aggregate } from "@/core/entities/aggregate";
+import { EntityUniqueId } from "@/core/entities/entity-unique-id";
+import { TagCreatedEvent } from "../events/tag-created-event";
+import { TagDeletedEvent } from "../events/tag-deleted-event";
+import { TagEditedEvent } from "../events/tag-edited-event";
 
 export interface TagProps {
   value: string;

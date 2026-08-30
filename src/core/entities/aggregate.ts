@@ -1,7 +1,7 @@
-import { DomainEvent } from '../events/domain-event';
-import { DomainEvents } from '../events/domain-events';
-import { Entity } from './entity';
-import { EntityUniqueId } from './entity-unique-id';
+import { DomainEvent } from "../events/domain-event";
+import { DomainEvents } from "../events/domain-events";
+import { Entity } from "./entity";
+import { EntityUniqueId } from "./entity-unique-id";
 
 export class Aggregate<props> extends Entity<props> {
   constructor(props: props, id?: EntityUniqueId) {

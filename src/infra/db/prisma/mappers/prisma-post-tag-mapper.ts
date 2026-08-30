@@ -1,11 +1,11 @@
-import { EntityUniqueId } from '@/core/entities/entity-unique-id';
-import { PostTag } from '@/domain/posts/entities/post-tag';
+import { EntityUniqueId } from "@/core/entities/entity-unique-id";
+import { PostTag } from "@/domain/posts/entities/post-tag";
 import {
   Prisma,
   TagsOnPostsOrProjects as PrismaTagsOnPostsOrProjects,
-} from 'prisma/generated/client';
-import { PrismaTagMapper } from './prisma-tag-mapper';
-import type { PrismaComposedTag } from '../types/composed-tag';
+} from "prisma/generated/client";
+import { PrismaTagMapper } from "./prisma-tag-mapper";
+import type { PrismaComposedTag } from "../types/composed-tag";
 
 export class PrismaPostTagMapper {
   static toDomain(tag: PrismaComposedTag) {
@@ -27,18 +27,14 @@ export class PrismaPostTagMapper {
     };
   }
 
-  static toPrismaCreateMany(
-    tags: PostTag[],
-  ): Prisma.TagsOnPostsOrProjectsCreateManyArgs {
-    const mappedTags: Prisma.TagsOnPostsOrProjectsCreateManyInput[] = tags.map(
-      (tag) => {
-        return {
-          id: tag.id.toValue(),
-          postId: tag.postId.toValue(),
-          tagId: tag.tag.id.toValue(),
-        };
-      },
-    );
+  static toPrismaCreateMany(tags: PostTag[]): Prisma.TagsOnPostsOrProjectsCreateManyArgs {
+    const mappedTags: Prisma.TagsOnPostsOrProjectsCreateManyInput[] = tags.map((tag) => {
+      return {
+        id: tag.id.toValue(),
+        postId: tag.postId.toValue(),
+        tagId: tag.tag.id.toValue(),
+      };
+    });
 
     return {
       data: mappedTags,

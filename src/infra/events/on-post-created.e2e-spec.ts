@@ -1,16 +1,16 @@
-import { INestApplication } from '@nestjs/common';
-import supertest from 'supertest';
-import { UserFactory } from 'test/factories/user-factory';
-import { TokenPayload } from '../auth/jwt-strategy';
-import { JwtService } from '@nestjs/jwt';
-import { CreatePostDto } from '../http/dtos/create-post';
-import { PrismaService } from '../db/prisma/prisma-service';
-import { waitFor } from 'test/utlils/wait-for';
-import { TagFactory } from 'test/factories/tag-factory';
-import { LogAction, LogTargetType } from '@/domain/logs/entities/log';
-import { provisionTestApp } from 'test/get-testing-app';
+import { INestApplication } from "@nestjs/common";
+import supertest from "supertest";
+import { UserFactory } from "test/factories/user-factory";
+import { TokenPayload } from "../auth/jwt-strategy";
+import { JwtService } from "@nestjs/jwt";
+import { CreatePostDto } from "../http/dtos/create-post";
+import { PrismaService } from "../db/prisma/prisma-service";
+import { waitFor } from "test/utlils/wait-for";
+import { TagFactory } from "test/factories/tag-factory";
+import { LogAction, LogTargetType } from "@/domain/logs/entities/log";
+import { provisionTestApp } from "test/get-testing-app";
 
-describe('On Post Created Event handler', () => {
+describe("On Post Created Event handler", () => {
   let app: INestApplication;
   let jwt: JwtService;
   let prisma: PrismaService;
@@ -27,8 +27,8 @@ describe('On Post Created Event handler', () => {
     await app.init();
   });
 
-  it('should register a new log when a post is created', async () => {
-    const user = await userFactory.createAndPersist('admin');
+  it("should register a new log when a post is created", async () => {
+    const user = await userFactory.createAndPersist("admin");
 
     const token = await jwt.signAsync({
       name: user.name,
@@ -36,20 +36,20 @@ describe('On Post Created Event handler', () => {
       sub: user.id.toValue(),
     } as TokenPayload);
 
-    const postTitle = 'Testando o evento de criação de post!';
+    const postTitle = "Testando o evento de criação de post!";
 
-    const tagEventos = await tagFactory.createAndPersist({ value: 'eventos' });
-    const tagDominios = await tagFactory.createAndPersist({ value: 'domínio' });
+    const tagEventos = await tagFactory.createAndPersist({ value: "eventos" });
+    const tagDominios = await tagFactory.createAndPersist({ value: "domínio" });
 
     const response = await supertest(app.getHttpServer())
-      .post('/post/new')
+      .post("/post/new")
       .set({ Authorization: `Bearer ${token}` })
       .send({
-        description: 'Descrição do post fictício.',
-        content: 'Conteúdo do meu primeiro post fictício!',
+        description: "Descrição do post fictício.",
+        content: "Conteúdo do meu primeiro post fictício!",
         tags: [tagEventos.id.toValue(), tagDominios.id.toValue()],
         title: postTitle,
-        topstory: 'https://i.imgur.com/NQ9ImcM.png',
+        topstory: "https://i.imgur.com/NQ9ImcM.png",
         authorId: user.id.toValue(),
       } as CreatePostDto)
       .expect(201);

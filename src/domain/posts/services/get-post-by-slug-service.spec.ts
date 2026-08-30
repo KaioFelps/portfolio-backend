@@ -1,11 +1,11 @@
-import { InMemoryPostsRepository } from 'test/repositories/in-memory-posts-repository';
-import { PostFactory } from 'test/factories/post-factory';
-import { GetPostBySlugService } from './get-post-by-slug-service';
-import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository';
-import { UserFactory } from 'test/factories/user-factory';
-import { TokenPayload } from '@/infra/auth/jwt-strategy';
+import { InMemoryPostsRepository } from "test/repositories/in-memory-posts-repository";
+import { PostFactory } from "test/factories/post-factory";
+import { GetPostBySlugService } from "./get-post-by-slug-service";
+import { InMemoryUsersRepository } from "test/repositories/in-memory-users-repository";
+import { UserFactory } from "test/factories/user-factory";
+import { TokenPayload } from "@/infra/auth/jwt-strategy";
 
-describe('Get Post By Slug Service', () => {
+describe("Get Post By Slug Service", () => {
   let sut: GetPostBySlugService;
   let usersRepository: InMemoryUsersRepository;
   let postsRepository: InMemoryPostsRepository;
@@ -16,8 +16,8 @@ describe('Get Post By Slug Service', () => {
     sut = new GetPostBySlugService(postsRepository);
   });
 
-  it('should only let either editors or admins to see unpublished posts', async () => {
-    const user = UserFactory.exec('editor');
+  it("should only let either editors or admins to see unpublished posts", async () => {
+    const user = UserFactory.exec("editor");
     usersRepository.items.push(user);
 
     const post = PostFactory.exec({ authorId: user.id });
@@ -38,12 +38,12 @@ describe('Get Post By Slug Service', () => {
     assert(!!staffResult.value!.post);
   });
 
-  it('should get a published post by slug', async () => {
-    const user = UserFactory.exec('admin');
+  it("should get a published post by slug", async () => {
+    const user = UserFactory.exec("admin");
     usersRepository.items.push(user);
 
     const post = PostFactory.exec({
-      title: 'design de fs',
+      title: "design de fs",
       authorId: user.id,
       publishedAt: new Date(),
     });

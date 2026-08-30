@@ -1,11 +1,11 @@
-import { UserFactory } from 'test/factories/user-factory';
-import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository';
-import { InMemoryPostsRepository } from 'test/repositories/in-memory-posts-repository';
-import { PostFactory } from 'test/factories/post-factory';
-import { DeletePostService } from './delete-post-service';
-import { ForbiddenError } from '@/core/errors/forbidden-error';
+import { UserFactory } from "test/factories/user-factory";
+import { InMemoryUsersRepository } from "test/repositories/in-memory-users-repository";
+import { InMemoryPostsRepository } from "test/repositories/in-memory-posts-repository";
+import { PostFactory } from "test/factories/post-factory";
+import { DeletePostService } from "./delete-post-service";
+import { ForbiddenError } from "@/core/errors/forbidden-error";
 
-describe('Delete Post Service', () => {
+describe("Delete Post Service", () => {
   let sut: DeletePostService;
   let postsRepository: InMemoryPostsRepository;
   let usersRepository: InMemoryUsersRepository;
@@ -17,7 +17,7 @@ describe('Delete Post Service', () => {
   });
 
   it("should let an user delete it's post", async () => {
-    const user = UserFactory.exec('editor');
+    const user = UserFactory.exec("editor");
     usersRepository.items.push(user);
 
     const post = PostFactory.exec({ authorId: user.id });
@@ -34,7 +34,7 @@ describe('Delete Post Service', () => {
   });
 
   it("shouldn't let an user delete a post of other user", async () => {
-    const user = UserFactory.exec('editor');
+    const user = UserFactory.exec("editor");
     usersRepository.items.push(user);
 
     const post = PostFactory.exec();
@@ -51,8 +51,8 @@ describe('Delete Post Service', () => {
   });
 
   it("shouldn't let an admin delete any post", async () => {
-    const editor = UserFactory.exec('editor');
-    const admin = UserFactory.exec('admin');
+    const editor = UserFactory.exec("editor");
+    const admin = UserFactory.exec("admin");
     usersRepository.items.push(editor, admin);
 
     const post = PostFactory.exec({ authorId: editor.id });

@@ -1,30 +1,30 @@
 /* eslint-disable @typescript-eslint/no-namespace */
-import { LogAction, LogTargetType } from '@/domain/logs/entities/log';
+import { LogAction, LogTargetType } from "@/domain/logs/entities/log";
 import {
   LogTargetType as prismaLogTargetType,
   LogAction as prismaLogAction,
-} from 'prisma/generated/client';
+} from "prisma/generated/client";
 
 export namespace PrismaLogEnumsMappers {
   export class Action {
     public static toPrisma(action: LogAction): prismaLogAction {
       switch (action) {
         case LogAction.created:
-          return 'CREATED';
+          return "CREATED";
         case LogAction.deleted:
-          return 'DELETED';
+          return "DELETED";
         case LogAction.updated:
-          return 'UPDATED';
+          return "UPDATED";
       }
     }
 
     public static toDomain(action: prismaLogAction): LogAction {
       switch (action) {
-        case 'CREATED':
+        case "CREATED":
           return LogAction.created;
-        case 'DELETED':
+        case "DELETED":
           return LogAction.deleted;
-        case 'UPDATED':
+        case "UPDATED":
           return LogAction.updated;
       }
     }
@@ -34,25 +34,25 @@ export namespace PrismaLogEnumsMappers {
     public static toPrisma(targetType: LogTargetType): prismaLogTargetType {
       switch (targetType) {
         case LogTargetType.post:
-          return 'POST';
+          return "POST";
         case LogTargetType.project:
-          return 'PROJECT';
+          return "PROJECT";
         case LogTargetType.user:
-          return 'USER';
+          return "USER";
         case LogTargetType.tag:
-          return 'TAG';
+          return "TAG";
       }
     }
 
     public static toDomain(targetType: prismaLogTargetType): LogTargetType {
       switch (targetType) {
-        case 'POST':
+        case "POST":
           return LogTargetType.post;
-        case 'PROJECT':
+        case "PROJECT":
           return LogTargetType.project;
-        case 'USER':
+        case "USER":
           return LogTargetType.user;
-        case 'TAG':
+        case "TAG":
           return LogTargetType.tag;
       }
     }

@@ -1,16 +1,13 @@
-import { Injectable } from '@nestjs/common';
-import { IUsersRepository } from '../repositories/users-repository';
-import { Either, ok } from '@/core/types/either';
-import { PaginationParams } from '@/core/types/pagination-params';
-import { QUANTITY_PER_PAGE } from '@/core/pagination-consts';
-import { User } from '../entities/user';
+import { Injectable } from "@nestjs/common";
+import { IUsersRepository } from "../repositories/users-repository";
+import { Either, ok } from "@/core/types/either";
+import { PaginationParams } from "@/core/types/pagination-params";
+import { QUANTITY_PER_PAGE } from "@/core/pagination-consts";
+import { User } from "../entities/user";
 
 interface FetchManyUsersServiceRequest extends PaginationParams {}
 
-type FetchManyUsersServiceResponse = Either<
-  null,
-  { users: User[]; count: number }
->;
+type FetchManyUsersServiceResponse = Either<null, { users: User[]; count: number }>;
 
 @Injectable()
 export class FetchManyUsersService {

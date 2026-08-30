@@ -1,5 +1,5 @@
-import { EntityUniqueId } from '@/core/entities/entity-unique-id';
-import { Entity } from '@/core/entities/entity';
+import { EntityUniqueId } from "@/core/entities/entity-unique-id";
+import { Entity } from "@/core/entities/entity";
 
 export interface ProjectLinkProps {
   title: string;

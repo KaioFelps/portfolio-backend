@@ -1,6 +1,6 @@
-import { Entity } from '@/core/entities/entity';
-import { EntityUniqueId } from '@/core/entities/entity-unique-id';
-import { Tag } from '@/domain/tags/entities/tag';
+import { Entity } from "@/core/entities/entity";
+import { EntityUniqueId } from "@/core/entities/entity-unique-id";
+import { Tag } from "@/domain/tags/entities/tag";
 
 export interface PostTagProps {
   postId: EntityUniqueId;

@@ -1,19 +1,19 @@
-import { Post } from '@/domain/posts/entities/post';
-import { PostWithAuthor } from '@/domain/posts/entities/value-objects/post-with-author';
+import { Post } from "@/domain/posts/entities/post";
+import { PostWithAuthor } from "@/domain/posts/entities/value-objects/post-with-author";
 import {
   IPostsRepository,
   PostListPaginationParams,
-} from '@/domain/posts/repositories/posts-repository';
-import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../prisma-service';
-import { PrismaPostMapper } from '../mappers/prisma-post-mapper';
-import { DomainEvents } from '@/core/events/domain-events';
-import { PrismaPostWithAuthorMapper } from '../mappers/prisma-post-with-author-mapper';
-import { QUANTITY_PER_PAGE } from '@/core/pagination-consts';
-import { Prisma } from 'prisma/generated/client';
-import { PaginationResponse } from '@/core/types/pagination-responses';
-import { IPostTagsRepository } from '@/domain/posts/repositories/post-tags-repository';
-import { PrismaPostTagMapper } from '../mappers/prisma-post-tag-mapper';
+} from "@/domain/posts/repositories/posts-repository";
+import { Injectable } from "@nestjs/common";
+import { PrismaService } from "../prisma-service";
+import { PrismaPostMapper } from "../mappers/prisma-post-mapper";
+import { DomainEvents } from "@/core/events/domain-events";
+import { PrismaPostWithAuthorMapper } from "../mappers/prisma-post-with-author-mapper";
+import { QUANTITY_PER_PAGE } from "@/core/pagination-consts";
+import { Prisma } from "prisma/generated/client";
+import { PaginationResponse } from "@/core/types/pagination-responses";
+import { IPostTagsRepository } from "@/domain/posts/repositories/post-tags-repository";
+import { PrismaPostTagMapper } from "../mappers/prisma-post-tag-mapper";
 
 @Injectable()
 export class PrismaPostsRepository implements IPostsRepository {
@@ -111,11 +111,11 @@ export class PrismaPostsRepository implements IPostsRepository {
 
     const where: Prisma.PostWhereInput = {};
     switch (query?.type) {
-      case 'tag':
+      case "tag":
         where.tags = { some: { tagId: { equals: query.value } } };
         break;
-      case 'title':
-        where.title = { contains: query.value, mode: 'insensitive' };
+      case "title":
+        where.title = { contains: query.value, mode: "insensitive" };
         break;
     }
 
@@ -124,7 +124,7 @@ export class PrismaPostsRepository implements IPostsRepository {
         take: PER_PAGE,
         skip: offset,
         orderBy: {
-          createdAt: 'desc',
+          createdAt: "desc",
         },
         where,
         include: {
@@ -154,13 +154,13 @@ export class PrismaPostsRepository implements IPostsRepository {
 
     const where: Prisma.PostWhereInput = { NOT: { publishedAt: null } };
     switch (query?.type) {
-      case 'tag':
+      case "tag":
         where.tags = {
           some: { tagId: { equals: query.value } },
         };
         break;
-      case 'title':
-        where.title = { contains: query.value, mode: 'insensitive' };
+      case "title":
+        where.title = { contains: query.value, mode: "insensitive" };
         break;
     }
 
@@ -169,7 +169,7 @@ export class PrismaPostsRepository implements IPostsRepository {
         take: PER_PAGE,
         skip: offset,
         orderBy: {
-          publishedAt: 'desc',
+          publishedAt: "desc",
         },
         where,
         include: {

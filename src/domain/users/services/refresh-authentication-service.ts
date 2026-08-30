@@ -1,9 +1,9 @@
-import { Injectable } from '@nestjs/common';
-import { Either, fail, ok } from '@/core/types/either';
-import { WrongCredentialError } from '@/core/errors/wrong-credentials-error';
-import { IEncryptor } from '@/core/crypt/encrypter';
-import { UserRole } from '../entities/user';
-import { UnauthorizedError } from '@/core/errors/unauthorized-error';
+import { Injectable } from "@nestjs/common";
+import { Either, fail, ok } from "@/core/types/either";
+import { WrongCredentialError } from "@/core/errors/wrong-credentials-error";
+import { IEncryptor } from "@/core/crypt/encrypter";
+import { UserRole } from "../entities/user";
+import { UnauthorizedError } from "@/core/errors/unauthorized-error";
 
 interface RefreshAuthenticationServiceRequest {
   refreshToken?: string;
@@ -49,7 +49,7 @@ export class RefreshAuthenticationService {
         name,
         role,
       },
-      '10h',
+      "10h",
     );
 
     return ok({ accessToken, refreshToken, user: { id: sub, name, role } });

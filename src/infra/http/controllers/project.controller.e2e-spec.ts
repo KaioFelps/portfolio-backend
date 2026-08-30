@@ -1,19 +1,19 @@
-import { PrismaService } from '@/infra/db/prisma/prisma-service';
-import { INestApplication } from '@nestjs/common';
-import {  JwtService } from '@nestjs/jwt';
-import supertest from 'supertest';
-import { ProjectFactory } from 'test/factories/project-factory';
-import { TagFactory } from 'test/factories/tag-factory';
-import { UserFactory } from 'test/factories/user-factory';
-import { ProjectPresented } from '../presenters/project-presenter';
-import { PrismaProjectTagMapper } from '@/infra/db/prisma/mappers/prisma-project-tag-mapper';
-import { ProjectTagFactory } from 'test/factories/project-tag-factory';
-import { EntityUniqueId } from '@/core/entities/entity-unique-id';
-import { PrismaProjectMapper } from '@/infra/db/prisma/mappers/prisma-project-mapper';
-import { DomainEvents } from '@/core/events/domain-events';
-import { provisionTestApp } from 'test/get-testing-app';
+import { PrismaService } from "@/infra/db/prisma/prisma-service";
+import { INestApplication } from "@nestjs/common";
+import { JwtService } from "@nestjs/jwt";
+import supertest from "supertest";
+import { ProjectFactory } from "test/factories/project-factory";
+import { TagFactory } from "test/factories/tag-factory";
+import { UserFactory } from "test/factories/user-factory";
+import { ProjectPresented } from "../presenters/project-presenter";
+import { PrismaProjectTagMapper } from "@/infra/db/prisma/mappers/prisma-project-tag-mapper";
+import { ProjectTagFactory } from "test/factories/project-tag-factory";
+import { EntityUniqueId } from "@/core/entities/entity-unique-id";
+import { PrismaProjectMapper } from "@/infra/db/prisma/mappers/prisma-project-mapper";
+import { DomainEvents } from "@/core/events/domain-events";
+import { provisionTestApp } from "test/get-testing-app";
 
-describe('ProjectController', () => {
+describe("ProjectController", () => {
   let app: INestApplication;
   let userFactory: UserFactory;
   let tagsFactory: TagFactory;
@@ -22,7 +22,7 @@ describe('ProjectController', () => {
   let prisma: PrismaService;
 
   beforeEach(async () => {
-        app = await provisionTestApp();
+    app = await provisionTestApp();
     userFactory = app.get(UserFactory);
     tagsFactory = app.get(TagFactory);
     projectFactory = app.get(ProjectFactory);
@@ -33,11 +33,11 @@ describe('ProjectController', () => {
   });
 
   afterEach(() => {
-    DomainEvents.AggregateEvent['clearEveryAggregateEvent!']();
+    DomainEvents.AggregateEvent["clearEveryAggregateEvent!"]();
   });
 
-  test('[GET] /project/list', async () => {
-    const tag = await tagsFactory.createAndPersist({ value: 'Téres' });
+  test("[GET] /project/list", async () => {
+    const tag = await tagsFactory.createAndPersist({ value: "Téres" });
 
     const projectId = new EntityUniqueId();
 
@@ -63,7 +63,7 @@ describe('ProjectController', () => {
 
     // expect it to accept lower case searches
     const response = await supertest(app.getHttpServer())
-      .get('/project/list?&amount=12&tag=téres')
+      .get("/project/list?&amount=12&tag=téres")
       .send()
       .expect(200);
 
@@ -78,7 +78,7 @@ describe('ProjectController', () => {
 
     // should not break on searched an unexisting tag
     const responseWithUnexistingTag = await supertest(app.getHttpServer())
-      .get('/project/list?tag=tér')
+      .get("/project/list?tag=tér")
       .send()
       .expect(200);
 
@@ -86,10 +86,10 @@ describe('ProjectController', () => {
     expect(responseWithUnexistingTag.body.totalCount).toBe(0);
   });
 
-  test('[GET] /project/:id', async () => {
+  test("[GET] /project/:id", async () => {
     const project = await projectFactory.createAndPersist();
 
-    const user = await userFactory.createAndPersist('editor');
+    const user = await userFactory.createAndPersist("editor");
     const token = await jwt.signAsync({
       name: user.name,
       role: user.role,
@@ -97,7 +97,7 @@ describe('ProjectController', () => {
     });
 
     const response = await supertest(app.getHttpServer())
-      .get('/project/' + project.id.toValue())
+      .get("/project/" + project.id.toValue())
       .set({ Authorization: `Bearer ${token}` })
       .send()
       .expect(200);
@@ -112,40 +112,40 @@ describe('ProjectController', () => {
     } as ProjectPresented);
   });
 
-  test('[POST] /project/new', async () => {
-    const user = await userFactory.createAndPersist('admin');
+  test("[POST] /project/new", async () => {
+    const user = await userFactory.createAndPersist("admin");
     const token = await jwt.signAsync({
       name: user.name,
       role: user.role,
       sub: user.id.toValue(),
     });
 
-    const tag = await tagsFactory.createAndPersist({ value: 'front end' });
+    const tag = await tagsFactory.createAndPersist({ value: "front end" });
 
     const result = await supertest(app.getHttpServer())
-      .post('/project/new')
+      .post("/project/new")
       .set({ Authorization: `Bearer ${token}` })
       .send({
-        title: 'Hidro Mourão',
-        topstory: 'https://i.imgur.com/payZTW9.png',
+        title: "Hidro Mourão",
+        topstory: "https://i.imgur.com/payZTW9.png",
         tags: [tag.id.toValue()],
-        links: [{ title: 'Deploy', value: 'https://hidromourao.com' }],
+        links: [{ title: "Deploy", value: "https://hidromourao.com" }],
       })
       .expect(201);
 
     expect(result.body.project).toMatchObject({
       id: expect.any(String),
-      title: 'Hidro Mourão',
+      title: "Hidro Mourão",
       tags: expect.arrayContaining([
         expect.objectContaining({
-          value: 'front end',
+          value: "front end",
           id: tag.id.toValue(),
         }),
       ]),
       links: expect.arrayContaining([
         expect.objectContaining({
-          title: 'Deploy',
-          value: 'https://hidromourao.com',
+          title: "Deploy",
+          value: "https://hidromourao.com",
         }),
       ]),
       topstory: expect.any(String),
@@ -153,16 +153,16 @@ describe('ProjectController', () => {
     });
   });
 
-  test('[PUT] /project/:id/edit', async () => {
-    const user = await userFactory.createAndPersist('admin');
+  test("[PUT] /project/:id/edit", async () => {
+    const user = await userFactory.createAndPersist("admin");
     const token = await jwt.signAsync({
       name: user.name,
       role: user.role,
       sub: user.id.toValue(),
     });
 
-    const tag = await tagsFactory.createAndPersist({ value: 'front end' });
-    const tag2 = await tagsFactory.createAndPersist({ value: 'remover' });
+    const tag = await tagsFactory.createAndPersist({ value: "front end" });
+    const tag2 = await tagsFactory.createAndPersist({ value: "remover" });
 
     const projectId = new EntityUniqueId();
     const projectTag = ProjectTagFactory.exec({ projectId, tag });
@@ -181,7 +181,7 @@ describe('ProjectController', () => {
       .put(`/project/${project.id.toValue()}/edit`)
       .set({ Authorization: `Bearer ${token}` })
       .send({
-        title: 'Edited title of the project',
+        title: "Edited title of the project",
         tags: [tag.id.toValue()],
       })
       .expect(200);
@@ -191,18 +191,18 @@ describe('ProjectController', () => {
       include: { tags: true },
     });
 
-    expect(projectOnDb!.title).toEqual('Edited title of the project');
+    expect(projectOnDb!.title).toEqual("Edited title of the project");
     expect(projectOnDb!.tags[0].tagId).toEqual(tag.id.toValue());
     expect(projectOnDb!.tags.length).toBe(1);
     expect(response.body.project.tags).toEqual(
       expect.arrayContaining([
-        expect.objectContaining({ value: 'front end', id: tag.id.toValue() }),
+        expect.objectContaining({ value: "front end", id: tag.id.toValue() }),
       ]),
     );
   });
 
-  test('[DELETE] /project/:id/delete', async () => {
-    const user = await userFactory.createAndPersist('admin');
+  test("[DELETE] /project/:id/delete", async () => {
+    const user = await userFactory.createAndPersist("admin");
     const token = await jwt.signAsync({
       name: user.name,
       role: user.role,

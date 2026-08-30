@@ -1,12 +1,12 @@
-import { Module, ValidationPipe } from '@nestjs/common';
-import { AppService } from './app.service';
-import { AuthModule } from './infra/auth/auth.module';
-import { EnvModule } from './infra/env/env.module';
-import { ConfigModule } from '@nestjs/config';
-import { envSchema } from './infra/env/env';
-import { HttpModule } from './infra/http/http.module';
-import { APP_PIPE } from '@nestjs/core';
-import { EventsModule } from './infra/events/events.module';
+import { Module, ValidationPipe } from "@nestjs/common";
+import { AppService } from "./app.service";
+import { AuthModule } from "./infra/auth/auth.module";
+import { EnvModule } from "./infra/env/env.module";
+import { ConfigModule } from "@nestjs/config";
+import { envSchema } from "./infra/env/env";
+import { HttpModule } from "./infra/http/http.module";
+import { APP_PIPE } from "@nestjs/core";
+import { EventsModule } from "./infra/events/events.module";
 
 @Module({
   imports: [

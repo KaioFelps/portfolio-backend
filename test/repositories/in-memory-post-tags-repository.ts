@@ -1,6 +1,6 @@
-import { EntityUniqueId } from '@/core/entities/entity-unique-id';
-import { PostTag } from '@/domain/posts/entities/post-tag';
-import { IPostTagsRepository } from '@/domain/posts/repositories/post-tags-repository';
+import { EntityUniqueId } from "@/core/entities/entity-unique-id";
+import { PostTag } from "@/domain/posts/entities/post-tag";
+import { IPostTagsRepository } from "@/domain/posts/repositories/post-tags-repository";
 
 export class InMemoryPostTagsRepository implements IPostTagsRepository {
   public items: PostTag[] = [];

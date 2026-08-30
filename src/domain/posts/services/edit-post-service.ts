@@ -1,15 +1,15 @@
-import { Injectable } from '@nestjs/common';
-import { IPostsRepository } from '../repositories/posts-repository';
-import { Post } from '../entities/post';
-import { Either, fail, ok } from '@/core/types/either';
-import { BadRequestError } from '@/core/errors/bad-request-error';
-import { UnauthorizedError } from '@/core/errors/unauthorized-error';
-import { IUsersRepository } from '@/domain/users/repositories/users-repository';
-import { EntityUniqueId } from '@/core/entities/entity-unique-id';
-import { IPostTagsRepository } from '../repositories/post-tags-repository';
-import { PostTagList } from '../entities/post-tag-list';
-import { PostTag } from '../entities/post-tag';
-import { ITagsRepository } from '@/domain/tags/repositories/tag-repository';
+import { Injectable } from "@nestjs/common";
+import { IPostsRepository } from "../repositories/posts-repository";
+import { Post } from "../entities/post";
+import { Either, fail, ok } from "@/core/types/either";
+import { BadRequestError } from "@/core/errors/bad-request-error";
+import { UnauthorizedError } from "@/core/errors/unauthorized-error";
+import { IUsersRepository } from "@/domain/users/repositories/users-repository";
+import { EntityUniqueId } from "@/core/entities/entity-unique-id";
+import { IPostTagsRepository } from "../repositories/post-tags-repository";
+import { PostTagList } from "../entities/post-tag-list";
+import { PostTag } from "../entities/post-tag";
+import { ITagsRepository } from "@/domain/tags/repositories/tag-repository";
 
 interface EditPostServiceRequest {
   authorId: string;
@@ -21,10 +21,7 @@ interface EditPostServiceRequest {
   tags?: string[];
 }
 
-type EditPostServiceResponse = Either<
-  BadRequestError | UnauthorizedError,
-  { post: Post }
->;
+type EditPostServiceResponse = Either<BadRequestError | UnauthorizedError, { post: Post }>;
 
 @Injectable()
 export class EditPostService {
@@ -47,15 +44,13 @@ export class EditPostService {
     const post = await this.postsRepository.findById(postId);
 
     if (!post) {
-      return fail(
-        new BadRequestError('O post informado não existe no sistema.'),
-      );
+      return fail(new BadRequestError("O post informado não existe no sistema."));
     }
 
     const user = await this.usersRepository.findById(authorId);
 
     if (!user || !post.authorId.equals(new EntityUniqueId(authorId))) {
-      return fail(new UnauthorizedError('Você não pode editar esse post.'));
+      return fail(new UnauthorizedError("Você não pode editar esse post."));
     }
 
     const currentTags = await this.postTagsRepository.findManyByPostId(post.id);
@@ -64,9 +59,7 @@ export class EditPostService {
 
     if (tags) {
       const newTags = await this.tagsRepository.findManyByIds(tags);
-      const newPostTags = newTags.map((tag) =>
-        PostTag.create({ postId: post.id, tag }),
-      );
+      const newPostTags = newTags.map((tag) => PostTag.create({ postId: post.id, tag }));
 
       currentTagsList.update(newPostTags);
     }

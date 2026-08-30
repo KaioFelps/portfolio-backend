@@ -1,5 +1,5 @@
-import { GetPostBySlugService } from '@/domain/posts/services/get-post-by-slug-service';
-import { PublicRoute } from '@/infra/auth/decorators/public-route';
+import { GetPostBySlugService } from "@/domain/posts/services/get-post-by-slug-service";
+import { PublicRoute } from "@/infra/auth/decorators/public-route";
 import {
   BadRequestException,
   Body,
@@ -15,27 +15,27 @@ import {
   Put,
   Query,
   UnauthorizedException,
-} from '@nestjs/common';
-import { PostPresenter } from '../presenters/post-presenter';
-import { FetchManyPostsService } from '@/domain/posts/services/fetch-many-posts-service';
-import { PostWithAuthorPresenter } from '../presenters/post-with-author-presenter';
-import { QUANTITY_PER_PAGE } from '@/core/pagination-consts';
-import { TitleAndTagPaginatedQueryDto } from '../dtos/title-and-query-paginated-query';
-import { CreatePostService } from '@/domain/posts/services/create-post-service';
-import { CreatePostDto } from '../dtos/create-post';
-import { TokenPayload } from '@/infra/auth/jwt-strategy';
-import { CurrentUser } from '@/infra/auth/decorators/current-user';
-import { EntityUniqueId } from '@/core/entities/entity-unique-id';
-import { UnauthorizedError } from '@/core/errors/unauthorized-error';
-import { EditPostService } from '@/domain/posts/services/edit-post-service';
-import { UpdatePostDto } from '../dtos/update-post';
-import { BadRequestError } from '@/core/errors/bad-request-error';
-import { DeletePostService } from '@/domain/posts/services/delete-post-service';
-import { TogglePostVisibilityService } from '@/domain/posts/services/toggle-post-visibility-service';
-import { FetchManyPublishedPostsService } from '@/domain/posts/services/fetch-many-published-posts-service';
-import { ForbiddenError } from '@/core/errors/forbidden-error';
+} from "@nestjs/common";
+import { PostPresenter } from "../presenters/post-presenter";
+import { FetchManyPostsService } from "@/domain/posts/services/fetch-many-posts-service";
+import { PostWithAuthorPresenter } from "../presenters/post-with-author-presenter";
+import { QUANTITY_PER_PAGE } from "@/core/pagination-consts";
+import { TitleAndTagPaginatedQueryDto } from "../dtos/title-and-query-paginated-query";
+import { CreatePostService } from "@/domain/posts/services/create-post-service";
+import { CreatePostDto } from "../dtos/create-post";
+import { TokenPayload } from "@/infra/auth/jwt-strategy";
+import { CurrentUser } from "@/infra/auth/decorators/current-user";
+import { EntityUniqueId } from "@/core/entities/entity-unique-id";
+import { UnauthorizedError } from "@/core/errors/unauthorized-error";
+import { EditPostService } from "@/domain/posts/services/edit-post-service";
+import { UpdatePostDto } from "../dtos/update-post";
+import { BadRequestError } from "@/core/errors/bad-request-error";
+import { DeletePostService } from "@/domain/posts/services/delete-post-service";
+import { TogglePostVisibilityService } from "@/domain/posts/services/toggle-post-visibility-service";
+import { FetchManyPublishedPostsService } from "@/domain/posts/services/fetch-many-published-posts-service";
+import { ForbiddenError } from "@/core/errors/forbidden-error";
 
-@Controller('post')
+@Controller("post")
 export class PostController {
   constructor(
     private getPostBySlugService: GetPostBySlugService,
@@ -47,13 +47,10 @@ export class PostController {
     private togglePostVisibilityService: TogglePostVisibilityService,
   ) {}
 
-  @Get('/:slug/show')
+  @Get("/:slug/show")
   @PublicRoute()
   @HttpCode(200)
-  async get(
-    @Param('slug') slug: string,
-    @CurrentUser() user: TokenPayload | null,
-  ) {
+  async get(@Param("slug") slug: string, @CurrentUser() user: TokenPayload | null) {
     const response = await this.getPostBySlugService.exec({
       slug,
       user,
@@ -74,7 +71,7 @@ export class PostController {
     return { post: postWithAuthor };
   }
 
-  @Get('list')
+  @Get("list")
   @PublicRoute()
   @HttpCode(200)
   async getMany(@Query() query: TitleAndTagPaginatedQueryDto) {
@@ -96,7 +93,7 @@ export class PostController {
     };
   }
 
-  @Get('list/admin')
+  @Get("list/admin")
   @HttpCode(200)
   async adminGetMany(@Query() query: TitleAndTagPaginatedQueryDto) {
     const response = await this.fetchManyPostsService.exec(query);
@@ -117,7 +114,7 @@ export class PostController {
     };
   }
 
-  @Post('new')
+  @Post("new")
   @HttpCode(201)
   async create(@Body() body: CreatePostDto, @CurrentUser() user: TokenPayload) {
     const _authorId = body.authorId ?? user.sub;
@@ -144,11 +141,11 @@ export class PostController {
     };
   }
 
-  @Put('/:id/edit')
+  @Put("/:id/edit")
   @HttpCode(200)
   async update(
     @Body() body: UpdatePostDto,
-    @Param('id') postId: string,
+    @Param("id") postId: string,
     @CurrentUser() user: TokenPayload,
   ) {
     const response = await this.editPostService.exec({
@@ -175,12 +172,9 @@ export class PostController {
     return { post: mappedPost };
   }
 
-  @Patch('/:id/visibility')
+  @Patch("/:id/visibility")
   @HttpCode(204)
-  async toggleVisibility(
-    @Param('id') postId: string,
-    @CurrentUser() user: TokenPayload,
-  ) {
+  async toggleVisibility(@Param("id") postId: string, @CurrentUser() user: TokenPayload) {
     const response = await this.togglePostVisibilityService.exec({
       authorId: user.sub,
       postId,
@@ -198,9 +192,9 @@ export class PostController {
     }
   }
 
-  @Delete('/:id/delete')
+  @Delete("/:id/delete")
   @HttpCode(200)
-  async delete(@Param('id') postId: string, @CurrentUser() user: TokenPayload) {
+  async delete(@Param("id") postId: string, @CurrentUser() user: TokenPayload) {
     const response = await this.deletePostService.exec({
       authorId: user.sub,
       postId,

@@ -1,6 +1,6 @@
-import { EntityUniqueId } from '@/core/entities/entity-unique-id';
-import { DomainEvent } from '@/core/events/domain-event';
-import { Post } from '../entities/post';
+import { EntityUniqueId } from "@/core/entities/entity-unique-id";
+import { DomainEvent } from "@/core/events/domain-event";
+import { Post } from "../entities/post";
 
 export class PostCreatedEvent implements DomainEvent {
   occurredAt: Date;

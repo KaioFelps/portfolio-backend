@@ -1,12 +1,6 @@
-import {
-  IsArray,
-  IsOptional,
-  IsString,
-  IsUrl,
-  ValidateNested,
-} from 'class-validator';
-import { LinkDto } from './link';
-import { Type } from 'class-transformer';
+import { IsArray, IsOptional, IsString, IsUrl, ValidateNested } from "class-validator";
+import { LinkDto } from "./link";
+import { Type } from "class-transformer";
 
 export class UpdateProjectDto {
   @IsString()

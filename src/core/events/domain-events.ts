@@ -1,6 +1,6 @@
-import { Aggregate } from '../entities/aggregate';
-import { EntityUniqueId } from '../entities/entity-unique-id';
-import { DomainEvent } from './domain-event';
+import { Aggregate } from "../entities/aggregate";
+import { EntityUniqueId } from "../entities/entity-unique-id";
+import { DomainEvent } from "./domain-event";
 
 type DomainEventCallback = (event: unknown) => void;
 
@@ -16,7 +16,7 @@ export abstract class DomainEvents {
   private static aggregateEventsMap: Map<string, DomainEvent[]> = new Map();
 
   public static AggregateEvent = class {
-    public static 'clearEveryAggregateEvent!'() {
+    public static "clearEveryAggregateEvent!"() {
       DomainEvents.aggregateEventsMap.clear();
     }
 
@@ -45,9 +45,7 @@ export abstract class DomainEvents {
   }
 
   public static removeAggregatedFromMarkedList(aggregate: Aggregate<unknown>) {
-    const itemIndex = this.markedAggregates.findIndex((item) =>
-      item.id.equals(aggregate.id),
-    );
+    const itemIndex = this.markedAggregates.findIndex((item) => item.id.equals(aggregate.id));
 
     this.markedAggregates.splice(itemIndex, 1);
   }
@@ -62,10 +60,7 @@ export abstract class DomainEvents {
     }
   }
 
-  public static registerAggregateEvent(
-    callback: DomainEventCallback,
-    eventClassName: string,
-  ) {
+  public static registerAggregateEvent(callback: DomainEventCallback, eventClassName: string) {
     const eventHasBeenRegisteredBefore = eventClassName in this.handlersMap;
 
     if (!eventHasBeenRegisteredBefore) {

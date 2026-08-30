@@ -1,19 +1,14 @@
-import {
-  Controller,
-  Get,
-  InternalServerErrorException,
-  Query,
-} from '@nestjs/common';
-import { PaginatedQueryDto } from '../dtos/paginated-query';
-import { FetchManyLogsService } from '@/domain/logs/services/fetch-many-logs-service';
-import { LogPresenter } from '../presenters/log-presenter';
-import { QUANTITY_PER_PAGE } from '@/core/pagination-consts';
+import { Controller, Get, InternalServerErrorException, Query } from "@nestjs/common";
+import { PaginatedQueryDto } from "../dtos/paginated-query";
+import { FetchManyLogsService } from "@/domain/logs/services/fetch-many-logs-service";
+import { LogPresenter } from "../presenters/log-presenter";
+import { QUANTITY_PER_PAGE } from "@/core/pagination-consts";
 
-@Controller('log')
+@Controller("log")
 export class LogController {
   constructor(private fetchManyLogsService: FetchManyLogsService) {}
 
-  @Get('list')
+  @Get("list")
   async getMany(@Query() query: PaginatedQueryDto) {
     const response = await this.fetchManyLogsService.exec(query);
 

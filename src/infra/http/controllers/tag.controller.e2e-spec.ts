@@ -1,15 +1,15 @@
-import supertest from 'supertest';
-import { TokenPayload } from '@/infra/auth/jwt-strategy';
-import { INestApplication } from '@nestjs/common';
-import {  JwtService } from '@nestjs/jwt';
-import { UserFactory } from 'test/factories/user-factory';
-import { TagFactory } from 'test/factories/tag-factory';
-import { QUANTITY_PER_PAGE } from '@/core/pagination-consts';
-import { PrismaService } from '@/infra/db/prisma/prisma-service';
-import { DomainEvents } from '@/core/events/domain-events';
-import { provisionTestApp } from 'test/get-testing-app';
+import supertest from "supertest";
+import { TokenPayload } from "@/infra/auth/jwt-strategy";
+import { INestApplication } from "@nestjs/common";
+import { JwtService } from "@nestjs/jwt";
+import { UserFactory } from "test/factories/user-factory";
+import { TagFactory } from "test/factories/tag-factory";
+import { QUANTITY_PER_PAGE } from "@/core/pagination-consts";
+import { PrismaService } from "@/infra/db/prisma/prisma-service";
+import { DomainEvents } from "@/core/events/domain-events";
+import { provisionTestApp } from "test/get-testing-app";
 
-describe('TagController', () => {
+describe("TagController", () => {
   let app: INestApplication;
   let userFactory: UserFactory;
   let tagFactory: TagFactory;
@@ -17,8 +17,6 @@ describe('TagController', () => {
   let jwt: JwtService;
 
   beforeEach(async () => {
-
-
     app = await provisionTestApp();
     userFactory = app.get(UserFactory);
     tagFactory = app.get(TagFactory);
@@ -29,11 +27,11 @@ describe('TagController', () => {
   });
 
   afterEach(() => {
-    DomainEvents.AggregateEvent['clearEveryAggregateEvent!']();
+    DomainEvents.AggregateEvent["clearEveryAggregateEvent!"]();
   });
 
-  test('[POST] /tag/new', async () => {
-    const user = await userFactory.createAndPersist('admin');
+  test("[POST] /tag/new", async () => {
+    const user = await userFactory.createAndPersist("admin");
     const token = await jwt.signAsync({
       name: user.name,
       role: user.role,
@@ -41,28 +39,28 @@ describe('TagController', () => {
     } as TokenPayload);
 
     const response = await supertest(app.getHttpServer())
-      .post('/tag/new')
+      .post("/tag/new")
       .set({ Authorization: `Bearer ${token}` })
       .send({
-        value: 'Foo',
+        value: "Foo",
       })
       .expect(201);
 
     expect(response.body).toEqual({
       tag: expect.objectContaining({
         id: expect.any(String),
-        value: 'Foo',
+        value: "Foo",
       }),
     });
   });
 
-  test('[GET] /tag/list', async () => {
+  test("[GET] /tag/list", async () => {
     for (let i = 0; i <= 14; i++) {
       await tagFactory.createAndPersist({ value: `tag-${i + 1}` });
     }
 
     const response = await supertest(app.getHttpServer())
-      .get('/tag/list?page=2')
+      .get("/tag/list?page=2")
       .send()
       .expect(200);
 
@@ -76,21 +74,21 @@ describe('TagController', () => {
     expect(response.body.tags.length).toBe(3);
   });
 
-  test('[PATCH] /tag/:id/edit', async () => {
-    const user = await userFactory.createAndPersist('admin');
+  test("[PATCH] /tag/:id/edit", async () => {
+    const user = await userFactory.createAndPersist("admin");
     const token = await jwt.signAsync({
       name: user.name,
       role: user.role,
       sub: user.id.toValue(),
     });
 
-    const tag = await tagFactory.createAndPersist({ value: 'front end' });
+    const tag = await tagFactory.createAndPersist({ value: "front end" });
 
     const response = await supertest(app.getHttpServer())
       .patch(`/tag/${tag.id.toValue()}/edit`)
       .set({ Authorization: `Bearer ${token}` })
       .send({
-        value: 'rust',
+        value: "rust",
       })
       .expect(200);
 
@@ -98,15 +96,15 @@ describe('TagController', () => {
       where: { id: tag.id.toValue() },
     });
 
-    expect(tagOnDb!.value).toEqual('rust');
+    expect(tagOnDb!.value).toEqual("rust");
     expect(response.body.tag).toMatchObject({
       id: tag.id.toValue(),
-      value: 'rust',
+      value: "rust",
     });
   });
 
-  test('[DELETE] /tag/:id/delete', async () => {
-    const user = await userFactory.createAndPersist('admin');
+  test("[DELETE] /tag/:id/delete", async () => {
+    const user = await userFactory.createAndPersist("admin");
     const token = await jwt.signAsync({
       name: user.name,
       role: user.role,

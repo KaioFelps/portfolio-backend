@@ -1,16 +1,16 @@
-import { Project } from '@/domain/projects/entities/project';
+import { Project } from "@/domain/projects/entities/project";
 import {
   IProjectsRepository,
   ProjectListPaginationParams,
-} from '@/domain/projects/repositories/projects-repository';
-import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../prisma-service';
-import { PrismaProjectMapper } from '../mappers/prisma-project-mapper';
-import { DomainEvents } from '@/core/events/domain-events';
-import { IProjectLinksRepository } from '@/domain/projects/repositories/project-links-repository';
-import { IProjectTagsRepository } from '@/domain/projects/repositories/project-tags-repository';
-import { PaginationResponse } from '@/core/types/pagination-responses';
-import { Prisma } from 'prisma/generated/client';
+} from "@/domain/projects/repositories/projects-repository";
+import { Injectable } from "@nestjs/common";
+import { PrismaService } from "../prisma-service";
+import { PrismaProjectMapper } from "../mappers/prisma-project-mapper";
+import { DomainEvents } from "@/core/events/domain-events";
+import { IProjectLinksRepository } from "@/domain/projects/repositories/project-links-repository";
+import { IProjectTagsRepository } from "@/domain/projects/repositories/project-tags-repository";
+import { PaginationResponse } from "@/core/types/pagination-responses";
+import { Prisma } from "prisma/generated/client";
 
 @Injectable()
 export class PrismaProjectsRepository implements IProjectsRepository {
@@ -71,11 +71,11 @@ export class PrismaProjectsRepository implements IProjectsRepository {
 
     if (query) {
       switch (query.type) {
-        case 'tag':
+        case "tag":
           where.tags = { some: { tagId: query.value } };
           break;
-        case 'title':
-          where.title = { contains: query.value, mode: 'insensitive' };
+        case "title":
+          where.title = { contains: query.value, mode: "insensitive" };
           break;
       }
     }
@@ -85,7 +85,7 @@ export class PrismaProjectsRepository implements IProjectsRepository {
         take: PER_PAGE,
         skip: offset,
         orderBy: {
-          createdAt: 'desc',
+          createdAt: "desc",
         },
         where,
         include: {
@@ -99,7 +99,7 @@ export class PrismaProjectsRepository implements IProjectsRepository {
       this.prisma.project.count({
         where,
         orderBy: {
-          createdAt: 'desc',
+          createdAt: "desc",
         },
       }),
     ]);
@@ -120,15 +120,11 @@ export class PrismaProjectsRepository implements IProjectsRepository {
 
       this.prismaProjectLinksRepository.createMany(project.links.getNewItems()),
 
-      this.prismaProjectLinksRepository.deleteMany(
-        project.links.getRemovedItems(),
-      ),
+      this.prismaProjectLinksRepository.deleteMany(project.links.getRemovedItems()),
 
       this.prismaProjectTagsRepository.createMany(project.tags.getNewItems()),
 
-      this.prismaProjectTagsRepository.deleteMany(
-        project.tags.getRemovedItems(),
-      ),
+      this.prismaProjectTagsRepository.deleteMany(project.tags.getRemovedItems()),
     ]);
 
     DomainEvents.dispatchEventsForAggregate(project.id);

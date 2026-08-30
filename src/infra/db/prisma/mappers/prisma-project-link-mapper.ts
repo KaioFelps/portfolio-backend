@@ -1,6 +1,6 @@
-import { EntityUniqueId } from '@/core/entities/entity-unique-id';
-import { ProjectLink } from '@/domain/projects/entities/project-link';
-import { Link as PrismaLink, Prisma } from 'prisma/generated/client';
+import { EntityUniqueId } from "@/core/entities/entity-unique-id";
+import { ProjectLink } from "@/domain/projects/entities/project-link";
+import { Link as PrismaLink, Prisma } from "prisma/generated/client";
 
 export class PrismaProjectLinkMapper {
   static toDomain(link: PrismaLink) {

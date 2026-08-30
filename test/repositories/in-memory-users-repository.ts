@@ -1,8 +1,8 @@
-import { DomainEvents } from '@/core/events/domain-events';
-import { PaginationParams } from '@/core/types/pagination-params';
-import { PaginationResponse } from '@/core/types/pagination-responses';
-import { User } from '@/domain/users/entities/user';
-import { IUsersRepository } from '@/domain/users/repositories/users-repository';
+import { DomainEvents } from "@/core/events/domain-events";
+import { PaginationParams } from "@/core/types/pagination-params";
+import { PaginationResponse } from "@/core/types/pagination-responses";
+import { User } from "@/domain/users/entities/user";
+import { IUsersRepository } from "@/domain/users/repositories/users-repository";
 
 export class InMemoryUsersRepository implements IUsersRepository {
   public items: User[] = [];

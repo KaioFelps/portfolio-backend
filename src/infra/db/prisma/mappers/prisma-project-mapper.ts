@@ -1,15 +1,11 @@
-import { EntityUniqueId } from '@/core/entities/entity-unique-id';
-import { Project } from '@/domain/projects/entities/project';
-import { ProjectLinkList } from '@/domain/projects/entities/project-link-list';
-import {
-  Prisma,
-  Project as PrismaProject,
-  Link as PrismaLink,
-} from 'prisma/generated/client';
-import { PrismaProjectLinkMapper } from './prisma-project-link-mapper';
-import { ProjectTagList } from '@/domain/projects/entities/project-tag-list';
-import { PrismaProjectTagMapper } from './prisma-project-tag-mapper';
-import { PrismaComposedTag } from '../types/composed-tag';
+import { EntityUniqueId } from "@/core/entities/entity-unique-id";
+import { Project } from "@/domain/projects/entities/project";
+import { ProjectLinkList } from "@/domain/projects/entities/project-link-list";
+import { Prisma, Project as PrismaProject, Link as PrismaLink } from "prisma/generated/client";
+import { PrismaProjectLinkMapper } from "./prisma-project-link-mapper";
+import { ProjectTagList } from "@/domain/projects/entities/project-tag-list";
+import { PrismaProjectTagMapper } from "./prisma-project-tag-mapper";
+import { PrismaComposedTag } from "../types/composed-tag";
 
 type toDomainParams = PrismaProject & {
   tags: PrismaComposedTag[];
@@ -26,14 +22,7 @@ export class PrismaProjectMapper {
     };
   }
 
-  static toDomain({
-    createdAt,
-    id,
-    links,
-    tags,
-    title,
-    topstory,
-  }: toDomainParams) {
+  static toDomain({ createdAt, id, links, tags, title, topstory }: toDomainParams) {
     return Project.create(
       {
         title,

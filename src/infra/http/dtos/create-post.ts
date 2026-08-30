@@ -6,7 +6,7 @@ import {
   IsString,
   IsUUID,
   IsOptional,
-} from 'class-validator';
+} from "class-validator";
 
 export class CreatePostDto {
   @IsOptional()

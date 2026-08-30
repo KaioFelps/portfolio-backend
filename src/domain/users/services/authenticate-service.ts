@@ -1,10 +1,10 @@
-import { Injectable } from '@nestjs/common';
-import { IUsersRepository } from '../repositories/users-repository';
-import { Either, fail, ok } from '@/core/types/either';
-import { WrongCredentialError } from '@/core/errors/wrong-credentials-error';
-import { IHashComparor } from '@/core/crypt/hash-comparor';
-import { IEncryptor } from '@/core/crypt/encrypter';
-import { UserRole } from '../entities/user';
+import { Injectable } from "@nestjs/common";
+import { IUsersRepository } from "../repositories/users-repository";
+import { Either, fail, ok } from "@/core/types/either";
+import { WrongCredentialError } from "@/core/errors/wrong-credentials-error";
+import { IHashComparor } from "@/core/crypt/hash-comparor";
+import { IEncryptor } from "@/core/crypt/encrypter";
+import { UserRole } from "../entities/user";
 
 interface AuthenticateServiceRequest {
   email: string;
@@ -38,10 +38,7 @@ export class AuthenticateService {
       return fail(new WrongCredentialError());
     }
 
-    const isPasswordValid = await this.hashComparor.compare(
-      password,
-      user.password,
-    );
+    const isPasswordValid = await this.hashComparor.compare(password, user.password);
 
     if (!isPasswordValid) {
       return fail(new WrongCredentialError());
@@ -59,7 +56,7 @@ export class AuthenticateService {
         name: user.name,
         role: user.role,
       },
-      '10h',
+      "10h",
     );
 
     return ok({

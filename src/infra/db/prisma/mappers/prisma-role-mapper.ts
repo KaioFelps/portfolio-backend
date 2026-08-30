@@ -1,12 +1,12 @@
-import { UserRole } from '@/domain/users/entities/user';
-import { $Enums } from 'prisma/generated/client';
+import { UserRole } from "@/domain/users/entities/user";
+import { $Enums } from "prisma/generated/client";
 
 export class PrismaRoleMapper {
   static prismaToDomain(role: $Enums.UserRole) {
     switch (role) {
-      case 'ADMIN':
+      case "ADMIN":
         return UserRole.admin;
-      case 'EDITOR':
+      case "EDITOR":
         return UserRole.editor;
     }
   }
@@ -22,9 +22,9 @@ export class PrismaRoleMapper {
 
   static toPrisma(role: string) {
     switch (role.toUpperCase()) {
-      case 'ADMIN':
+      case "ADMIN":
         return $Enums.UserRole.ADMIN;
-      case 'EDITOR':
+      case "EDITOR":
         return $Enums.UserRole.EDITOR;
       default:
         return null;

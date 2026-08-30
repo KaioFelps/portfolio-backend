@@ -1,9 +1,9 @@
-import { ProjectTag } from '@/domain/projects/entities/project-tag';
-import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../prisma-service';
-import { PrismaProjectTagMapper } from '../mappers/prisma-project-tag-mapper';
-import { IProjectTagsRepository } from '@/domain/projects/repositories/project-tags-repository';
-import { EntityUniqueId } from '@/core/entities/entity-unique-id';
+import { ProjectTag } from "@/domain/projects/entities/project-tag";
+import { Injectable } from "@nestjs/common";
+import { PrismaService } from "../prisma-service";
+import { PrismaProjectTagMapper } from "../mappers/prisma-project-tag-mapper";
+import { IProjectTagsRepository } from "@/domain/projects/repositories/project-tags-repository";
+import { EntityUniqueId } from "@/core/entities/entity-unique-id";
 
 @Injectable()
 export class PrismaProjectTagsRepository implements IProjectTagsRepository {

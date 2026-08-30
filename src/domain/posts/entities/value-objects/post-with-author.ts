@@ -1,7 +1,7 @@
-import { EntityUniqueId } from '@/core/entities/entity-unique-id';
-import { PostTagList } from '../post-tag-list';
-import { Slug } from './slug';
-import { ValueObject } from '@/core/entities/value-objects';
+import { EntityUniqueId } from "@/core/entities/entity-unique-id";
+import { PostTagList } from "../post-tag-list";
+import { Slug } from "./slug";
+import { ValueObject } from "@/core/entities/value-objects";
 
 export interface PostWithAuthorProps {
   id: EntityUniqueId;

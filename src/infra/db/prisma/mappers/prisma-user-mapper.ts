@@ -1,7 +1,7 @@
-import { EntityUniqueId } from '@/core/entities/entity-unique-id';
-import { User } from '@/domain/users/entities/user';
-import { $Enums, Prisma } from 'prisma/generated/client';
-import { PrismaRoleMapper } from './prisma-role-mapper';
+import { EntityUniqueId } from "@/core/entities/entity-unique-id";
+import { User } from "@/domain/users/entities/user";
+import { $Enums, Prisma } from "prisma/generated/client";
+import { PrismaRoleMapper } from "./prisma-role-mapper";
 
 type toDomainParams = {
   id: string;
@@ -24,14 +24,7 @@ export class PrismaUserMapper {
     };
   }
 
-  static toDomain({
-    createdAt,
-    email,
-    id,
-    name,
-    password,
-    role,
-  }: toDomainParams) {
+  static toDomain({ createdAt, email, id, name, password, role }: toDomainParams) {
     const mappedRole = PrismaRoleMapper.prismaToDomain(role);
     return User.create(
       {

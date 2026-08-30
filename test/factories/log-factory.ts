@@ -1,14 +1,9 @@
-import { Optional } from '@/core/types/optional';
-import {
-  Log,
-  LogAction,
-  LogProps,
-  LogTargetType,
-} from '@/domain/logs/entities/log';
-import { PrismaLogMapper } from '@/infra/db/prisma/mappers/prisma-log-mapper';
-import { PrismaService } from '@/infra/db/prisma/prisma-service';
-import { faker } from '@faker-js/faker';
-import { Injectable } from '@nestjs/common';
+import { Optional } from "@/core/types/optional";
+import { Log, LogAction, LogProps, LogTargetType } from "@/domain/logs/entities/log";
+import { PrismaLogMapper } from "@/infra/db/prisma/mappers/prisma-log-mapper";
+import { PrismaService } from "@/infra/db/prisma/prisma-service";
+import { faker } from "@faker-js/faker";
+import { Injectable } from "@nestjs/common";
 
 @Injectable()
 export class LogFactory {
@@ -17,7 +12,7 @@ export class LogFactory {
   static exec(
     override?: Optional<
       LogProps,
-      'action' | 'createdAt' | 'dispatcherId' | 'target' | 'targetType'
+      "action" | "createdAt" | "dispatcherId" | "target" | "targetType"
     >,
   ) {
     return Log.create({
@@ -31,10 +26,7 @@ export class LogFactory {
   }
 
   public async createAndPersist(
-    override?: Optional<
-      LogProps,
-      'action' | 'createdAt' | 'dispatcherId' | 'target'
-    >,
+    override?: Optional<LogProps, "action" | "createdAt" | "dispatcherId" | "target">,
   ) {
     const log = LogFactory.exec(override);
 

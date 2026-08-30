@@ -1,13 +1,13 @@
-import { DomainEvents } from '@/core/events/domain-events';
-import { Post } from '@/domain/posts/entities/post';
-import { PostWithAuthor } from '@/domain/posts/entities/value-objects/post-with-author';
+import { DomainEvents } from "@/core/events/domain-events";
+import { Post } from "@/domain/posts/entities/post";
+import { PostWithAuthor } from "@/domain/posts/entities/value-objects/post-with-author";
 import {
   IPostsRepository,
   PostListPaginationParams,
-} from '@/domain/posts/repositories/posts-repository';
-import { InMemoryUsersRepository } from './in-memory-users-repository';
-import { Slug } from '@/domain/posts/entities/value-objects/slug';
-import { PaginationResponse } from '@/core/types/pagination-responses';
+} from "@/domain/posts/repositories/posts-repository";
+import { InMemoryUsersRepository } from "./in-memory-users-repository";
+import { Slug } from "@/domain/posts/entities/value-objects/slug";
+import { PaginationResponse } from "@/core/types/pagination-responses";
 
 export class InMemoryPostsRepository implements IPostsRepository {
   public items: Post[] = [];
@@ -38,14 +38,12 @@ export class InMemoryPostsRepository implements IPostsRepository {
     if (query) {
       posts = this.items.filter((item) => {
         switch (query.type) {
-          case 'tag':
+          case "tag":
             return item.tags.getItems().find((item) => {
               return item.tag.id.toValue() === query.value;
             });
-          case 'title':
-            return item.title
-              .toLowerCase()
-              .includes(query.value.trim().toLowerCase());
+          case "title":
+            return item.title.toLowerCase().includes(query.value.trim().toLowerCase());
           default:
             return null;
         }
@@ -71,19 +69,15 @@ export class InMemoryPostsRepository implements IPostsRepository {
     if (query) {
       posts = this.items.filter((item) => {
         switch (query.type) {
-          case 'tag':
+          case "tag":
             return (
               item.publishedAt &&
-              item.tags
-                .getItems()
-                .find((item) => item.tag.id.toValue() === query.value)
+              item.tags.getItems().find((item) => item.tag.id.toValue() === query.value)
             );
-          case 'title':
+          case "title":
             return (
               item.publishedAt &&
-              item.title
-                .toLowerCase()
-                .includes(query.value.trim().toLowerCase())
+              item.title.toLowerCase().includes(query.value.trim().toLowerCase())
             );
           default:
             return Boolean(item.publishedAt);
@@ -126,9 +120,7 @@ export class InMemoryPostsRepository implements IPostsRepository {
     const author = await this.usersRepository.findById(post.authorId.toValue());
 
     if (!author) {
-      throw new Error(
-        `Author with ID "${post.authorId.toString()} doesn't existe."`,
-      );
+      throw new Error(`Author with ID "${post.authorId.toString()} doesn't existe."`);
     }
 
     return PostWithAuthor.create({

@@ -1,10 +1,10 @@
-import { Injectable } from '@nestjs/common';
-import { IPostsRepository } from '../repositories/posts-repository';
-import { Post } from '../entities/post';
-import { Either, fail, ok } from '@/core/types/either';
-import { BadRequestError } from '@/core/errors/bad-request-error';
-import { UnauthorizedError } from '@/core/errors/unauthorized-error';
-import { IUsersRepository } from '@/domain/users/repositories/users-repository';
+import { Injectable } from "@nestjs/common";
+import { IPostsRepository } from "../repositories/posts-repository";
+import { Post } from "../entities/post";
+import { Either, fail, ok } from "@/core/types/either";
+import { BadRequestError } from "@/core/errors/bad-request-error";
+import { UnauthorizedError } from "@/core/errors/unauthorized-error";
+import { IUsersRepository } from "@/domain/users/repositories/users-repository";
 
 interface TogglePostVisibilityServiceRequest {
   authorId: string;

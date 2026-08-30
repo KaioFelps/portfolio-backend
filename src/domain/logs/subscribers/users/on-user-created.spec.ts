@@ -1,14 +1,14 @@
-import { UserFactory } from 'test/factories/user-factory';
-import { InMemoryLogsRepository } from 'test/repositories/in-memory-logs-repository';
-import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository';
-import { waitFor } from 'test/utlils/wait-for';
-import { MockInstance } from 'vitest';
+import { UserFactory } from "test/factories/user-factory";
+import { InMemoryLogsRepository } from "test/repositories/in-memory-logs-repository";
+import { InMemoryUsersRepository } from "test/repositories/in-memory-users-repository";
+import { waitFor } from "test/utlils/wait-for";
+import { MockInstance } from "vitest";
 import {
   CreateLogService,
   CreateLogServiceRequest,
   CreateLogServiceResponse,
-} from '../../services/create-log-service';
-import { OnUserCreated } from './on-user-created';
+} from "../../services/create-log-service";
+import { OnUserCreated } from "./on-user-created";
 
 let inMemoryUsersRepository: InMemoryUsersRepository;
 let inMemoryLogsRepository: InMemoryLogsRepository;
@@ -19,29 +19,24 @@ let registerCreatedUserSpy: MockInstance<
   (_: CreateLogServiceRequest) => Promise<CreateLogServiceResponse>
 >;
 
-describe('On user created subscriber', async () => {
+describe("On user created subscriber", async () => {
   beforeEach(() => {
     inMemoryUsersRepository = new InMemoryUsersRepository();
 
-    inMemoryLogsRepository = new InMemoryLogsRepository(
-      inMemoryUsersRepository,
-    );
+    inMemoryLogsRepository = new InMemoryLogsRepository(inMemoryUsersRepository);
 
-    createLogService = new CreateLogService(
-      inMemoryLogsRepository,
-      inMemoryUsersRepository,
-    );
+    createLogService = new CreateLogService(inMemoryLogsRepository, inMemoryUsersRepository);
 
-    registerCreatedUserSpy = vi.spyOn(createLogService, 'exec');
+    registerCreatedUserSpy = vi.spyOn(createLogService, "exec");
 
     new OnUserCreated(createLogService);
   });
 
-  it('should register a log when a user is created', async () => {
-    const admin = UserFactory.exec('admin');
+  it("should register a log when a user is created", async () => {
+    const admin = UserFactory.exec("admin");
     inMemoryUsersRepository.items.push(admin);
 
-    const user = UserFactory.exec('editor');
+    const user = UserFactory.exec("editor");
 
     user.addCreatedEventToDispatch(admin.id);
     inMemoryUsersRepository.create(user);

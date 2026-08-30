@@ -1,9 +1,9 @@
-import { Injectable } from '@nestjs/common';
-import { IUsersRepository } from '../repositories/users-repository';
-import { User, UserRole } from '../entities/user';
-import { Either, fail, ok } from '@/core/types/either';
-import { UnauthorizedError } from '@/core/errors/unauthorized-error';
-import { IHashGenerator } from '@/core/crypt/hash-generator';
+import { Injectable } from "@nestjs/common";
+import { IUsersRepository } from "../repositories/users-repository";
+import { User, UserRole } from "../entities/user";
+import { Either, fail, ok } from "@/core/types/either";
+import { UnauthorizedError } from "@/core/errors/unauthorized-error";
+import { IHashGenerator } from "@/core/crypt/hash-generator";
 
 interface CreateUserServiceRequest {
   adminId: string;

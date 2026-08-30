@@ -1,6 +1,6 @@
-import { EntityUniqueId } from '@/core/entities/entity-unique-id';
-import { DomainEvent } from '@/core/events/domain-event';
-import { Tag } from '../entities/tag';
+import { EntityUniqueId } from "@/core/entities/entity-unique-id";
+import { DomainEvent } from "@/core/events/domain-event";
+import { Tag } from "../entities/tag";
 
 export class TagDeletedEvent implements DomainEvent {
   occurredAt: Date;

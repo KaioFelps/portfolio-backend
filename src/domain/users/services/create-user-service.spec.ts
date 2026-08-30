@@ -1,11 +1,11 @@
-import { CreateUserService } from './create-user-service';
-import { UserRole } from '../entities/user';
-import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository';
-import { UserFactory } from 'test/factories/user-factory';
-import { IHashGenerator } from '@/core/crypt/hash-generator';
-import { FakeHasher } from 'test/crypt/fake-hasher';
+import { CreateUserService } from "./create-user-service";
+import { UserRole } from "../entities/user";
+import { InMemoryUsersRepository } from "test/repositories/in-memory-users-repository";
+import { UserFactory } from "test/factories/user-factory";
+import { IHashGenerator } from "@/core/crypt/hash-generator";
+import { FakeHasher } from "test/crypt/fake-hasher";
 
-describe('Create User Service', () => {
+describe("Create User Service", () => {
   let sut: CreateUserService;
   let usersRepository: InMemoryUsersRepository;
   let hasher: IHashGenerator;
@@ -16,16 +16,16 @@ describe('Create User Service', () => {
     sut = new CreateUserService(usersRepository, hasher);
   });
 
-  it('should create a user', async () => {
-    const adminUser = UserFactory.exec('admin');
+  it("should create a user", async () => {
+    const adminUser = UserFactory.exec("admin");
 
     usersRepository.items.push(adminUser);
 
     const result = await sut.exec({
       adminId: adminUser.id.toValue(),
-      email: 'testemail@gmail.com',
-      name: 'fake user',
-      password: '123456',
+      email: "testemail@gmail.com",
+      name: "fake user",
+      password: "123456",
       role: UserRole.admin,
     });
 
@@ -34,21 +34,21 @@ describe('Create User Service', () => {
     // first element is the admin user
     expect(usersRepository.items[1]).toEqual(
       expect.objectContaining({
-        name: 'fake user',
+        name: "fake user",
       }),
     );
   });
 
   it("shouldn't let a non-admin user create another user", async () => {
-    const editorUser = UserFactory.exec('editor');
+    const editorUser = UserFactory.exec("editor");
 
     usersRepository.items.push(editorUser);
 
     const result = await sut.exec({
       adminId: editorUser.id.toValue(),
-      email: 'testemail@gmail.com',
-      name: 'fake user',
-      password: '123456',
+      email: "testemail@gmail.com",
+      name: "fake user",
+      password: "123456",
       role: UserRole.admin,
     });
 

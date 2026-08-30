@@ -1,9 +1,9 @@
-import { Log } from '@/domain/logs/entities/log';
-import { LogWithAuthor } from '@/domain/logs/entities/value-objects/log-with-author';
-import { PrismaUserMapper } from './prisma-user-mapper';
-import { PrismaLogEnumsMappers } from './enums/prisma-log-enums-mapper';
-import { EntityUniqueId } from '@/core/entities/entity-unique-id';
-import { Log as PrismaLog, Prisma, User as PrismaUser } from 'prisma/generated/client';
+import { Log } from "@/domain/logs/entities/log";
+import { LogWithAuthor } from "@/domain/logs/entities/value-objects/log-with-author";
+import { PrismaUserMapper } from "./prisma-user-mapper";
+import { PrismaLogEnumsMappers } from "./enums/prisma-log-enums-mapper";
+import { EntityUniqueId } from "@/core/entities/entity-unique-id";
+import { Log as PrismaLog, Prisma, User as PrismaUser } from "prisma/generated/client";
 
 type PrismaLogWithAuthor = PrismaLog & { Dispatcher: PrismaUser | null };
 
@@ -26,13 +26,9 @@ export class PrismaLogMapper {
       {
         action: PrismaLogEnumsMappers.Action.toDomain(prismaLog.action),
         target: prismaLog.target,
-        targetType: PrismaLogEnumsMappers.TargetType.toDomain(
-          prismaLog.targetType,
-        ),
+        targetType: PrismaLogEnumsMappers.TargetType.toDomain(prismaLog.targetType),
         createdAt: prismaLog.createdAt,
-        dispatcherId: prismaLog.dispatcherId
-          ? new EntityUniqueId(prismaLog.dispatcherId)
-          : null,
+        dispatcherId: prismaLog.dispatcherId ? new EntityUniqueId(prismaLog.dispatcherId) : null,
       },
       new EntityUniqueId(prismaLog.id),
     );
@@ -45,9 +41,7 @@ export class PrismaLogMapper {
       createdAt: prismaLog.createdAt,
       target: prismaLog.target,
       targetType: prismaLog.targetType,
-      dispatcher: prismaLog.Dispatcher
-        ? PrismaUserMapper.toDomain(prismaLog.Dispatcher)
-        : null,
+      dispatcher: prismaLog.Dispatcher ? PrismaUserMapper.toDomain(prismaLog.Dispatcher) : null,
     });
   }
 }

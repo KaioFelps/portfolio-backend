@@ -1,23 +1,17 @@
-import { Injectable } from '@nestjs/common';
-import { IPostsRepository, PostQuery } from '../repositories/posts-repository';
-import { Either, ok } from '@/core/types/either';
-import { QUANTITY_PER_PAGE } from '@/core/pagination-consts';
-import { Post } from '../entities/post';
-import { PaginationParams } from '@/core/types/pagination-params';
-import { ITagsRepository } from '@/domain/tags/repositories/tag-repository';
+import { Injectable } from "@nestjs/common";
+import { IPostsRepository, PostQuery } from "../repositories/posts-repository";
+import { Either, ok } from "@/core/types/either";
+import { QUANTITY_PER_PAGE } from "@/core/pagination-consts";
+import { Post } from "../entities/post";
+import { PaginationParams } from "@/core/types/pagination-params";
+import { ITagsRepository } from "@/domain/tags/repositories/tag-repository";
 
-interface FetchManyPostsServiceRequest extends Omit<
-  PaginationParams,
-  keyof { query?: string }
-> {
+interface FetchManyPostsServiceRequest extends Omit<PaginationParams, keyof { query?: string }> {
   title?: string;
   tag?: string;
 }
 
-type FetchManyPostsServiceResponse = Either<
-  null,
-  { posts: Post[]; count: number }
->;
+type FetchManyPostsServiceResponse = Either<null, { posts: Post[]; count: number }>;
 
 @Injectable()
 export class FetchManyPostsService {
@@ -35,7 +29,7 @@ export class FetchManyPostsService {
     let query: PostQuery | undefined;
 
     if (title) {
-      query = new PostQuery('title', title);
+      query = new PostQuery("title", title);
     } else if (tag) {
       const tagFromDb = await this.tagsRepository.findByValue(tag);
       if (!tagFromDb)
@@ -44,7 +38,7 @@ export class FetchManyPostsService {
           count: 0,
         });
 
-      query = new PostQuery('tag', tagFromDb.id.toValue());
+      query = new PostQuery("tag", tagFromDb.id.toValue());
     }
 
     const { value: posts, totalCount } = await this.postsRepository.findMany({

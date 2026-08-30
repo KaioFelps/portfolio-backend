@@ -1,11 +1,11 @@
-import { PrismaService } from '@/infra/db/prisma/prisma-service';
-import { Controller, Get, HttpCode } from '@nestjs/common';
+import { PrismaService } from "@/infra/db/prisma/prisma-service";
+import { Controller, Get, HttpCode } from "@nestjs/common";
 
-@Controller('/statistics')
+@Controller("/statistics")
 export class StatisticController {
   constructor(private prisma: PrismaService) {}
 
-  @Get('/count')
+  @Get("/count")
   @HttpCode(200)
   async getTotalCounts() {
     // eslint-disable-next-line no-extend-native
@@ -13,8 +13,8 @@ export class StatisticController {
       return Number(this.toString());
     };
 
-    const [response]: [{ total_posts: number; total_projects: number }] =
-      await this.prisma.$queryRaw`
+    const [response]: [{ total_posts: number; total_projects: number }] = await this.prisma
+      .$queryRaw`
         SELECT (SELECT COUNT(id) FROM posts) as total_posts,
         (SELECT COUNT(id) FROM projects) as total_projects;`;
 

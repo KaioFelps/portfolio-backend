@@ -1,10 +1,10 @@
-import { InMemoryLogsRepository } from 'test/repositories/in-memory-logs-repository';
-import { LogFactory } from 'test/factories/log-factory';
-import { FetchManyLogsService } from './fetch-many-logs-service';
-import { LogAction, LogTargetType } from '../entities/log';
-import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository';
+import { InMemoryLogsRepository } from "test/repositories/in-memory-logs-repository";
+import { LogFactory } from "test/factories/log-factory";
+import { FetchManyLogsService } from "./fetch-many-logs-service";
+import { LogAction, LogTargetType } from "../entities/log";
+import { InMemoryUsersRepository } from "test/repositories/in-memory-users-repository";
 
-describe('Fetch Many Logs Service', () => {
+describe("Fetch Many Logs Service", () => {
   let sut: FetchManyLogsService;
   let usersRepository: InMemoryUsersRepository;
   let logsRepository: InMemoryLogsRepository;
@@ -15,7 +15,7 @@ describe('Fetch Many Logs Service', () => {
     sut = new FetchManyLogsService(logsRepository);
   });
 
-  it('should fetch logs that corresponds to the params', async () => {
+  it("should fetch logs that corresponds to the params", async () => {
     logsRepository.items.push(
       LogFactory.exec({
         action: LogAction.deleted,
@@ -29,7 +29,7 @@ describe('Fetch Many Logs Service', () => {
 
     logsRepository.items.push(
       LogFactory.exec({
-        target: 'Hidro mourão',
+        target: "Hidro mourão",
         targetType: LogTargetType.project,
       }),
     );
@@ -40,10 +40,7 @@ describe('Fetch Many Logs Service', () => {
     });
 
     expect(result.isOk()).toBe(true);
-    expect(
-      result.value!.logs.length,
-      'primeira resposta deveria ter 2 logs.',
-    ).toBe(2);
+    expect(result.value!.logs.length, "primeira resposta deveria ter 2 logs.").toBe(2);
 
     result = await sut.exec({
       page: 1,
@@ -51,10 +48,7 @@ describe('Fetch Many Logs Service', () => {
     });
 
     expect(result.isOk()).toBe(true);
-    expect(
-      result.value!.logs.length,
-      'penúltima resposta deveria ter 3 logs.',
-    ).toBe(3);
+    expect(result.value!.logs.length, "penúltima resposta deveria ter 3 logs.").toBe(3);
 
     result = await sut.exec({
       page: 1,
@@ -63,9 +57,6 @@ describe('Fetch Many Logs Service', () => {
     });
 
     expect(result.isOk()).toBe(true);
-    expect(
-      result.value!.logs.length,
-      'última resposta deveria ter 1 log somente.',
-    ).toBe(1);
+    expect(result.value!.logs.length, "última resposta deveria ter 1 log somente.").toBe(1);
   });
 });

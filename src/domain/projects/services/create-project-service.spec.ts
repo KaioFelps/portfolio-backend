@@ -1,12 +1,12 @@
-import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository';
-import { CreateProjectService } from './create-project-service';
-import { InMemoryProjectsRepository } from 'test/repositories/in-memory-projects-repository';
-import { UserFactory } from 'test/factories/user-factory';
-import { InMemoryProjectTagsRepository } from 'test/repositories/in-memory-project-tags-repository';
-import { InMemoryProjectLinksRepository } from 'test/repositories/in-memory-project-links-repository';
-import { InMemoryTagsRepository } from 'test/repositories/in-memory-tags-repository';
+import { InMemoryUsersRepository } from "test/repositories/in-memory-users-repository";
+import { CreateProjectService } from "./create-project-service";
+import { InMemoryProjectsRepository } from "test/repositories/in-memory-projects-repository";
+import { UserFactory } from "test/factories/user-factory";
+import { InMemoryProjectTagsRepository } from "test/repositories/in-memory-project-tags-repository";
+import { InMemoryProjectLinksRepository } from "test/repositories/in-memory-project-links-repository";
+import { InMemoryTagsRepository } from "test/repositories/in-memory-tags-repository";
 
-describe('Create Project Service', () => {
+describe("Create Project Service", () => {
   let sut: CreateProjectService;
   let tagsRepository: InMemoryTagsRepository;
   let projectsRepository: InMemoryProjectsRepository;
@@ -23,22 +23,18 @@ describe('Create Project Service', () => {
       projectLinksRepository,
     );
     usersRepository = new InMemoryUsersRepository();
-    sut = new CreateProjectService(
-      projectsRepository,
-      tagsRepository,
-      usersRepository,
-    );
+    sut = new CreateProjectService(projectsRepository, tagsRepository, usersRepository);
   });
 
-  it('should create a project', async () => {
-    const user = UserFactory.exec('admin');
+  it("should create a project", async () => {
+    const user = UserFactory.exec("admin");
     usersRepository.items.push(user);
 
     const result = await sut.exec({
-      title: 'testing project',
+      title: "testing project",
       links: [],
-      tags: ['back-end'],
-      topstory: '',
+      tags: ["back-end"],
+      topstory: "",
       userId: user.id.toValue(),
     });
 
@@ -46,7 +42,7 @@ describe('Create Project Service', () => {
 
     expect(projectsRepository.items[0]).toEqual(
       expect.objectContaining({
-        title: 'testing project',
+        title: "testing project",
       }),
     );
   });

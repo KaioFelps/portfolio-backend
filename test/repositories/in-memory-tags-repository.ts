@@ -1,10 +1,10 @@
-import { EntityUniqueId } from '@/core/entities/entity-unique-id';
-import { DomainEvents } from '@/core/events/domain-events';
-import { QUANTITY_PER_PAGE } from '@/core/pagination-consts';
-import { PaginationParams } from '@/core/types/pagination-params';
-import { PaginationResponse } from '@/core/types/pagination-responses';
-import { Tag } from '@/domain/tags/entities/tag';
-import { ITagsRepository } from '@/domain/tags/repositories/tag-repository';
+import { EntityUniqueId } from "@/core/entities/entity-unique-id";
+import { DomainEvents } from "@/core/events/domain-events";
+import { QUANTITY_PER_PAGE } from "@/core/pagination-consts";
+import { PaginationParams } from "@/core/types/pagination-params";
+import { PaginationResponse } from "@/core/types/pagination-responses";
+import { Tag } from "@/domain/tags/entities/tag";
+import { ITagsRepository } from "@/domain/tags/repositories/tag-repository";
 
 export class InMemoryTagsRepository implements ITagsRepository {
   public items: Tag[] = [];
@@ -36,11 +36,7 @@ export class InMemoryTagsRepository implements ITagsRepository {
   }
 
   async findByValue(value: string): Promise<Tag | null> {
-    return (
-      this.items.find(
-        (tag) => tag.value.toLowerCase() === value.toLowerCase(),
-      ) ?? null
-    );
+    return this.items.find((tag) => tag.value.toLowerCase() === value.toLowerCase()) ?? null;
   }
 
   async findMany({
@@ -52,8 +48,7 @@ export class InMemoryTagsRepository implements ITagsRepository {
 
     if (query) {
       tags = this.items.filter((item) => {
-        if (item.value.toLowerCase().includes(query.trim().toLowerCase()))
-          return item;
+        if (item.value.toLowerCase().includes(query.trim().toLowerCase())) return item;
 
         return null;
       });

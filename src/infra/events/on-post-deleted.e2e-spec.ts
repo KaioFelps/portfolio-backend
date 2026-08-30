@@ -1,14 +1,14 @@
-import { INestApplication } from '@nestjs/common';
-import supertest from 'supertest';
-import { UserFactory } from 'test/factories/user-factory';
-import { TokenPayload } from '../auth/jwt-strategy';
-import { JwtService } from '@nestjs/jwt';
-import { PrismaService } from '../db/prisma/prisma-service';
-import { PostFactory } from 'test/factories/post-factory';
-import { LogAction } from '@/domain/logs/entities/log';
-import { provisionTestApp } from 'test/get-testing-app';
+import { INestApplication } from "@nestjs/common";
+import supertest from "supertest";
+import { UserFactory } from "test/factories/user-factory";
+import { TokenPayload } from "../auth/jwt-strategy";
+import { JwtService } from "@nestjs/jwt";
+import { PrismaService } from "../db/prisma/prisma-service";
+import { PostFactory } from "test/factories/post-factory";
+import { LogAction } from "@/domain/logs/entities/log";
+import { provisionTestApp } from "test/get-testing-app";
 
-describe('On Post Edited Event handler', () => {
+describe("On Post Edited Event handler", () => {
   let app: INestApplication;
   let jwt: JwtService;
   let prisma: PrismaService;
@@ -16,7 +16,7 @@ describe('On Post Edited Event handler', () => {
   let postFactory: PostFactory;
 
   beforeEach(async () => {
-       app = await provisionTestApp();
+    app = await provisionTestApp();
     jwt = app.get(JwtService);
     prisma = app.get(PrismaService);
     userFactory = app.get(UserFactory);
@@ -24,8 +24,8 @@ describe('On Post Edited Event handler', () => {
     await app.init();
   });
 
-  it('should register a new log when a post is deleted', async () => {
-    const user = await userFactory.createAndPersist('admin');
+  it("should register a new log when a post is deleted", async () => {
+    const user = await userFactory.createAndPersist("admin");
     const post = await postFactory.createAndPersist({ authorId: user.id });
 
     const token = await jwt.signAsync({

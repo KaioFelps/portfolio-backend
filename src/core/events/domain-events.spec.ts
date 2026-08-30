@@ -1,7 +1,7 @@
-import { Aggregate } from '../entities/aggregate';
-import { EntityUniqueId } from '../entities/entity-unique-id';
-import { DomainEvent } from './domain-event';
-import { DomainEvents } from './domain-events';
+import { Aggregate } from "../entities/aggregate";
+import { EntityUniqueId } from "../entities/entity-unique-id";
+import { DomainEvent } from "./domain-event";
+import { DomainEvents } from "./domain-events";
 
 class CustomAggregate extends Aggregate<unknown> {
   static create() {
@@ -26,8 +26,8 @@ class CustomAggregateCreatedEvent implements DomainEvent {
   }
 }
 
-describe('Domain events', () => {
-  test('if it can dispatch and listen to events', () => {
+describe("Domain events", () => {
+  test("if it can dispatch and listen to events", () => {
     const callbackSpy = vi.fn();
 
     /* SUBSCRIBER CADASTRADO (ouvindo o evento de resposta criada)
@@ -35,10 +35,7 @@ describe('Domain events', () => {
      * parametros: função a ser executada, evento que dispara a função
      */
 
-    DomainEvents.registerAggregateEvent(
-      callbackSpy,
-      CustomAggregateCreatedEvent.name,
-    );
+    DomainEvents.registerAggregateEvent(callbackSpy, CustomAggregateCreatedEvent.name);
 
     // cria uma resposta, mas SEM salvar no banco de dados
     const aggregate = CustomAggregate.create();

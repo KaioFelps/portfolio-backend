@@ -1,24 +1,23 @@
-import { EntityUniqueId } from '@/core/entities/entity-unique-id';
-import { QUANTITY_PER_PAGE } from '@/core/pagination-consts';
-import { PostTag } from '@/domain/posts/entities/post-tag';
-import { PostTagList } from '@/domain/posts/entities/post-tag-list';
-import { TokenPayload } from '@/infra/auth/jwt-strategy';
-import { INestApplication } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-import { randomUUID } from 'crypto';
-import supertest from 'supertest';
-import { PostPresented } from '../presenters/post-presenter';
-import { DomainEvents } from '@/core/events/domain-events';
-import { User } from '@/domain/users/entities/user';
-import { PrismaService } from '@/infra/db/prisma/prisma-service';
-import { UserFactory } from 'test/factories/user-factory';
-import { PostFactory } from 'test/factories/post-factory';
-import { TagFactory } from 'test/factories/tag-factory';
-import { provisionTestApp } from 'test/get-testing-app';
-import { PostTagFactory } from 'test/factories/post-tag-factory';
+import { EntityUniqueId } from "@/core/entities/entity-unique-id";
+import { QUANTITY_PER_PAGE } from "@/core/pagination-consts";
+import { PostTag } from "@/domain/posts/entities/post-tag";
+import { PostTagList } from "@/domain/posts/entities/post-tag-list";
+import { TokenPayload } from "@/infra/auth/jwt-strategy";
+import { INestApplication } from "@nestjs/common";
+import { JwtService } from "@nestjs/jwt";
+import { randomUUID } from "crypto";
+import supertest from "supertest";
+import { PostPresented } from "../presenters/post-presenter";
+import { DomainEvents } from "@/core/events/domain-events";
+import { User } from "@/domain/users/entities/user";
+import { PrismaService } from "@/infra/db/prisma/prisma-service";
+import { UserFactory } from "test/factories/user-factory";
+import { PostFactory } from "test/factories/post-factory";
+import { TagFactory } from "test/factories/tag-factory";
+import { provisionTestApp } from "test/get-testing-app";
+import { PostTagFactory } from "test/factories/post-tag-factory";
 
-describe('PostController',async () => {
-
+describe("PostController", async () => {
   let app: INestApplication;
   let userFactory: UserFactory;
   let postFactory: PostFactory;
@@ -38,11 +37,11 @@ describe('PostController',async () => {
   });
 
   afterEach(() => {
-    DomainEvents.AggregateEvent['clearEveryAggregateEvent!']();
+    DomainEvents.AggregateEvent["clearEveryAggregateEvent!"]();
   });
 
-  test('[POST] /post/new', async () => {
-    const user = await userFactory.createAndPersist('admin');
+  test("[POST] /post/new", async () => {
+    const user = await userFactory.createAndPersist("admin");
 
     const payload: TokenPayload = {
       name: user.name,
@@ -51,16 +50,16 @@ describe('PostController',async () => {
     };
     const token = await jwt.signAsync(payload);
 
-    const tag = await tagFactory.createAndPersist({ value: 'habbo' });
+    const tag = await tagFactory.createAndPersist({ value: "habbo" });
 
     const response = await supertest(app.getHttpServer())
-      .post('/post/new')
+      .post("/post/new")
       .set({ Authorization: `Bearer ${token}` })
       .send({
-        title: 'Noticia 1',
-        content: 'conteúdo',
-        description: 'descrição',
-        topstory: 'https://i.imgur.com/Q0GsNvP.png',
+        title: "Noticia 1",
+        content: "conteúdo",
+        description: "descrição",
+        topstory: "https://i.imgur.com/Q0GsNvP.png",
         tags: [tag.id.toValue()],
       })
       .expect(201);
@@ -72,19 +71,19 @@ describe('PostController',async () => {
     const post = response.body.post as PostPresented;
     expect(postOnDatabase?.slug).toEqual(response.body.post.slug);
     expect(post).toMatchObject({
-      topstory: 'https://i.imgur.com/Q0GsNvP.png',
+      topstory: "https://i.imgur.com/Q0GsNvP.png",
       tags: [{ id: expect.any(String), value: tag.value }],
       id: expect.any(String),
       createdAt: expect.any(String),
       slug: expect.any(String),
-      title: 'Noticia 1',
+      title: "Noticia 1",
       publishedAt: null,
-      description: 'descrição',
+      description: "descrição",
     } as PostPresented);
   });
 
-  test('[GET] /post/:slug/show', async () => {
-    const user = await userFactory.createAndPersist('editor');
+  test("[GET] /post/:slug/show", async () => {
+    const user = await userFactory.createAndPersist("editor");
 
     const post = await postFactory.createAndPersist({
       authorId: user.id,
@@ -95,9 +94,7 @@ describe('PostController',async () => {
       authorId: user.id,
     });
 
-    const response = await supertest(app.getHttpServer()).get(
-      `/post/${post.slug}/show`,
-    );
+    const response = await supertest(app.getHttpServer()).get(`/post/${post.slug}/show`);
 
     expect(
       response.statusCode,
@@ -120,10 +117,7 @@ describe('PostController',async () => {
       "logged in '/post/:slug/show' request to return a '200' http status code.",
     ).toBe(200);
 
-    expect(
-      response.body.post,
-      'to be able to see a published post even unlogged in.',
-    ).toEqual(
+    expect(response.body.post, "to be able to see a published post even unlogged in.").toEqual(
       expect.objectContaining({
         id: post.id.toValue(),
         author: user.name,
@@ -140,7 +134,7 @@ describe('PostController',async () => {
 
     expect(
       loggedInResponse.body.post,
-      'to be able to see a unpublished post, once logged in.',
+      "to be able to see a unpublished post, once logged in.",
     ).toEqual(
       expect.objectContaining({
         id: nonPublishedPost.id.toValue(),
@@ -157,12 +151,12 @@ describe('PostController',async () => {
     );
   });
 
-  test('[GET] /post/list', async () => {
-    const query = 'slay';
+  test("[GET] /post/list", async () => {
+    const query = "slay";
 
-    const user = await userFactory.createAndPersist('editor');
+    const user = await userFactory.createAndPersist("editor");
     const postId = new EntityUniqueId(randomUUID());
-    const tag = await tagFactory.createAndPersist({ value: 'catch-tag' });
+    const tag = await tagFactory.createAndPersist({ value: "catch-tag" });
     const postTag = PostTagFactory.exec({
       postId,
       tag,
@@ -206,7 +200,7 @@ describe('PostController',async () => {
     }
 
     const queryByTitleResponse = await supertest(app.getHttpServer())
-      .get('/post/list')
+      .get("/post/list")
       .query({ title: query })
       .send()
       .expect(200);
@@ -220,8 +214,8 @@ describe('PostController',async () => {
     expect(queryByTitleResponse.body.posts.length).toBe(2);
 
     const queryByTagResponse = await supertest(app.getHttpServer())
-      .get('/post/list')
-      .query({ tag: 'catch-tag' })
+      .get("/post/list")
+      .query({ tag: "catch-tag" })
       .send()
       .expect(200);
 
@@ -234,13 +228,13 @@ describe('PostController',async () => {
 
     expect(queryByTagResponse.body.posts[0].tags[0]).toEqual(
       expect.objectContaining({
-        value: 'catch-tag',
+        value: "catch-tag",
       }),
     );
   });
 
-  test('[GET] /post/list/admin', async () => {
-    const user = await userFactory.createAndPersist('editor');
+  test("[GET] /post/list/admin", async () => {
+    const user = await userFactory.createAndPersist("editor");
 
     const token = await jwt.signAsync({
       name: user.name,
@@ -263,7 +257,7 @@ describe('PostController',async () => {
     }
 
     const response = await supertest(app.getHttpServer())
-      .get('/post/list/admin')
+      .get("/post/list/admin")
       .set({ Authorization: `Bearer ${token}` })
       .send()
       .expect(200);
@@ -272,12 +266,12 @@ describe('PostController',async () => {
     expect(response.body.totalCount).toBe(3);
   });
 
-  describe('[PUT] /post/:id/edit', async () => {
+  describe("[PUT] /post/:id/edit", async () => {
     let user: User;
     let token: string;
 
     beforeEach(async () => {
-      user = await userFactory.createAndPersist('editor');
+      user = await userFactory.createAndPersist("editor");
       token = await jwt.signAsync({
         name: user.name,
         role: user.role,
@@ -285,16 +279,16 @@ describe('PostController',async () => {
       } as TokenPayload);
     });
 
-    it('should update a post', async () => {
+    it("should update a post", async () => {
       const post = await postFactory.createAndPersist({
         authorId: user.id,
       });
 
       const tags = await Promise.all([
-        tagFactory.createAndPersist({ value: 'habbo' }),
-        tagFactory.createAndPersist({ value: 'noticia' }),
-        tagFactory.createAndPersist({ value: 'artigo' }),
-        tagFactory.createAndPersist({ value: 'free fire' }),
+        tagFactory.createAndPersist({ value: "habbo" }),
+        tagFactory.createAndPersist({ value: "noticia" }),
+        tagFactory.createAndPersist({ value: "artigo" }),
+        tagFactory.createAndPersist({ value: "free fire" }),
       ]);
 
       const postTags = [
@@ -315,18 +309,15 @@ describe('PostController',async () => {
         .put(`/post/${post.id.toValue()}/edit`)
         .set({ Authorization: `Bearer ${token}` })
         .send({
-          title: 'Edited title',
-          description: 'Edited description!!',
-          tags: [
-            tags[3].id.toValue() /** free-fire */,
-            tags[2].id.toValue() /** artigo */,
-          ],
+          title: "Edited title",
+          description: "Edited description!!",
+          tags: [tags[3].id.toValue() /** free-fire */, tags[2].id.toValue() /** artigo */],
           // not any field are mandatory at all
         })
         .expect(200);
 
       expect(response.body.post.title).not.toEqual(post.title);
-      expect(response.body.post.description).toEqual('Edited description!!');
+      expect(response.body.post.description).toEqual("Edited description!!");
 
       const postOnDb = await prisma.post.findUnique({
         where: { id: post.id.toValue() },
@@ -344,21 +335,21 @@ describe('PostController',async () => {
       expect(response.body.post.tags.length).toBe(2);
       expect(response.body.post.tags).toEqual(
         expect.arrayContaining([
-          { id: tags[3].id.toValue(), value: 'free fire' },
-          { id: tags[2].id.toValue(), value: 'artigo' },
+          { id: tags[3].id.toValue(), value: "free fire" },
+          { id: tags[2].id.toValue(), value: "artigo" },
         ]),
       );
     });
 
-    it('should not reset tags when no tags are sent to update', async () => {
+    it("should not reset tags when no tags are sent to update", async () => {
       const post = await postFactory.createAndPersist({
         authorId: user.id,
       });
 
       const tags = await Promise.all([
-        tagFactory.createAndPersist({ value: 'habbo' }),
-        tagFactory.createAndPersist({ value: 'noticia' }),
-        tagFactory.createAndPersist({ value: 'artigo' }),
+        tagFactory.createAndPersist({ value: "habbo" }),
+        tagFactory.createAndPersist({ value: "noticia" }),
+        tagFactory.createAndPersist({ value: "artigo" }),
       ]);
 
       const postTags = [
@@ -378,7 +369,7 @@ describe('PostController',async () => {
       const response = await supertest(app.getHttpServer())
         .put(`/post/${post.id.toValue()}/edit`)
         .set({ Authorization: `Bearer ${token}` })
-        .send({ title: 'Edited title' })
+        .send({ title: "Edited title" })
         .expect(200);
 
       const postOnDb = await prisma.post.findUnique({
@@ -388,16 +379,13 @@ describe('PostController',async () => {
 
       const tagsFromDb = postOnDb?.tags.map((tag) => tag.tagId);
 
-      expect(
-        response.body.post.tags.length,
-        'returned tags should not be empty',
-      ).not.toBe(0);
+      expect(response.body.post.tags.length, "returned tags should not be empty").not.toBe(0);
       expect(tagsFromDb?.length).toBe(3);
     });
   });
 
-  test('[DELETE] /post/:id/delete', async () => {
-    const user = await userFactory.createAndPersist('admin');
+  test("[DELETE] /post/:id/delete", async () => {
+    const user = await userFactory.createAndPersist("admin");
 
     const token = await jwt.signAsync({
       name: user.name,
@@ -422,8 +410,8 @@ describe('PostController',async () => {
     expect(postOnDatabase).toBeNull();
   });
 
-  test('[PATCH] /post/:id/visibility', async () => {
-    const user = await userFactory.createAndPersist('editor');
+  test("[PATCH] /post/:id/visibility", async () => {
+    const user = await userFactory.createAndPersist("editor");
 
     const post = await postFactory.createAndPersist({
       authorId: user.id,

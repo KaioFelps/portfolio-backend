@@ -1,4 +1,4 @@
-import { CreateTagService } from '@/domain/tags/services/create-tag-service';
+import { CreateTagService } from "@/domain/tags/services/create-tag-service";
 import {
   BadRequestException,
   Body,
@@ -12,23 +12,23 @@ import {
   Query,
   Param,
   UnauthorizedException,
-} from '@nestjs/common';
-import { TagPresenter } from '../presenters/tag-presenter';
-import { CreateTagDto } from '../dtos/create-tag';
-import { FetchManyTagsService } from '@/domain/tags/services/fetch-many-tags-service';
-import { PaginatedQueryDto } from '../dtos/paginated-query';
-import { QUANTITY_PER_PAGE } from '@/core/pagination-consts';
-import { UpdateTagDto } from '../dtos/update-tag';
-import { TokenPayload } from '@/infra/auth/jwt-strategy';
-import { CurrentUser } from '@/infra/auth/decorators/current-user';
-import { PublicRoute } from '@/infra/auth/decorators/public-route';
-import { EditTagService } from '@/domain/tags/services/edit-tag-service';
-import { DeleteTagService } from '@/domain/tags/services/delete-tag-service';
-import { UnauthorizedError } from '@/core/errors/unauthorized-error';
-import { BadRequestError } from '@/core/errors/bad-request-error';
-import { Prisma } from 'prisma/generated/client';
+} from "@nestjs/common";
+import { TagPresenter } from "../presenters/tag-presenter";
+import { CreateTagDto } from "../dtos/create-tag";
+import { FetchManyTagsService } from "@/domain/tags/services/fetch-many-tags-service";
+import { PaginatedQueryDto } from "../dtos/paginated-query";
+import { QUANTITY_PER_PAGE } from "@/core/pagination-consts";
+import { UpdateTagDto } from "../dtos/update-tag";
+import { TokenPayload } from "@/infra/auth/jwt-strategy";
+import { CurrentUser } from "@/infra/auth/decorators/current-user";
+import { PublicRoute } from "@/infra/auth/decorators/public-route";
+import { EditTagService } from "@/domain/tags/services/edit-tag-service";
+import { DeleteTagService } from "@/domain/tags/services/delete-tag-service";
+import { UnauthorizedError } from "@/core/errors/unauthorized-error";
+import { BadRequestError } from "@/core/errors/bad-request-error";
+import { Prisma } from "prisma/generated/client";
 
-@Controller('/tag')
+@Controller("/tag")
 export class TagsController {
   constructor(
     private createTagService: CreateTagService,
@@ -37,7 +37,7 @@ export class TagsController {
     private deleteTagService: DeleteTagService,
   ) {}
 
-  @Post('/new')
+  @Post("/new")
   @HttpCode(201)
   async create(@Body() body: CreateTagDto) {
     try {
@@ -49,7 +49,7 @@ export class TagsController {
 
       return { tag: TagPresenter.toHTTP(result.value.tag) };
     } catch (e) {
-      if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === 'P2002') {
+      if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === "P2002") {
         throw new BadRequestException(e.message);
       }
 
@@ -57,7 +57,7 @@ export class TagsController {
     }
   }
 
-  @Get('/list')
+  @Get("/list")
   @HttpCode(200)
   @PublicRoute()
   async list(@Query() query: PaginatedQueryDto) {
@@ -77,12 +77,12 @@ export class TagsController {
     };
   }
 
-  @Patch('/:id/edit')
+  @Patch("/:id/edit")
   @HttpCode(200)
   async update(
     @Body() body: UpdateTagDto,
     @CurrentUser() user: TokenPayload,
-    @Param('id') tagId: string,
+    @Param("id") tagId: string,
   ) {
     const result = await this.editTagService.exec({
       tagId,
@@ -103,9 +103,9 @@ export class TagsController {
     return { tag: TagPresenter.toHTTP(result.value.tag) };
   }
 
-  @Delete('/:id/delete')
+  @Delete("/:id/delete")
   @HttpCode(204)
-  async delete(@CurrentUser() user: TokenPayload, @Param('id') tagId: string) {
+  async delete(@CurrentUser() user: TokenPayload, @Param("id") tagId: string) {
     const result = await this.deleteTagService.exec({
       userId: user.sub,
       tagId,

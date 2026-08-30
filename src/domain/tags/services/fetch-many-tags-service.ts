@@ -1,16 +1,13 @@
-import { QUANTITY_PER_PAGE } from '@/core/pagination-consts';
-import { Either, ok } from '@/core/types/either';
-import { PaginationParams } from '@/core/types/pagination-params';
-import { ITagsRepository } from '../repositories/tag-repository';
-import { Tag } from '../entities/tag';
-import { Injectable } from '@nestjs/common';
+import { QUANTITY_PER_PAGE } from "@/core/pagination-consts";
+import { Either, ok } from "@/core/types/either";
+import { PaginationParams } from "@/core/types/pagination-params";
+import { ITagsRepository } from "../repositories/tag-repository";
+import { Tag } from "../entities/tag";
+import { Injectable } from "@nestjs/common";
 
 interface FetchManyTagsServiceRequest extends PaginationParams {}
 
-type FetchManyTagsServiceResponse = Either<
-  null,
-  { tags: Tag[]; count: number }
->;
+type FetchManyTagsServiceResponse = Either<null, { tags: Tag[]; count: number }>;
 
 @Injectable()
 export class FetchManyTagsService {

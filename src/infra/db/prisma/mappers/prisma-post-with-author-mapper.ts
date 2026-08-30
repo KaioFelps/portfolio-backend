@@ -1,14 +1,14 @@
-import { EntityUniqueId } from '@/core/entities/entity-unique-id';
+import { EntityUniqueId } from "@/core/entities/entity-unique-id";
 import {
   Post as PrismaPost,
   Tag as PrismaTag,
   TagsOnPostsOrProjects as PrismaTagsOnPostsOrProjects,
   User as PrismaUser,
-} from 'prisma/generated/client';
-import { Slug } from '@/domain/posts/entities/value-objects/slug';
-import { PostWithAuthor } from '@/domain/posts/entities/value-objects/post-with-author';
-import { PostTagList } from '@/domain/posts/entities/post-tag-list';
-import { PrismaPostTagMapper } from './prisma-post-tag-mapper';
+} from "prisma/generated/client";
+import { Slug } from "@/domain/posts/entities/value-objects/slug";
+import { PostWithAuthor } from "@/domain/posts/entities/value-objects/post-with-author";
+import { PostTagList } from "@/domain/posts/entities/post-tag-list";
+import { PrismaPostTagMapper } from "./prisma-post-tag-mapper";
 
 type toDomainParams = PrismaPost & {
   tags: Array<{ Tag: PrismaTag } & PrismaTagsOnPostsOrProjects>;

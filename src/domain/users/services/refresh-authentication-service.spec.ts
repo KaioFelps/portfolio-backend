@@ -1,8 +1,8 @@
-import { UserFactory } from 'test/factories/user-factory';
-import { FakeEncryptor } from 'test/crypt/faker-encryptor';
-import { RefreshAuthenticationService } from './refresh-authentication-service';
+import { UserFactory } from "test/factories/user-factory";
+import { FakeEncryptor } from "test/crypt/faker-encryptor";
+import { RefreshAuthenticationService } from "./refresh-authentication-service";
 
-describe('Refresh Authentication Service', () => {
+describe("Refresh Authentication Service", () => {
   let sut: RefreshAuthenticationService;
   let encryptor: FakeEncryptor;
 
@@ -11,10 +11,10 @@ describe('Refresh Authentication Service', () => {
     sut = new RefreshAuthenticationService(encryptor);
   });
 
-  it('should re-authenticate a user', async () => {
-    const user = UserFactory.exec('admin', {
-      email: 'kaio@gmail.com',
-      name: 'Kaio Felipe',
+  it("should re-authenticate a user", async () => {
+    const user = UserFactory.exec("admin", {
+      email: "kaio@gmail.com",
+      name: "Kaio Felipe",
     });
 
     const refreshToken = await encryptor.encrypt(
@@ -23,7 +23,7 @@ describe('Refresh Authentication Service', () => {
         name: user.name,
         role: user.role,
       },
-      '10h',
+      "10h",
     );
 
     const result = await sut.exec({ refreshToken });

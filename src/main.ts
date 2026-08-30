@@ -1,10 +1,10 @@
-import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
-import cookieParser from 'cookie-parser';
-import { EnvService } from './infra/env/env-service';
-import { IHashGenerator } from './core/crypt/hash-generator';
-import { PrismaService } from './infra/db/prisma/prisma-service';
-import { run } from 'prisma/seed';
+import { NestFactory } from "@nestjs/core";
+import { AppModule } from "./app.module";
+import cookieParser from "cookie-parser";
+import { EnvService } from "./infra/env/env-service";
+import { IHashGenerator } from "./core/crypt/hash-generator";
+import { PrismaService } from "./infra/db/prisma/prisma-service";
+import { run } from "prisma/seed";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -12,33 +12,31 @@ async function bootstrap() {
   app.enableShutdownHooks();
 
   const env = app.get(EnvService);
-  const port = env.get('PORT');
+  const port = env.get("PORT");
 
   app.enableCors({
     credentials: true,
-    origin: env.get('CORS_ALLOWED_ORIGINS'),
+    origin: env.get("CORS_ALLOWED_ORIGINS"),
   });
 
   // seed the database
-  if (env.get('NODE_ENV') === 'development' && env.get('RUN_DB_SEED')) {
+  if (env.get("NODE_ENV") === "development" && env.get("RUN_DB_SEED")) {
     await run(app.get(PrismaService), app.get(IHashGenerator));
   }
 
   // create or update the root user
   try {
-    const password = await app
-      .get(IHashGenerator)
-      .generate(env.get('ROOTUSER_PASSWORD'));
+    const password = await app.get(IHashGenerator).generate(env.get("ROOTUSER_PASSWORD"));
 
     await app.get(PrismaService).user.upsert({
       create: {
-        email: env.get('ROOTUSER_EMAIL'),
-        name: env.get('ROOTUSER_NAME'),
+        email: env.get("ROOTUSER_EMAIL"),
+        name: env.get("ROOTUSER_NAME"),
         password,
-        role: 'ADMIN',
+        role: "ADMIN",
       },
       update: {},
-      where: { email: env.get('ROOTUSER_EMAIL') },
+      where: { email: env.get("ROOTUSER_EMAIL") },
     });
   } catch {}
 

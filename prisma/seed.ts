@@ -1,9 +1,9 @@
-import { EntityUniqueId } from '@/core/entities/entity-unique-id';
-import { ProjectFactory } from 'test/factories/project-factory';
-import { PrismaService } from '@/infra/db/prisma/prisma-service';
-import { PostFactory } from 'test/factories/post-factory';
-import { IHashGenerator } from '@/core/crypt/hash-generator';
-import { DomainEvents } from '@/core/events/domain-events';
+import { EntityUniqueId } from "@/core/entities/entity-unique-id";
+import { ProjectFactory } from "test/factories/project-factory";
+import { PrismaService } from "@/infra/db/prisma/prisma-service";
+import { PostFactory } from "test/factories/post-factory";
+import { IHashGenerator } from "@/core/crypt/hash-generator";
+import { DomainEvents } from "@/core/events/domain-events";
 
 export async function run(prisma: PrismaService, hasher: IHashGenerator) {
   const user1 = new EntityUniqueId();
@@ -23,17 +23,17 @@ async function populateUsers(
     return await prisma.user.createMany({
       data: [
         {
-          email: 'kaio@gmail.com',
-          name: 'Kaio Felipe',
-          password: await hasher.generate('123456'),
-          role: 'ADMIN',
+          email: "kaio@gmail.com",
+          name: "Kaio Felipe",
+          password: await hasher.generate("123456"),
+          role: "ADMIN",
           id: user1,
         },
         {
-          email: 'John@gmail.com',
-          name: 'John DOe',
-          password: await hasher.generate('12345690'),
-          role: 'EDITOR',
+          email: "John@gmail.com",
+          name: "John DOe",
+          password: await hasher.generate("12345690"),
+          role: "EDITOR",
           id: user2,
         },
       ],
@@ -62,25 +62,25 @@ async function populatePosts(
 
     const post1 = await postFactory.createAndPersist({
       authorId: user1,
-      content: '<h1>Post 1</h1>',
-      title: 'First post',
-      topstory: '',
+      content: "<h1>Post 1</h1>",
+      title: "First post",
+      topstory: "",
     });
     DomainEvents.dispatchEventsForAggregate(post1.id);
 
     const post2 = await postFactory.createAndPersist({
       authorId: user2,
-      content: '<h1>Post 2</h1>',
-      title: 'Second post',
-      topstory: '',
+      content: "<h1>Post 2</h1>",
+      title: "Second post",
+      topstory: "",
     });
     DomainEvents.dispatchEventsForAggregate(post2.id);
 
     const post3 = await postFactory.createAndPersist({
       authorId: user1,
-      content: '<h1>Post 3</h1>',
-      title: 'Third post',
-      topstory: '',
+      content: "<h1>Post 3</h1>",
+      title: "Third post",
+      topstory: "",
     });
     DomainEvents.dispatchEventsForAggregate(post3.id);
   } catch {}

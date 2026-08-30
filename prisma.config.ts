@@ -2,7 +2,7 @@ import { config } from "dotenv";
 import { expand } from "dotenv-expand";
 import { defineConfig } from "prisma/config";
 
-const env = config({override: false});
+const env = config({ override: false });
 expand(env);
 
 export default defineConfig({

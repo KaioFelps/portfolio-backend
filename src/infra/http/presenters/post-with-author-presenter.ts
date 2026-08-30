@@ -1,5 +1,5 @@
-import { PostWithAuthor } from '@/domain/posts/entities/value-objects/post-with-author';
-import { ProjectAndPostTagPresenter } from './project-and-post-tag-presenter';
+import { PostWithAuthor } from "@/domain/posts/entities/value-objects/post-with-author";
+import { ProjectAndPostTagPresenter } from "./project-and-post-tag-presenter";
 
 export type PostWithAuthorPresented = {
   id: string;

@@ -1,22 +1,20 @@
-import { DomainEvents } from '@/core/events/domain-events';
-import { TokenPayload } from '@/infra/auth/jwt-strategy';
-import { PrismaService } from '@/infra/db/prisma/prisma-service';
-import { INestApplication } from '@nestjs/common';
-import {  JwtService } from '@nestjs/jwt';
-import { hash } from 'bcryptjs';
-import supertest from 'supertest';
-import { UserFactory } from 'test/factories/user-factory';
-import { provisionTestApp } from 'test/get-testing-app';
+import { DomainEvents } from "@/core/events/domain-events";
+import { TokenPayload } from "@/infra/auth/jwt-strategy";
+import { PrismaService } from "@/infra/db/prisma/prisma-service";
+import { INestApplication } from "@nestjs/common";
+import { JwtService } from "@nestjs/jwt";
+import { hash } from "bcryptjs";
+import supertest from "supertest";
+import { UserFactory } from "test/factories/user-factory";
+import { provisionTestApp } from "test/get-testing-app";
 
-describe('UserController', () => {
+describe("UserController", () => {
   let app: INestApplication;
   let userFactory: UserFactory;
   let jwt: JwtService;
   let prisma: PrismaService;
 
   beforeEach(async () => {
-   
-
     app = await provisionTestApp();
     userFactory = app.get(UserFactory);
     jwt = app.get(JwtService);
@@ -26,16 +24,16 @@ describe('UserController', () => {
   });
 
   afterEach(() => {
-    DomainEvents.AggregateEvent['clearEveryAggregateEvent!']();
+    DomainEvents.AggregateEvent["clearEveryAggregateEvent!"]();
   });
 
-  test('[POST] /user/new', async () => {
-    const ROUTE = '/user/new';
+  test("[POST] /user/new", async () => {
+    const ROUTE = "/user/new";
 
-    const adminUser = await userFactory.createAndPersist('admin', {
-      name: 'Kaio',
-      email: 'kaio@gmail.com',
-      password: await hash('12345', 6),
+    const adminUser = await userFactory.createAndPersist("admin", {
+      name: "Kaio",
+      email: "kaio@gmail.com",
+      password: await hash("12345", 6),
     });
 
     const token = await jwt.signAsync({
@@ -48,23 +46,23 @@ describe('UserController', () => {
       .post(ROUTE)
       .set({ Authorization: `Bearer ${token}` })
       .send({
-        name: 'Felipe',
-        email: 'kaioFelipe@gmail.com',
-        password: '123456',
+        name: "Felipe",
+        email: "kaioFelipe@gmail.com",
+        password: "123456",
       })
       .expect(201);
 
     expect(result.body.user).toMatchObject({
       id: expect.any(String),
-      name: 'Felipe',
-      email: 'kaioFelipe@gmail.com',
-      role: 'EDITOR',
+      name: "Felipe",
+      email: "kaioFelipe@gmail.com",
+      role: "EDITOR",
       createdAt: expect.any(String),
     });
   });
 
-  test('[GET] /user/list', async () => {
-    const adminUser = await userFactory.createAndPersist('admin');
+  test("[GET] /user/list", async () => {
+    const adminUser = await userFactory.createAndPersist("admin");
     const token = await jwt.signAsync({
       name: adminUser.name,
       role: adminUser.role,
@@ -72,11 +70,11 @@ describe('UserController', () => {
     });
 
     for (let i = 0; i < 14; i++) {
-      await userFactory.createAndPersist('editor');
+      await userFactory.createAndPersist("editor");
     }
 
     const response = await supertest(app.getHttpServer())
-      .get('/user/list?page=2')
+      .get("/user/list?page=2")
       .set({ Authorization: `Bearer ${token}` })
       .send()
       .expect(200);
@@ -91,11 +89,11 @@ describe('UserController', () => {
     expect(response.body.users.length).toBe(3);
   });
 
-  test('[PUT] /user/:id/edit', async () => {
-    const adminUser = await userFactory.createAndPersist('admin', {
-      name: 'Kaio',
-      email: 'kaio2@gmail.com',
-      password: await hash('123456', 6),
+  test("[PUT] /user/:id/edit", async () => {
+    const adminUser = await userFactory.createAndPersist("admin", {
+      name: "Kaio",
+      email: "kaio2@gmail.com",
+      password: await hash("123456", 6),
     });
 
     const token = await jwt.signAsync({
@@ -104,14 +102,14 @@ describe('UserController', () => {
       sub: adminUser.id.toValue(),
     });
 
-    const anotherUser = await userFactory.createAndPersist('editor');
+    const anotherUser = await userFactory.createAndPersist("editor");
 
     await supertest(app.getHttpServer())
       .put(`/user/${anotherUser.id.toValue()}/edit`)
       .set({ Authorization: `Bearer ${token}` })
       .send({
-        name: 'Nome editado',
-        role: 'ADMIN',
+        name: "Nome editado",
+        role: "ADMIN",
       })
       .expect(204);
 
@@ -121,13 +119,13 @@ describe('UserController', () => {
       },
     });
 
-    expect(userOnDb?.name).toEqual('Nome editado');
-    expect(userOnDb?.role).toEqual('ADMIN');
+    expect(userOnDb?.name).toEqual("Nome editado");
+    expect(userOnDb?.role).toEqual("ADMIN");
   });
 
-  test('[DELETE] /user/:id/delete', async () => {
-    const adminUser = await userFactory.createAndPersist('admin');
-    const anotherUser = await userFactory.createAndPersist('editor');
+  test("[DELETE] /user/:id/delete", async () => {
+    const adminUser = await userFactory.createAndPersist("admin");
+    const anotherUser = await userFactory.createAndPersist("editor");
 
     const token = await jwt.signAsync({
       name: adminUser.name,

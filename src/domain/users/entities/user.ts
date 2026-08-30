@@ -1,13 +1,13 @@
-import { Aggregate } from '@/core/entities/aggregate';
-import { EntityUniqueId } from '@/core/entities/entity-unique-id';
-import { Optional } from '@/core/types/optional';
-import { UserDeletedEvent } from '../events/user-deleted-event';
-import { UserCreatedEvent } from '../events/user-created-event';
-import { UserEditedEvent } from '../events/user-edited-event';
+import { Aggregate } from "@/core/entities/aggregate";
+import { EntityUniqueId } from "@/core/entities/entity-unique-id";
+import { Optional } from "@/core/types/optional";
+import { UserDeletedEvent } from "../events/user-deleted-event";
+import { UserCreatedEvent } from "../events/user-created-event";
+import { UserEditedEvent } from "../events/user-edited-event";
 
 export enum UserRole {
-  admin = 'ADMIN',
-  editor = 'EDITOR',
+  admin = "ADMIN",
+  editor = "EDITOR",
 }
 
 export interface UserProps {
@@ -23,7 +23,7 @@ export class User extends Aggregate<UserProps> {
     super(props, id);
   }
 
-  static create(props: Optional<UserProps, 'createdAt'>, id?: EntityUniqueId) {
+  static create(props: Optional<UserProps, "createdAt">, id?: EntityUniqueId) {
     const user = new User(
       {
         ...props,

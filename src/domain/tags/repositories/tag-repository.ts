@@ -1,7 +1,7 @@
-import { EntityUniqueId } from '@/core/entities/entity-unique-id';
-import { Tag } from '../entities/tag';
-import { PaginationParams } from '@/core/types/pagination-params';
-import { PaginationResponse } from '@/core/types/pagination-responses';
+import { EntityUniqueId } from "@/core/entities/entity-unique-id";
+import { Tag } from "../entities/tag";
+import { PaginationParams } from "@/core/types/pagination-params";
+import { PaginationResponse } from "@/core/types/pagination-responses";
 
 export abstract class ITagsRepository {
   abstract create(tag: Tag): Promise<void>;

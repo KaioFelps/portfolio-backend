@@ -1,11 +1,11 @@
-import { Injectable } from '@nestjs/common';
-import { ILogsRepository } from '../repositories/logs-repository';
-import { Log, LogAction, LogTargetType } from '../entities/log';
-import { Either, fail, ok } from '@/core/types/either';
-import { BadRequestError } from '@/core/errors/bad-request-error';
-import { IUsersRepository } from '@/domain/users/repositories/users-repository';
-import { EntityUniqueId } from '@/core/entities/entity-unique-id';
-import { User } from '@/domain/users/entities/user';
+import { Injectable } from "@nestjs/common";
+import { ILogsRepository } from "../repositories/logs-repository";
+import { Log, LogAction, LogTargetType } from "../entities/log";
+import { Either, fail, ok } from "@/core/types/either";
+import { BadRequestError } from "@/core/errors/bad-request-error";
+import { IUsersRepository } from "@/domain/users/repositories/users-repository";
+import { EntityUniqueId } from "@/core/entities/entity-unique-id";
+import { User } from "@/domain/users/entities/user";
 
 export interface CreateLogServiceRequest {
   dispatcherId?: EntityUniqueId;
