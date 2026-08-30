@@ -1,7 +1,6 @@
 import { UserFactory } from 'test/factories/user-factory';
 import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository';
 import { InMemoryPostsRepository } from 'test/repositories/in-memory-posts-repository';
-import { UnauthorizedError } from '@/core/errors/unauthorized-error';
 import { PostFactory } from 'test/factories/post-factory';
 import { DeletePostService } from './delete-post-service';
 import { ForbiddenError } from '@/core/errors/forbidden-error';
