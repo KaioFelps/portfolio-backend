@@ -70,6 +70,29 @@ export class PostController {
 
     return { post: postWithAuthor };
   }
+  @Get("/:slug/show/admin")
+  @PublicRoute()
+  @HttpCode(200)
+  async adminGet(@Param("slug") slug: string, @CurrentUser() user: TokenPayload) {
+    const response = await this.getPostBySlugService.exec({
+      slug,
+      user,
+    });
+
+    if (response.isFail()) {
+      throw new InternalServerErrorException();
+    }
+
+    const { post: domainPostWithAuthor } = response.value;
+
+    if (!domainPostWithAuthor) {
+      throw new UnauthorizedException(new UnauthorizedError("Você não pode visualizar esse post."));
+    }
+
+    const postWithAuthor = PostWithAuthorPresenter.toHTTP(domainPostWithAuthor);
+
+    return { post: postWithAuthor };
+  }
 
   @Get("list")
   @PublicRoute()

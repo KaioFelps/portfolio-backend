@@ -151,6 +151,61 @@ describe("PostController", async () => {
     );
   });
 
+  test("[GET] /post/:slug/show/admin", async () => {
+    const user = await userFactory.createAndPersist("editor");
+
+    const nonPublishedPost = await postFactory.createAndPersist({
+      authorId: user.id,
+    });
+
+    const response = await supertest(app.getHttpServer()).get(
+      `/post/${nonPublishedPost.slug}/show/admin`,
+    );
+
+    expect(
+      response.statusCode,
+      "unlogged users should not be able to access this administrative route",
+    ).toBe(401);
+
+    expect(response.body).not.toHaveProperty("post");
+
+    const token = await jwt.signAsync({
+      name: user.name,
+      role: user.role,
+      sub: user.id.toValue(),
+    } satisfies TokenPayload);
+
+    const loggedInResponse = await supertest(app.getHttpServer())
+      .get(`/post/${nonPublishedPost.slug}/show/admin`)
+      .set({ Authorization: `Bearer ${token}` })
+      .send();
+
+    expect(
+      loggedInResponse.statusCode,
+      "logged in users should be able to see any post using this route",
+    ).toBe(200);
+
+    expect(loggedInResponse.body.post, "unpublished posts should never be null").not.toBeNull();
+
+    expect(
+      loggedInResponse.body.post,
+      "to be able to see a unpublished post, once logged in.",
+    ).toEqual(
+      expect.objectContaining({
+        id: nonPublishedPost.id.toValue(),
+        author: user.name,
+        content: nonPublishedPost.content,
+        createdAt: expect.any(String),
+        title: nonPublishedPost.title,
+        slug: nonPublishedPost.slug,
+        topstory: nonPublishedPost.topstory,
+        tags: [],
+        updatedAt: null,
+        publishedAt: null,
+      }),
+    );
+  });
+
   test("[GET] /post/list", async () => {
     const query = "slay";
 
