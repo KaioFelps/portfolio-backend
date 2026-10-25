@@ -52,7 +52,6 @@ export class Post extends Aggregate<PostProps> {
 
   set title(value: string) {
     this.props.title = value;
-    this.props.slug = Slug.fromTitle(value, this.id.toValue());
     this.touch();
   }
 

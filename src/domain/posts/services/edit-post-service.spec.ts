@@ -90,4 +90,22 @@ describe("Edit Post Service", () => {
     expect(result.isFail()).toBe(true);
     expect(result.value).toBeInstanceOf(UnauthorizedError);
   });
+
+  it("shouldn't modify the slug upon title changes", async () => {
+    const user = UserFactory.exec("editor");
+    usersRepository.items.push(user);
+
+    const post = PostFactory.exec({ authorId: user.id, title: "original title" });
+    postsRepository.items.push(post);
+
+    const result = await sut.exec({
+      authorId: user.id.toValue(),
+      postId: post.id.toValue(),
+      title: "Edited title",
+    });
+
+    assert(result.isOk());
+    expect(result.value.post.slug).not.toContain("edited");
+    expect(result.value.post.slug).toContain("original");
+  });
 });
