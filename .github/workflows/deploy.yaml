@@ -30,6 +30,7 @@ jobs:
           cp -r prisma __package
           cp run.sh __package
           cp package.json __package
+          cp squarecloud.ignore __package
           cp package-lock.json __package
 
       - name: Setup Square Cloud CLI
